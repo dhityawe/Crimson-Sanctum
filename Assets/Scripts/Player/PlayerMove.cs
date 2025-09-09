@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Assets.Scripts.Core.Managers;
 
 namespace Assets.Scripts.Player
 {
@@ -11,7 +12,6 @@ namespace Assets.Scripts.Player
         [Range(1f, 5)]
         private float _moveSpeed;
         [SerializeField]
-        [Range(2, 5)]
         private float _jumpForce;
         [SerializeField]
         private bool _isGrounded;
@@ -42,8 +42,15 @@ namespace Assets.Scripts.Player
             _charSprite.flipX = _isFlipx;
         }
 
+        void Update()
+        {
+            if (!_canMove) return;
+            HandleJump();
+        }
+
         void FixedUpdate()
         {
+            if (!_canMove) return;
             HandleMove();
         }
 
@@ -94,10 +101,20 @@ namespace Assets.Scripts.Player
 
         public void HandleMove()
         {
-            if (!_canMove) return;
             Vector2 direction = _isFlipx ? Vector2.left : Vector2.right;
             Vector2 newPosition = _rb.position + _moveSpeed * Time.fixedDeltaTime * direction;
             _rb.MovePosition(newPosition);
+        }
+
+        private void HandleJump()
+        {
+            
+            // Check if jump input is pressed and player is grounded
+            if (GameInput.Instance.IsJumpPressed() && _isGrounded)
+            {
+                // Apply jump force
+                _rb.AddForceY(_jumpForce);
+            }
         }
     }
 }
