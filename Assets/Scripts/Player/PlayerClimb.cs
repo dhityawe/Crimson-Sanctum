@@ -37,6 +37,7 @@ namespace Assets.Scripts.Player
 
         private IEnumerator NextStage(GameObject ladder)
         {
+            _playerMove.enabled = false;
             _playerMove.EnableMove(false);
             _rb.gravityScale = 0;
 
@@ -45,9 +46,10 @@ namespace Assets.Scripts.Player
 
             yield return SmoothClimb(startPos, endPos, _climbDuration);
 
-            yield return _waitForSeconds0_25;
             _playerMove.SetMove();
+            yield return _waitForSeconds0_25;
             _playerMove.EnableMove(true);
+            _playerMove.enabled = true;
             _rb.gravityScale = 1;
         }
 
@@ -76,14 +78,20 @@ namespace Assets.Scripts.Player
 
         private IEnumerator SmoothClimb(Vector2 startPos, Vector2 endPos, float duration)
         {
-            float elapsed = 0;
+            float elapsed = 0f;
+            Vector2 totalDistance = endPos - startPos;
+            Vector2 climbVelocity = totalDistance / duration; // kecepatan konstan yang dibutuhkan
+
             while (elapsed < duration)
             {
-                _rb.MovePosition(Vector2.Lerp(startPos, endPos, elapsed / duration));
+                _rb.linearVelocity = climbVelocity; // gerak dengan velocity, bukan teleport
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            _rb.MovePosition(endPos);
+
+            // pastikan player berhenti di atas ladder
+            _rb.linearVelocity = Vector2.zero;
+            _rb.position = endPos;
         }
     }
 }

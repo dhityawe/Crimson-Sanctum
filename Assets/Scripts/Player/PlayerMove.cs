@@ -8,19 +8,17 @@ namespace Assets.Scripts.Player
     public class PlayerMove : MonoBehaviour
     {
         #region SerializeFields
+        [Header("Player Settings")]
         [SerializeField]
         [Range(1f, 5)]
         private float _moveSpeed;
         [SerializeField]
         private float _jumpForce;
         [SerializeField]
-        private bool _isGrounded;
-        [SerializeField]
         private SpriteRenderer _charSprite;
         [SerializeField]
         private bool _isFlipx;
-        [SerializeField]
-        private bool _canMove;
+        
         [Header("Ground")]
         [SerializeField]
         private Transform _groundCheck;
@@ -33,7 +31,7 @@ namespace Assets.Scripts.Player
         public static event Action OnPickupCoin;
         #endregion
 
-        
+        private bool _canMove;
         private Rigidbody2D _rb;
 
         void Awake()
@@ -49,14 +47,14 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
-
+            if (!_canMove) return;
+            HandleJump();
         }
 
         void FixedUpdate()
         {
             if (!_canMove) return;
             HandleMove();
-            HandleJump();
         }
 
         private void OnCollisionEnter2D(Collision2D other)
@@ -99,16 +97,6 @@ namespace Assets.Scripts.Player
 
         public void HandleMove()
         {
-            // version 1
-            // Vector2 direction = _isFlipx ? Vector2.left : Vector2.right;
-            // Vector2 newPosition = new(_rb.position.x + _moveSpeed * direction.x * Time.deltaTime, _rb.position.y);
-            // _rb.MovePosition(newPosition);
-
-            // version 2
-            // float direction = _isFlipx ? -1f : 1f;
-            // Vector2 newPosition = new(direction * _moveSpeed, 0f);
-            // _rb.linearVelocity = newPosition;
-
             // version 3
             float direction = _isFlipx ? -1f : 1f;
             float targetX = direction * _moveSpeed;
