@@ -48,7 +48,7 @@ namespace Assets.Scripts.Player
             yield return _waitForSeconds0_25;
             _playerMove.SetMove();
             _playerMove.EnableMove(true);
-            _rb.gravityScale = 10;
+            _rb.gravityScale = 1;
         }
 
         private Vector2 CalculateLadderTopPosition(GameObject ladder)

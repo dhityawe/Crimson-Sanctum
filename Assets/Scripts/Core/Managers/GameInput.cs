@@ -30,6 +30,6 @@ namespace Assets.Scripts.Core.Managers
             InputActions.Player.Disable();
         }
 
-        public bool IsJumpPressed() => InputActions.Player.Jump.WasPressedThisFrame();
+        public bool IsJumpPressed() => InputActions.Player.Jump.WasPerformedThisFrame();
     }
 }
