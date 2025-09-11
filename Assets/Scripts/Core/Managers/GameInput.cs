@@ -31,5 +31,6 @@ namespace Assets.Scripts.Core.Managers
         }
 
         public bool IsJumpPressed() => InputActions.Player.Jump.WasPerformedThisFrame();
+        public bool IsDashPressed() => InputActions.Player.Dash.WasPressedThisFrame();
     }
 }

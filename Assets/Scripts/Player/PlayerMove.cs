@@ -57,6 +57,8 @@ namespace Assets.Scripts.Player
             HandleMove();
         }
 
+        public bool CanMove() => _canMove;
+
         private void OnCollisionEnter2D(Collision2D other)
         {
             if (other.gameObject.CompareTag("Bouncable"))
@@ -90,7 +92,9 @@ namespace Assets.Scripts.Player
             return _rb;
         }
 
-        private bool IsGrounded()
+        public bool IsFlipX() => _isFlipx;
+
+        public bool IsGrounded()
         {
             return Physics2D.OverlapCapsule(_groundCheck.position, new Vector2(0.7f, 0.1f), CapsuleDirection2D.Horizontal, 0, _groundLayer);
         }
