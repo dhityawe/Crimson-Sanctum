@@ -8,14 +8,13 @@ namespace Assets.Scripts.Generator
     public class LevelGenerator : MonoBehaviour
     {
         [Header("Floor Settings")]
-        [SerializeField] private GameObject[] floorPrefabs;   // lantai random
+        [SerializeField] private GameObject[] floorPrefabs;
         [SerializeField] private GameObject _firstFloor;
         [SerializeField] private float floorHeight = 6f;
-        [SerializeField] private ScoreManager scoreManager;
 
         private ObjectPool<GameObject> pool;
         private Dictionary<int, GameObject> activeFloors = new Dictionary<int, GameObject>();
-        private int highestFloor = 1; // mulai dari lantai 1 (sudah ada di hierarchy)
+        private int highestFloor = 1;
 
         void Awake()
         {
@@ -31,40 +30,43 @@ namespace Assets.Scripts.Generator
 
         void Start()
         {
-            // lantai 1 sudah statis → langsung tambahin record
-            // supaya tidak di-spawn ulang
-            activeFloors[1] = _firstFloor; 
+            // lantai 1 statis
+            activeFloors[1] = _firstFloor;
 
-            // spawn lantai 2 & 3
+            // spawn awal lantai 2 & 3
             SpawnFloor(2);
             SpawnFloor(3);
+
+            // subscribe ke event scoreManager
+            ScoreManager.Instance.OnNextStage += HandleScoreChanged;
         }
 
-        void Update()
+        private void OnDestroy()
         {
-            int currentFloor = scoreManager.Score;
+            // jangan lupa unsubscribe biar aman
+            ScoreManager.Instance.OnNextStage -= HandleScoreChanged;
+        }
 
-            if (currentFloor > 1 && currentFloor % 2 == 0)
+        private void HandleScoreChanged(int currentFloor)
+        {
+            int nextFloor = highestFloor + 1;
+            SpawnFloor(nextFloor);
+
+            // tentukan lantai yang harus direcycle (misalnya 2 lantai di bawah player)
+            int floorToRecycle = currentFloor - 2;
+            if (activeFloors.ContainsKey(floorToRecycle))
             {
-                int nextFloor = highestFloor + 1;
-                SpawnFloor(nextFloor);
-
-                int floorToRecycle = currentFloor - 2;
-                if (activeFloors.ContainsKey(floorToRecycle))
-                {
-                    pool.Release(activeFloors[floorToRecycle]);
-                    activeFloors.Remove(floorToRecycle);
-                }
+                pool.Release(activeFloors[floorToRecycle]);
+                activeFloors.Remove(floorToRecycle);
             }
         }
 
-        void SpawnFloor(int floorNumber)
+        private void SpawnFloor(int floorNumber)
         {
             GameObject floor = pool.Get();
             floor.transform.position = new Vector3(0, (floorNumber - 1) * floorHeight, 0);
 
-            Floor floorComp = floor.GetComponent<Floor>();
-            if (floor != null)
+            if (floor.TryGetComponent<Floor>(out var floorComp))
             {
                 bool isEven = floorNumber % 2 == 0;
                 floorComp.SetActiveLevel(isEven);

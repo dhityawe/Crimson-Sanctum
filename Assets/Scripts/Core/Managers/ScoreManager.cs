@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Core.Managers
@@ -7,7 +8,8 @@ namespace Assets.Scripts.Core.Managers
         public int Score { get; private set; }
         public int DisplayScore { get; private set; }
         public static ScoreManager Instance;
-
+        public event Action<int> OnScoreChanged;
+        public event Action<int> OnNextStage;
         void Awake()
         {
             Instance = this;
@@ -30,7 +32,14 @@ namespace Assets.Scripts.Core.Managers
         {
             Score += value;
             DisplayScore = Score - 1;
-            Debug.Log($"Actual Score: {Score}\n\nDisplay Score: {DisplayScore}");
+            OnScoreChanged?.Invoke(Score);
+            Debug.Log($"Actual Score: {Score}\nDisplay Score: {DisplayScore}");
+        }
+
+        public void SetNewFloor()
+        {
+            int floor = Score + 1;
+            OnNextStage?.Invoke(floor);
         }
 
         public void SaveScore()

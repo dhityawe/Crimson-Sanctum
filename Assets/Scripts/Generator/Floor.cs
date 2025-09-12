@@ -1,4 +1,7 @@
+using System;
+using Assets.Scripts.Core.Managers;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Assets.Scripts.Generator
 {    
@@ -25,7 +28,11 @@ namespace Assets.Scripts.Generator
             {
                 _ladderObject.position = new Vector3(5f, _ladderObject.position.y, _ladderObject.position.z);
             }
-            else _ladderObject.position = new Vector3(-5f, _ladderObject.position.y, _ladderObject.position.z);
+            else
+            {
+                _ladderObject.position = new Vector3(-5f, _ladderObject.position.y, _ladderObject.position.z);
+                _ladderObject.rotation = Quaternion.Euler(0, 0, 180);
+            }
         }
 
         public void SetDeactivateLevel()
