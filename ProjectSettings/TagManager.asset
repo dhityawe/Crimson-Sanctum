@@ -16,7 +16,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Object
   - 
   - 
   - 
@@ -60,6 +60,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 2682549347
+    locked: 0
+  - name: Particle
+    uniqueID: 854252335
     locked: 0
   m_RenderingLayers:
   - Default
