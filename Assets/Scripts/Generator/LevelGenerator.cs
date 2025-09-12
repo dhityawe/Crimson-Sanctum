@@ -63,6 +63,13 @@ namespace Assets.Scripts.Generator
             GameObject floor = pool.Get();
             floor.transform.position = new Vector3(0, (floorNumber - 1) * floorHeight, 0);
 
+            Floor floorComp = floor.GetComponent<Floor>();
+            if (floor != null)
+            {
+                bool isEven = floorNumber % 2 == 0;
+                floorComp.SetActiveLevel(isEven);
+            }
+
             activeFloors[floorNumber] = floor;
             highestFloor = Mathf.Max(highestFloor, floorNumber);
         }

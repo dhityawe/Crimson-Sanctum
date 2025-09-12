@@ -1,4 +1,5 @@
 using System.Collections;
+using Assets.Scripts.Core.Managers;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -13,12 +14,13 @@ namespace Assets.Scripts.Player
         #endregion
 
         private PlayerMove _playerMove;
+        private PlayerDash _playerDash;
         private Rigidbody2D _rb;
 
         void Awake()
         {
             _playerMove = GetComponent<PlayerMove>();
-            
+            _playerDash = GetComponent<PlayerDash>();
         }
 
         void Start()
@@ -31,6 +33,7 @@ namespace Assets.Scripts.Player
             if (collision.gameObject.CompareTag("Ladder"))
             {
                 // jalanin animasi manjat
+                _playerDash.enabled = false;
                 StartCoroutine(NextStage(collision.gameObject));
             }
         }
@@ -50,7 +53,9 @@ namespace Assets.Scripts.Player
             yield return _waitForSeconds0_25;
             _playerMove.EnableMove(true);
             _playerMove.enabled = true;
+            _playerDash.enabled = true;
             _rb.gravityScale = 1;
+            ScoreManager.Instance.AddScore(1);
         }
 
         private Vector2 CalculateLadderTopPosition(GameObject ladder)
@@ -62,7 +67,7 @@ namespace Assets.Scripts.Player
                 float ladderTop = ladderCollider.bounds.max.y;
                 
                 // Position the player slightly above the ladder top
-                return new Vector2(_rb.position.x, ladderTop + 0.6f);
+                return new Vector2(_rb.position.x, ladderTop + 1.65f);
             }
             
             // Fallback: if no collider found, use sprite bounds

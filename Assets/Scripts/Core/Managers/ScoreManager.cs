@@ -6,6 +6,13 @@ namespace Assets.Scripts.Core.Managers
     {
         public int Score { get; private set; }
         public int DisplayScore { get; private set; }
+        public static ScoreManager Instance;
+
+        void Awake()
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
@@ -23,6 +30,7 @@ namespace Assets.Scripts.Core.Managers
         {
             Score += value;
             DisplayScore = Score - 1;
+            Debug.Log($"Actual Score: {Score}\n\nDisplay Score: {DisplayScore}");
         }
 
         public void SaveScore()
