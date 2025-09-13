@@ -33,7 +33,7 @@ namespace Assets.Scripts.Generator
             // lantai 1 statis
             activeFloors[1] = _firstFloor;
             _firstFloor.transform.position = new Vector3(0, 0, 0); // pastikan di posisi dasar
-            highestFloor = 1;
+            // highestFloor = 1;
 
             // spawn awal lantai 2 & 3
             SpawnFloor(2);
@@ -54,9 +54,8 @@ namespace Assets.Scripts.Generator
         private void HandleScoreChanged(int currentFloor)
         {
             int nextFloor = highestFloor + 1;
+            Debug.Log($"Spawning floor {nextFloor}");
             SpawnFloor(nextFloor);
-
-            // tentukan lantai yang harus direcycle (misalnya 2 lantai di bawah player)
 
         }
 
@@ -65,6 +64,7 @@ namespace Assets.Scripts.Generator
             if (currentFloor >= 3)
             {
                 int floorToRecycle = currentFloor - 2;
+                Debug.Log($"Recycling floor {floorToRecycle}");
                 if (activeFloors.ContainsKey(floorToRecycle))
                 {
                     pool.Release(activeFloors[floorToRecycle]);

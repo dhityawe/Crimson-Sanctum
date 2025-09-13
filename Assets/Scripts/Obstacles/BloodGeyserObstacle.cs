@@ -83,11 +83,11 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
     {
         if (isTriggered) 
         {
-            Debug.LogWarning("Geyser: Attempted to trigger while already triggered!");
+            // Debug.LogWarning("Geyser: Attempted to trigger while already triggered!");
             return;
         }
 
-        Debug.Log("Geyser: Triggering eruption");
+        // Debug.Log("Geyser: Triggering eruption");
         isTriggered = true;
 
         // ▶️ Start trigger warning phase
@@ -118,7 +118,7 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
             return;
         }
 
-        Debug.Log("Geyser: Starting eruption");
+        // Debug.Log("Geyser: Starting eruption");
         isErupting = true;
 
         // ▶️ STEP 1: Eruption Warning Phase
@@ -153,7 +153,7 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
 
     void EndEruption()
     {
-        Debug.Log("Geyser: Ending eruption");
+        // Debug.Log("Geyser: Ending eruption");
         
         // play OnEnd animation and then play Idle after its duration
         // If you know the duration of "OnEnd" animation, use a delayed call:

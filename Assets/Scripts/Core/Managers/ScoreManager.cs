@@ -29,12 +29,12 @@ namespace Assets.Scripts.Core.Managers
         }
 
         #region Public Functions
-        public void AddScore(int value)
+        public void AddScore()
         {
-            Score += value;
+            Score += 1;
             DisplayScore = Score - 1;
             OnScoreChanged?.Invoke(Score);
-            Debug.Log($"Actual Score: {Score}\nDisplay Score: {DisplayScore}");
+            Debug.Log($"Score: {Score}");
         }
 
         public void SetNewFloor()

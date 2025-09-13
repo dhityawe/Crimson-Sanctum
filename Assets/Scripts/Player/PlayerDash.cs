@@ -91,7 +91,7 @@ namespace Assets.Scripts.Player
         {
             if (_isCooldown)
             {
-                Debug.Log("dash is cooldown");
+                // Debug.Log("dash is cooldown");
                 float elapsed = 0f;
                 while (elapsed < cooldownTime)
                 {
@@ -99,7 +99,7 @@ namespace Assets.Scripts.Player
                     yield return null;
                 }
                 _isCooldown = false;
-                Debug.Log("you can use dash again");
+                // Debug.Log("you can use dash again");
             }
         }
     }
