@@ -26,6 +26,8 @@ namespace Assets.Scripts.Player
         private LayerMask _groundLayer;
         #endregion
 
+        [HideInInspector] public float LastLinearVelocityX { get; set; }
+
         #region Actions
         public static event Action OnDeath;
         public static event Action OnPickupCoin;
@@ -117,10 +119,11 @@ namespace Assets.Scripts.Player
             // Check if jump input is pressed and player is grounded
             if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
+                float lastLinearVelocityX = LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
                 // Apply jump force
-                _rb.AddForceY(_jumpForce, ForceMode2D.Impulse);
-                // _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
+                // _rb.AddForce(new Vector2(lastLinearVelocityX, _jumpForce), ForceMode2D.Impulse);
+                _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
             }
         }
     }

@@ -18,6 +18,7 @@ namespace Assets.Scripts.Player
         private bool _isCooldown;
         private float _dashTimer;
         private Vector2 _dashDirection;
+        private float _lastLinearVelocityX;
 
         #region Events
         public event Action OnEndDash;
@@ -58,6 +59,7 @@ namespace Assets.Scripts.Player
 
         protected virtual void StartDash()
         {
+            _lastLinearVelocityX = _rb.linearVelocityX;
             _isDashing = true;
             _isCooldown = true;
             // start the animation of dash should be place here
@@ -73,7 +75,7 @@ namespace Assets.Scripts.Player
             if (_isDashing)
             {
                 _isDashing = false;
-                _rb.linearVelocity = Vector2.zero; // reset velocity
+                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0); // reset velocity
                 OnEndDash?.Invoke();
             }
         }
@@ -81,7 +83,7 @@ namespace Assets.Scripts.Player
         protected virtual void EndDash()
         {
             _isDashing = false;
-            _rb.linearVelocity = Vector2.zero; // bisa juga biarin momentum jalan normal
+            _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0); // reset velocity
             OnEndDash?.Invoke();
         }
 
