@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3b792d15541b08e43aa397657f4132ec
+guid: 0b6bd63573f64d143a33481b15e6313c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8197171913701108949
-    second: chandelier 32x32_0
+      213: -6653861044351206849
+    second: laser 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,18 +40,18 @@ TextureImporter:
     filterMode: 0
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: chandelier 32x32_0
+      name: laser 1_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 30
-        height: 31
+        x: 0
+        y: 0
+        width: 64
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b235901339bcd3e80800000000000000
-      internalID: -8197171913701108949
+      spriteID: f3af2a242acb8a3a0800000000000000
+      internalID: -6653861044351206849
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      chandelier 32x32_0: -8197171913701108949
+      laser 1_0: -6653861044351206849
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

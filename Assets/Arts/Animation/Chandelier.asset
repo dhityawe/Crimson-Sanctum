@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77fafcc6bd2ee94ebe9ac341b986e7a, type: 3}
+  m_Name: Chandelier
+  m_EditorClassIdentifier: 
+  SpriteAnimations:
+  - Name: Idle
+    FPS: 0
+    Frames:
+    - {fileID: 6528347712855031514, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    SpriteAnimationType: 0
+  - Name: OnStart
+    FPS: 10
+    Frames:
+    - {fileID: 2221315400764370561, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: -1683018943686982081, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: 5962639222402110943, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    SpriteAnimationType: 1
+  - Name: Drop
+    FPS: 10
+    Frames:
+    - {fileID: -1683018943686982081, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: 5962639222402110943, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: 6116496542544438847, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: -2199604827110725088, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    SpriteAnimationType: 0
+  - Name: Break
+    FPS: 10
+    Frames:
+    - {fileID: -2020270922017947070, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: 4496656167165302771, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: -2194488711350575137, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: 2453338264270103596, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: 7110743748820709973, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    - {fileID: -451431271764230375, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
+    SpriteAnimationType: 1

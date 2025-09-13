@@ -70,6 +70,20 @@ namespace Assets.Scripts.Player
             else if (other.gameObject.CompareTag("DeathZone"))
             {
                 OnDeath?.Invoke();
+                Debug.Log("Player Died");
+            }
+            else if (other.gameObject.CompareTag("Pickable"))
+            {
+                OnPickupCoin?.Invoke();
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.gameObject.CompareTag("DeathZone"))
+            {
+                OnDeath?.Invoke();
+                Debug.Log("Player Died by Trigger");
             }
             else if (other.gameObject.CompareTag("Pickable"))
             {
