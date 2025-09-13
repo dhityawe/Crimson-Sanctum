@@ -67,7 +67,12 @@ namespace Assets.Scripts.Generator
                 Debug.Log($"Recycling floor {floorToRecycle}");
                 if (activeFloors.ContainsKey(floorToRecycle))
                 {
-                    pool.Release(activeFloors[floorToRecycle]);
+                    GameObject floorToRecycleObj = activeFloors[floorToRecycle];
+                    
+                    // Move to last position in parent before deactivating
+                    floorToRecycleObj.transform.SetAsLastSibling();
+                    
+                    pool.Release(floorToRecycleObj);
                     activeFloors.Remove(floorToRecycle);
                 }
             }
@@ -77,6 +82,9 @@ namespace Assets.Scripts.Generator
         {
             GameObject floor = pool.Get();
             floor.transform.position = new Vector3(0, (floorNumber - 1) * floorHeight, 0);
+
+            // Move spawned floor to first position in parent
+            floor.transform.SetAsFirstSibling();
 
             if (floor.TryGetComponent<Floor>(out var floorComp))
             {
