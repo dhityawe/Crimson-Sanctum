@@ -38,6 +38,16 @@ namespace Assets.Scripts.Player
             }
         }
 
+        private void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("Ladder"))
+            {
+                _playerDash.enabled = true;
+                ScoreManager.Instance.AddScore(1);
+                ScoreManager.Instance.RecycleFloor();
+            }
+        }
+
         private IEnumerator NextStage(GameObject ladder)
         {
             _playerDash.CancelDash();
@@ -57,9 +67,9 @@ namespace Assets.Scripts.Player
             yield return _waitForSeconds0_25;
             _playerMove.EnableMove(true);
             _playerMove.enabled = true;
-            ScoreManager.Instance.AddScore(1);
+            // ScoreManager.Instance.AddScore(1);
             _rb.gravityScale = 1;
-            _playerDash.enabled = true;
+            // _playerDash.enabled = true;
         }
 
         private Vector2 CalculateLadderTopPosition(GameObject ladder)
