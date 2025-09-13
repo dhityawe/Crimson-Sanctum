@@ -16,8 +16,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Object
-  - Glow
+  - Ground
+  - 
   - 
   - 
   - 
@@ -58,11 +58,11 @@ TagManager:
   - name: Properties/Front
     uniqueID: 3764933705
     locked: 0
+  - name: Properties/Ladder
+    uniqueID: 1221934609
+    locked: 0
   - name: Ground
     uniqueID: 2682549347
-    locked: 0
-  - name: Particle
-    uniqueID: 854252335
     locked: 0
   m_RenderingLayers:
   - Default

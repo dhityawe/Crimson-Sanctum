@@ -8,19 +8,22 @@ namespace Assets.Scripts.Player
     public class PlayerMove : MonoBehaviour
     {
         #region SerializeFields
+        [Header("Player Settings")]
         [SerializeField]
         [Range(1f, 5)]
         private float _moveSpeed;
         [SerializeField]
         private float _jumpForce;
         [SerializeField]
-        private bool _isGrounded;
-        [SerializeField]
         private SpriteRenderer _charSprite;
         [SerializeField]
         private bool _isFlipx;
+        
+        [Header("Ground")]
         [SerializeField]
-        private bool _canMove;
+        private Transform _groundCheck;
+        [SerializeField]
+        private LayerMask _groundLayer;
         #endregion
 
         #region Actions
@@ -28,7 +31,7 @@ namespace Assets.Scripts.Player
         public static event Action OnPickupCoin;
         #endregion
 
-        
+        private bool _canMove;
         private Rigidbody2D _rb;
 
         void Awake()
@@ -54,6 +57,8 @@ namespace Assets.Scripts.Player
             HandleMove();
         }
 
+        public bool CanMove() => _canMove;
+
         private void OnCollisionEnter2D(Collision2D other)
         {
             if (other.gameObject.CompareTag("Bouncable"))
@@ -68,18 +73,6 @@ namespace Assets.Scripts.Player
             else if (other.gameObject.CompareTag("Pickable"))
             {
                 OnPickupCoin?.Invoke();
-            }
-            else if (other.gameObject.CompareTag("Ground"))
-            {
-                _isGrounded = true;
-            }
-        }
-
-        void OnCollisionExit2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                _isGrounded = false;
             }
         }
 
@@ -113,21 +106,34 @@ namespace Assets.Scripts.Player
             return _rb;
         }
 
+        public bool IsFlipX() => _isFlipx;
+
+        public bool IsGrounded()
+        {
+            return Physics2D.OverlapCapsule(_groundCheck.position, new Vector2(0.7f, 0.1f), CapsuleDirection2D.Horizontal, 0, _groundLayer);
+        }
+
         public void HandleMove()
         {
-            Vector2 direction = _isFlipx ? Vector2.left : Vector2.right;
-            Vector2 newPosition = _rb.position + _moveSpeed * Time.fixedDeltaTime * direction;
-            _rb.MovePosition(newPosition);
+            // version 3
+            float direction = _isFlipx ? -1f : 1f;
+            float targetX = direction * _moveSpeed;
+
+            // smooth transition ke kecepatan target
+            float newX = Mathf.Lerp(_rb.linearVelocityX, targetX, 0.1f);
+            _rb.linearVelocity = new Vector2(newX, _rb.linearVelocityY);
+            
         }
 
         private void HandleJump()
         {
-            
+
             // Check if jump input is pressed and player is grounded
-            if (GameInput.Instance.IsJumpPressed() && _isGrounded)
+            if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
                 // Apply jump force
-                _rb.AddForceY(_jumpForce);
+                _rb.AddForceY(_jumpForce, ForceMode2D.Impulse);
+                // _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
             }
         }
     }
