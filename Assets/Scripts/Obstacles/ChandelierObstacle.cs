@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using GabrielBigardi.SpriteAnimator;
 
 public enum ChandelierBehaviorType
 {
@@ -21,6 +22,11 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     [SerializeField] private float dropDelay = 1f;
     [SerializeField] private float triggerDistance = 3f;
     
+    [Header("Warning Effects")]
+    [SerializeField] private bool useDropWarning = true;
+    [SerializeField] private ParticleSystem warningParticles; // Optional particles for drop warning
+    [SerializeField] private AudioSource warningAudioSource; // Optional audio for creaking sounds
+    
     [Header("Physics Settings")]
     [SerializeField] private float mass = 15f; // Mass of the chandelier (heavier than spike ceiling)
     [SerializeField] private float maxFallSpeed = 12f; // Terminal velocity
@@ -30,16 +36,14 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     [Header("Collider Management")]
     [SerializeField] private Collider2D childCollider; // Collider in child GameObject to disable on ground hit
 
-    [Header("Visual Warning")]
-    [SerializeField] private bool showWarningGlow = true;
-    [SerializeField] private float warningDuration = 0.5f;
-    [SerializeField] private Color warningColor = new Color(1, 0.3f, 0.3f, 0.8f);
+    [Header("Animator")]
+    public SpriteAnimator spriteAnimator;
 
     private Transform playerTransform;
     private SpriteRenderer spriteRenderer;
-    private Sequence swingSequence;
     private Rigidbody2D rb;
     private bool hasDropped = false;
+    private bool isWarning = false; // Track warning state
     private Vector3 originalPosition;
 
     protected override void Initialize()
@@ -47,11 +51,13 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         originalPosition = transform.position;
-
+        
         // Get player reference for Drop behavior
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) 
+        {
             playerTransform = player.transform;
+        }
 
         // Setup Rigidbody2D for physics-based movement (for Drop behavior)
         if (behaviorType == ChandelierBehaviorType.Drop)
@@ -68,6 +74,17 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             rb.linearDamping = airDrag;
             rb.angularDamping = 10f; // Prevent spinning
             rb.freezeRotation = true; // Keep it upright
+        }
+        else if (behaviorType == ChandelierBehaviorType.Swing)
+        {
+            // For Swing behavior, ensure Y position is frozen to prevent falling
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody2D>();
+            }
+            
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezePositionX;
         }
 
         // Start behavior based on type
@@ -100,9 +117,12 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     private void CheckPlayerProximity()
     {
-        if (playerTransform != null && !hasDropped)
+        if (playerTransform != null && !hasDropped && !isWarning)
         {
-            float distance = Vector2.Distance(transform.position, playerTransform.position);
+            // Use child collider position if available, otherwise fallback to main transform
+            Vector3 triggerPosition = childCollider != null ? childCollider.transform.position : transform.position;
+            float distance = Vector2.Distance(triggerPosition, playerTransform.position);
+            
             if (distance < triggerDistance)
             {
                 TriggerDrop();
@@ -112,19 +132,55 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     private void TriggerDrop()
     {
-        if (hasDropped) return;
-        hasDropped = true;
+        if (hasDropped || isWarning) return;
+        isWarning = true;
 
         // Stop swinging animation
         DOTween.Kill(transform);
 
-        if (showWarningGlow && spriteRenderer != null)
+        // ▶️ Start drop warning phase
+        OnDropWarning();
+
+        // ▶️ Wait for drop delay before actually dropping
+        DOVirtual.DelayedCall(dropDelay, StartDrop);
+    }
+
+    /// <summary>
+    /// Called immediately when drop is triggered - override or extend for custom warning effects
+    /// </summary>
+    protected virtual void OnDropWarning()
+    {
+        // ▶️ Start warning particles if assigned
+        if (useDropWarning && warningParticles != null)
         {
-            // Optional: Pulse red before drop
-            Sequence warnSeq = DOTween.Sequence()
-                .Append(spriteRenderer.DOColor(warningColor, warningDuration / 2f))
-                .Append(spriteRenderer.DOColor(Color.white, warningDuration / 2f));
+            warningParticles.Play();
         }
+        
+        // ▶️ Play warning audio if assigned
+        if (useDropWarning && warningAudioSource != null)
+        {
+            warningAudioSource.Play();
+        }
+        
+        // ▶️ Add custom warning effects here
+        // Example: ShakeChandelier();
+        // Example: PlayCreakingSound();
+        // Example: SpawnDustParticles();
+    }
+
+    /// <summary>
+    /// Example warning glow implementation
+    /// </summary>
+
+    void StartDrop()
+    {
+        if (hasDropped) return;
+
+        spriteAnimator.Play("OnStart").SetOnComplete(() => spriteAnimator.Play("Drop"));
+        hasDropped = true;
+
+        // ▶️ End warning phase
+        OnDropWarningEnd();
 
         // Physics-based drop - similar to SpikeCeilingObstacle
         if (rb != null)
@@ -138,9 +194,31 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         //! SoundManager.Instance?.Play("ChandelierDrop");
     }
 
+    /// <summary>
+    /// Called when warning phase ends and dropping begins - override or extend for cleanup
+    /// </summary>
+    protected virtual void OnDropWarningEnd()
+    {        
+        // ▶️ Stop warning particles
+        if (warningParticles != null)
+        {
+            warningParticles.Stop();
+        }
+        
+        // ▶️ Stop warning audio
+        if (warningAudioSource != null)
+        {
+            warningAudioSource.Stop();
+        }
+        
+        // ▶️ Clean up custom warning effects here
+        // Example: StopShaking();
+        // Example: StopCreakingSound();
+    }
+
     void Update()
     {
-        if (behaviorType == ChandelierBehaviorType.Drop && !hasDropped)
+        if (behaviorType == ChandelierBehaviorType.Drop && !hasDropped && !isWarning)
         {
             CheckPlayerProximity();
         }
@@ -182,12 +260,7 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             {
                 OnGroundImpact();
             }
-            
-            // Check if we hit player
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                OnPlayerHit();
-            }
+            spriteAnimator.Play("Break");
         }
         
         // Call base implementation for any additional logic
@@ -218,17 +291,31 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     protected override void OnPlayerHit()
     {
-        PlayHitEffect();
 
-        // Optional: screen shake on hit
-        //! CameraShaker.Instance?.Shake(0.4f, 0.3f);
-
-        //! GameManager.Instance.PlayerDie();
     }
 
     // Clean up tweens on destroy
     private void OnDestroy()
     {
         DOTween.Kill(transform); // Kill any tweens targeting this transform
+    }
+
+    // Debug visualization for trigger distance
+    private void OnDrawGizmos()
+    {
+        if (behaviorType == ChandelierBehaviorType.Drop)
+        {
+            // Use child collider position if available, otherwise fallback to main transform
+            Vector3 triggerPosition = childCollider != null ? childCollider.transform.position : transform.position;
+            
+            // Draw trigger distance as a wire sphere
+            Gizmos.color = hasDropped ? Color.red : (isWarning ? new Color(1f, 0.5f, 0f) : Color.yellow);
+            Gizmos.DrawWireSphere(triggerPosition, triggerDistance);
+            
+            // Draw a label
+            string state = hasDropped ? "DROPPED" : (isWarning ? "WARNING" : "WAITING");
+            UnityEditor.Handles.Label(triggerPosition + Vector3.up * (triggerDistance + 0.5f), 
+                $"Trigger: {triggerDistance}m\n{state}\n{(childCollider != null ? "From Child" : "From Main")}");
+        }
     }
 }

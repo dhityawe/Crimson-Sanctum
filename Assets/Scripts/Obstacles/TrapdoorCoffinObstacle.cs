@@ -1,11 +1,13 @@
 using UnityEngine;
 using DG.Tweening;
+using GabrielBigardi.SpriteAnimator;
 
 public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 {
     [Header("Coffin Behavior")]
     public CoffinTriggerType triggerType = CoffinTriggerType.OnPlayerProximity;
     public float triggerRadius = 2f; // If proximity-based
+    public float triggerDelay = 0.5f; // Delay before opening after being triggered
     public float closeDelay = 1.5f; // Time before auto-close
     public Ease openEase = Ease.InOutQuart;
     public Ease closeEase = Ease.OutBack;
@@ -14,6 +16,15 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
     public GameObject bodyCollider; // Drag child GameObject here
     public SpriteRenderer coffinLid; // The lid sprite (or whole model)
 
+    [Header("Animation")]
+    public SpriteAnimator spriteAnimator;
+
+    [Header("Warning Effects")]
+    [SerializeField] private bool useWarningGlow = false;
+    [SerializeField] private Color warningGlowColor = Color.red;
+    [SerializeField] private float warningGlowIntensity = 1.5f;
+    [SerializeField] private ParticleSystem warningParticles; // Optional particle system for warning
+
     [Header("Audio")]
     public string creakSFX = "CoffinCreak";
     public string openSFX = "CoffinOpen";
@@ -21,7 +32,9 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 
     private Collider2D bodyColliderComponent;
     private int originalSortingOrder;
+    private Color originalSpriteColor;
     private bool isOpen = false;
+    private bool isTriggered = false; // Prevent multiple triggers
 
     protected override void Initialize()
     {
@@ -49,6 +62,7 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
         }
 
         originalSortingOrder = coffinLid.sortingOrder;
+        originalSpriteColor = coffinLid.color;
 
         if (triggerType == CoffinTriggerType.OnPlayerProximity)
         {
@@ -58,7 +72,7 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 
     void Update()
     {
-        if (triggerType == CoffinTriggerType.OnPlayerProximity && !isOpen)
+        if (triggerType == CoffinTriggerType.OnPlayerProximity && !isTriggered)
         {
             CheckPlayerProximity();
         }
@@ -79,19 +93,95 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 
     public void Activate()
     {
+        if (isTriggered) return;
+
+        isTriggered = true;
+
+        // ▶️ Start warning phase
+        OnTriggerWarning();
+
+        // ▶️ Wait for trigger delay before opening
+        DOVirtual.DelayedCall(triggerDelay, StartOpening);
+    }
+
+    /// <summary>
+    /// Called immediately when coffin is triggered - override or extend for custom warning effects
+    /// </summary>
+    protected virtual void OnTriggerWarning()
+    {
+        // ▶️ Play creak SFX (warning sound)
+        //! SoundManager.Instance?.Play(creakSFX);
+        
+        // ▶️ Add glow effect if enabled
+        if (useWarningGlow && coffinLid != null)
+        {
+            StartGlowEffect();
+        }
+        
+        // ▶️ Start warning particles if assigned
+        if (warningParticles != null)
+        {
+            warningParticles.Play();
+        }
+        
+        Debug.Log("Coffin: Warning phase started");
+    }
+
+    /// <summary>
+    /// Example glow effect implementation
+    /// </summary>
+    protected virtual void StartGlowEffect()
+    {
+        coffinLid.DOColor(warningGlowColor * warningGlowIntensity, triggerDelay)
+                 .SetEase(Ease.InOutSine);
+    }
+
+    void StartOpening()
+    {
         if (isOpen) return;
+
+        // ▶️ End warning phase
+        OnWarningEnd();
 
         isOpen = true;
 
-        // ▶️ Play creak SFX
-
         // ▶️ Animate lid open
-        // if animation on complete play OnOpenComplete
-        OnOpenComplete(); //? Temporarily call directly
+        // play sprite animatoor play Open and OnComplete call OnOpenComplete
+        spriteAnimator.Play("Open").SetOnComplete(OnOpenComplete);
+    }
+
+    /// <summary>
+    /// Called when warning phase ends and opening begins - override or extend for cleanup
+    /// </summary>
+    protected virtual void OnWarningEnd()
+    {
+        // ▶️ Stop glow effect
+        if (useWarningGlow && coffinLid != null)
+        {
+            StopGlowEffect();
+        }
+        
+        // ▶️ Stop warning particles
+        if (warningParticles != null)
+        {
+            warningParticles.Stop();
+        }
+        
+        Debug.Log("Coffin: Warning phase ended, opening started");
+    }
+
+    /// <summary>
+    /// Example glow effect cleanup
+    /// </summary>
+    protected virtual void StopGlowEffect()
+    {
+        coffinLid.DOKill();
+        coffinLid.color = originalSpriteColor;
     }
 
     void OnOpenComplete()
     {
+        Debug.Log("Coffin: Opened");
         // ▶️ Disable bodyCollider
         if (bodyColliderComponent != null)
             bodyColliderComponent.enabled = false;
@@ -110,12 +200,14 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
     {
         if (!isOpen) return;
 
+        // set back sorting order to original
+        coffinLid.sortingOrder = originalSortingOrder;
+
         // ▶️ Play close SFX
         //! SoundManager.Instance?.Play(closeSFX);
-
-        // ▶️ Animate lid close
         // if animation on complete play OnCloseComplete
-        OnCloseComplete(); //? Temporarily call directly
+
+        spriteAnimator.Play("Close").SetOnComplete(OnCloseComplete);
     }
 
     void OnCloseComplete()
@@ -128,6 +220,7 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
         coffinLid.sortingOrder = originalSortingOrder;
 
         isOpen = false;
+        isTriggered = false; // Reset trigger state for reuse
     }
 
     public void Deactivate()
