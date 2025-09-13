@@ -40,8 +40,11 @@ namespace Assets.Scripts.Player
 
         private IEnumerator NextStage(GameObject ladder)
         {
-            ScoreManager.Instance.SetNewFloor();
+            _playerDash.CancelDash();
             _playerMove.enabled = false;
+
+            ScoreManager.Instance.SetNewFloor();
+
             _playerMove.EnableMove(false);
             _rb.gravityScale = 0;
 
@@ -54,9 +57,9 @@ namespace Assets.Scripts.Player
             yield return _waitForSeconds0_25;
             _playerMove.EnableMove(true);
             _playerMove.enabled = true;
-            _playerDash.enabled = true;
             ScoreManager.Instance.AddScore(1);
             _rb.gravityScale = 1;
+            _playerDash.enabled = true;
         }
 
         private Vector2 CalculateLadderTopPosition(GameObject ladder)
