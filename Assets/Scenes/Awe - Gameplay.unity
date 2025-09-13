@@ -459,7 +459,7 @@ MonoBehaviour:
     rid: 2278904136723857486
   m_ShadowCastingSource: 2
   m_ShadowMesh:
-    m_Mesh: {fileID: 593815768}
+    m_Mesh: {fileID: 787219574}
     m_LocalBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.44999695, y: 0.44999695, z: 0}
@@ -554,7 +554,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &593815768
+--- !u!43 &787219574
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1480,7 +1480,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 2, y: 2}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 2, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -1689,12 +1689,12 @@ SpriteRenderer:
   m_SortingLayerID: -530033591
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3b792d15541b08e43aa397657f4132ec, type: 3}
+  m_Sprite: {fileID: 6528347712855031514, guid: c2b16e57a2c73cb47bdb04cfb603b121, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -3220,19 +3220,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 8720b7f8039f67c4593cefcd12c4a844, type: 2}
-  behaviorType: 0
-  swingAngle: 45
+  behaviorType: 1
+  swingAngle: 5
   swingSpeed: 0.5
   swingEase: 4
   dropDelay: 1
-  dropDistance: 3
-  dropDuration: 0.5
-  dropEase: 13
-  usePhysicsOnDrop: 0
-  dropOnPlayerApproach: 0
-  triggerDistance: 3
+  triggerDistance: 0.5
+  mass: 8
+  maxFallSpeed: 12
+  gravityScale: 2.5
+  airDrag: 0.1
+  childCollider: {fileID: 0}
   showWarningGlow: 1
-  warningDuration: 0.5
+  warningDuration: 0.1
   warningColor: {r: 1, g: 0.3, b: 0.3, a: 0.8}
 --- !u!1 &6309022573896740187
 GameObject:
@@ -3600,6 +3600,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4122527598785612924}
   - component: {fileID: 6209427829879967724}
+  - component: {fileID: 7281544133972204588}
   m_Layer: 0
   m_Name: Chandelier
   m_TagString: Untagged
@@ -3607,6 +3608,33 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!50 &7281544133972204588
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7281544133972204587}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!61 &7419470983433424877
 BoxCollider2D:
   m_ObjectHideFlags: 0

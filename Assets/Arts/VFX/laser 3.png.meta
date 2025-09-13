@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 956239a185da6b74894d884901c85256
+guid: f7e7dce1d53856b419798df580c769f9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8047359977315704081
-    second: TrapdoorCoffin 32x32_0
+      213: -1055462349643015381
+    second: laser 3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,18 +40,18 @@ TextureImporter:
     filterMode: 0
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TrapdoorCoffin 32x32_0
+      name: laser 3_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 32
+        width: 64
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,74 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 11d199b3347fdaf60800000000000000
-      internalID: 8047359977315704081
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TrapdoorCoffin 32x32_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 39b68f1dfe9bb324db34c3fce624fcb4
-      internalID: -2023097553
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TrapdoorCoffin 32x32_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d3b70853ee8ad0849976e18145fcb21d
-      internalID: -1039851842
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TrapdoorCoffin 32x32_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a14d2c5ef0700a54db73da3b1c1a2548
-      internalID: 1949783413
+      spriteID: b2b9ab7c59e3a51f0800000000000000
+      internalID: -1055462349643015381
       vertices: []
       indices: 
       edges: []
@@ -204,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 20b9dac6b198d9346a1cef8bf7d3e18b
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -214,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      TrapdoorCoffin 32x32_0: 8047359977315704081
-      TrapdoorCoffin 32x32_1: -2023097553
-      TrapdoorCoffin 32x32_2: -1039851842
-      TrapdoorCoffin 32x32_3: 1949783413
+      laser 3_0: -1055462349643015381
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

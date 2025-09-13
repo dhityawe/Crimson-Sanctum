@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 2873515205233148365}
   - component: {fileID: 3179226713580624665}
   - component: {fileID: 3030951934222005087}
+  - component: {fileID: 6209777764272071130}
   m_Layer: 0
   m_Name: LaserImpactEffect
   m_TagString: Untagged
@@ -1079,20 +1080,20 @@ ParticleSystem:
         - serializedVersion: 3
           time: 0
           value: 0
-          inSlope: 0
-          outSlope: 0
+          inSlope: 1.2655154
+          outSlope: 1.2655154
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
-          outWeight: 0.33333334
+          outWeight: 0.13881747
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
-          outSlope: 1
+          inSlope: 1.7522514
+          outSlope: 1.7522514
           tangentMode: 0
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0.10025716
           outWeight: 0.33333334
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -4924,6 +4925,58 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &6209777764272071130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5739125914182576417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 2
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeEnabled: 0
+  m_ApplyToSortingLayers: db0afecb00000000e31538afbd19e5c5495468e06374e49f2fdbea32
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowsEnabled: 1
+  m_ShadowIntensity: 0.75
+  m_ShadowSoftness: 0.3
+  m_ShadowSoftnessFalloffIntensity: 0.5
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0, y: -0.00000011920929, z: 0}
+    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
 --- !u!1 &6100376832458998957
 GameObject:
   m_ObjectHideFlags: 0
@@ -5074,7 +5127,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9095996047525770149}
   - component: {fileID: 8991430961116365520}
-  m_Layer: 0
+  - component: {fileID: 4529138133300137967}
+  - component: {fileID: 6912278489115388203}
+  m_Layer: 7
   m_Name: Laser
   m_TagString: DeathZone
   m_Icon: {fileID: 0}
@@ -5120,7 +5175,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 9a26021a227dacc4bac514cf8e49b80a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5142,8 +5197,9 @@ LineRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 1
   m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 2, z: 1}
+  - {x: 3, y: 0, z: 0}
+  - {x: -1.44, y: 2, z: 1}
+  - {x: -1.44, y: 2, z: 1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -5152,7 +5208,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.09375
+        value: 0.8062496
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -5195,7 +5251,7 @@ LineRenderer:
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
-    textureMode: 0
+    textureMode: 3
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
@@ -5203,6 +5259,76 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &4529138133300137967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7016262862546167239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b3926e31f3590b48a4b1795a0374bc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textures:
+  - {fileID: 2800000, guid: 0b6bd63573f64d143a33481b15e6313c, type: 3}
+  - {fileID: 2800000, guid: f6fee905a10ce18478d9656eee408240, type: 3}
+  - {fileID: 2800000, guid: f7e7dce1d53856b419798df580c769f9, type: 3}
+  - {fileID: 2800000, guid: 642012be547b4c441bd828ed254e3c66, type: 3}
+  fps: 20
+--- !u!114 &6912278489115388203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7016262862546167239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 2
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.5
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_LightVolumeIntensity: 1
+  m_LightVolumeEnabled: 0
+  m_ApplyToSortingLayers: db0afecb00000000e31538afbd19e5c5495468e06374e49f2fdbea32
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowsEnabled: 1
+  m_ShadowIntensity: 0.75
+  m_ShadowSoftness: 0.3
+  m_ShadowSoftnessFalloffIntensity: 0.5
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0, y: -0.00000011920929, z: 0}
+    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
 --- !u!1 &7588535219506408606
 GameObject:
   m_ObjectHideFlags: 0
@@ -5252,7 +5378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: acb25ac7afd22974ba507487a1066501, type: 2}
   fireInterval: 3
-  chargeDuration: 0.8
+  chargeDuration: 0.5
   laserTravelTime: 0.1
   laserLayerMask:
     serializedVersion: 2
@@ -5264,8 +5390,8 @@ MonoBehaviour:
   rightEyeLight: {fileID: 6289049443745768841}
   laserLine: {fileID: 8991430961116365520}
   laserImpactEffect: {fileID: 3179226713580624665}
-  impactLight: {fileID: 0}
-  eyeGlow: {fileID: 0}
+  impactLight: {fileID: 6209777764272071130}
+  laserBeamLight: {fileID: 6912278489115388203}
   laserColliderPrefab: {fileID: 0}
   whisperSFX: PortraitWhisper
   chargeSFX: PortraitCharge
@@ -5483,7 +5609,7 @@ Transform:
   m_GameObject: {fileID: 8815482287877319072}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.325, z: 0}
+  m_LocalPosition: {x: 0, y: 0.315, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

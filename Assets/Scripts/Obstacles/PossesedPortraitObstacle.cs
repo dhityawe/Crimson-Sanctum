@@ -20,7 +20,7 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     public LineRenderer laserLine; // Assign LineRenderer for laser beam
     public ParticleSystem laserImpactEffect; // Particle effect for laser impact
     public Light2D impactLight; // Light that flashes at impact point
-    public SpriteRenderer eyeGlow; // Optional: glow sprite over eyes
+    public Light2D laserBeamLight; // Light that follows the laser beam
     public GameObject laserColliderPrefab; // Prefab with BoxCollider2D tagged as "DeathZone"
     public string whisperSFX = "PortraitWhisper";
     public string chargeSFX = "PortraitCharge";
@@ -53,10 +53,15 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         {
             laserLine.enabled = false;
             laserLine.positionCount = 2;
-            laserLine.startWidth = 0.1f;
-            laserLine.endWidth = 0.1f;
-            laserLine.startColor = new Color(1, 0.2f, 0.2f, 0.8f);
-            laserLine.endColor = new Color(1, 0.2f, 0.2f, 0f);
+        }
+
+        // Setup laser beam light
+        if (laserBeamLight != null)
+        {
+            laserBeamLight.enabled = false;
+            laserBeamLight.color = new Color(1f, 0.2f, 0.2f, 1f); // Red laser light
+            laserBeamLight.intensity = 1.5f;
+            laserBeamLight.pointLightOuterRadius = 2f;
         }
 
         // Store original light colors
@@ -105,13 +110,6 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
                 if (laserLine != null)
                     laserLine.enabled = false;
 
-                // Reset eye glow
-                if (eyeGlow != null)
-                {
-                    eyeGlow.DOKill();
-                    eyeGlow.color = Color.white; // Reset to normal color
-                }
-
                 // Reset eye lights to original colors immediately
                 if (leftEyeLight != null)
                 {
@@ -156,9 +154,6 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         // ▶️ STEP 3: Play whisper + start glow and eye lights
         //! SoundManager.Instance?.Play(whisperSFX);
 
-        if (eyeGlow != null)
-            eyeGlow.DOColor(Color.red, chargeDuration / 2f).SetLoops(2, LoopType.Yoyo);
-
         // Smoothly transition eye lights to red during charging
         AnimateEyeLightsToRed();
 
@@ -184,8 +179,12 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     {
         if (laserLine == null) return;
 
-        // Enable laser visual
+        // Enable laser visual and light
         laserLine.enabled = true;
+        if (laserBeamLight != null)
+        {
+            laserBeamLight.enabled = true;
+        }
 
         // Use shootPoint if assigned, otherwise fallback to eye calculation
         Vector3 startPos;
@@ -214,6 +213,12 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         laserLine.SetPosition(0, startPos);
         laserLine.SetPosition(1, startPos); // Start with no length
 
+        // Position laser light at start
+        if (laserBeamLight != null)
+        {
+            laserBeamLight.transform.position = startPos;
+        }
+
         // Animate laser traveling to target over time
         laserLine.DOKill();
         
@@ -228,6 +233,16 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         {
             Vector3 currentEndPos = Vector3.Lerp(startPos, endPos, progress);
             laserLine.SetPosition(1, currentEndPos);
+            
+            // Move laser light to follow the laser beam tip
+            if (laserBeamLight != null)
+            {
+                Vector3 lightPos = Vector3.Lerp(startPos, currentEndPos, 0.8f); // Slightly behind the tip
+                laserBeamLight.transform.position = lightPos;
+                
+                // Pulsing intensity effect
+                laserBeamLight.intensity = 1.5f + Mathf.Sin(Time.time * 20f) * 0.3f;
+            }
             
             // Update laser collider to match the current laser line
             UpdateLaserCollider(startPos, currentEndPos);
@@ -266,6 +281,7 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
                 laserLine.material.DOColor(new Color(1, 0.2f, 0.2f, 0f), "_Color", 0.3f)
                     .OnComplete(() => {
                         laserLine.enabled = false;
+                        if (laserBeamLight != null) laserBeamLight.enabled = false;
                         DestroyLaserCollider(); // Remove collider when laser disappears
                     });
             }
@@ -273,6 +289,7 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
             {
                 DOVirtual.DelayedCall(0.3f, () => {
                     laserLine.enabled = false;
+                    if (laserBeamLight != null) laserBeamLight.enabled = false;
                     DestroyLaserCollider(); // Remove collider when laser disappears
                 });
             }
@@ -399,18 +416,12 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         // Create collider if it doesn't exist
         if (activeLaserCollider == null)
         {
-            if (laserColliderPrefab != null)
-            {
-                activeLaserCollider = Instantiate(laserColliderPrefab);
-            }
-            else
-            {
-                // Create a simple collider GameObject if no prefab provided
-                activeLaserCollider = new GameObject("LaserCollider");
-                var collider = activeLaserCollider.AddComponent<BoxCollider2D>();
-                collider.isTrigger = true;
-                activeLaserCollider.tag = "DeathZone";
-            }
+
+            // Create a simple collider GameObject if no prefab provided
+            activeLaserCollider = new GameObject("LaserCollider");
+            var collider = activeLaserCollider.AddComponent<BoxCollider2D>();
+            collider.isTrigger = true;
+            activeLaserCollider.tag = "DeathZone";
         }
 
         // Calculate laser properties
@@ -456,6 +467,7 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         isCharging = false;
         canFire = true;
         if (laserLine != null) laserLine.enabled = false;
+        if (laserBeamLight != null) laserBeamLight.enabled = false;
         DestroyLaserCollider(); // Clean up laser collider
     }
 

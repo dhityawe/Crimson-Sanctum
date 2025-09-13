@@ -19,12 +19,16 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     [Header("Drop Settings")]
     [SerializeField] private float dropDelay = 1f;
-    [SerializeField] private float dropDistance = 3f; // How far it falls
-    [SerializeField] private float dropDuration = 0.5f;
-    [SerializeField] private Ease dropEase = Ease.InOutQuart;
-    [SerializeField] private bool usePhysicsOnDrop = false; // True = Rigidbody, False = Tween
-    [SerializeField] private bool dropOnPlayerApproach = false;
     [SerializeField] private float triggerDistance = 3f;
+    
+    [Header("Physics Settings")]
+    [SerializeField] private float mass = 15f; // Mass of the chandelier (heavier than spike ceiling)
+    [SerializeField] private float maxFallSpeed = 12f; // Terminal velocity
+    [SerializeField] private float gravityScale = 2.5f; // How heavy it feels
+    [SerializeField] private float airDrag = 0.1f; // Slight air resistance for chandelier
+    
+    [Header("Collider Management")]
+    [SerializeField] private Collider2D childCollider; // Collider in child GameObject to disable on ground hit
 
     [Header("Visual Warning")]
     [SerializeField] private bool showWarningGlow = true;
@@ -34,36 +38,48 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     private Transform playerTransform;
     private SpriteRenderer spriteRenderer;
     private Sequence swingSequence;
+    private Rigidbody2D rb;
     private bool hasDropped = false;
+    private Vector3 originalPosition;
 
     protected override void Initialize()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        originalPosition = transform.position;
 
-        if (dropOnPlayerApproach)
+        // Get player reference for Drop behavior
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) 
+            playerTransform = player.transform;
+
+        // Setup Rigidbody2D for physics-based movement (for Drop behavior)
+        if (behaviorType == ChandelierBehaviorType.Drop)
         {
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null) playerTransform = player.transform;
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody2D>();
+            }
+            
+            // Configure for realistic physics
+            rb.bodyType = RigidbodyType2D.Kinematic; // Start as kinematic, switch to dynamic when dropping
+            rb.mass = mass;
+            rb.gravityScale = gravityScale;
+            rb.linearDamping = airDrag;
+            rb.angularDamping = 10f; // Prevent spinning
+            rb.freezeRotation = true; // Keep it upright
         }
 
         // Start behavior based on type
         if (behaviorType == ChandelierBehaviorType.Swing)
         {
-            // if (data?.activationDelay > 0)
-            //     DOVirtual.DelayedCall(data.activationDelay, StartSwing);
-            // else
-                StartSwing();
+            StartSwing();
         }
         else if (behaviorType == ChandelierBehaviorType.Drop)
         {
-            if (dropOnPlayerApproach)
-            {
-                enabled = true; // Keep Update active for proximity check
-            }
-            else
-            {
-                DOVirtual.DelayedCall(dropDelay, TriggerDrop);
-            }
+            // For Drop behavior, start swinging first, then drop when player approaches
+            StartSwing(); // Always start with swing animation
+            enabled = true; // Keep Update active for proximity check
         }
     }
 
@@ -99,6 +115,9 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         if (hasDropped) return;
         hasDropped = true;
 
+        // Stop swinging animation
+        DOTween.Kill(transform);
+
         if (showWarningGlow && spriteRenderer != null)
         {
             // Optional: Pulse red before drop
@@ -107,26 +126,13 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
                 .Append(spriteRenderer.DOColor(Color.white, warningDuration / 2f));
         }
 
-        if (usePhysicsOnDrop)
+        // Physics-based drop - similar to SpikeCeilingObstacle
+        if (rb != null)
         {
-            Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.bodyType = RigidbodyType2D.Dynamic;
-                rb.linearVelocity = Vector2.down * (dropDistance / dropDuration); // approximate force
-            }
-        }
-        else
-        {
-            // Tween-based drop — designer-controlled, frame-perfect
-            transform.DOMoveY(transform.position.y - dropDistance, dropDuration)
-                   .SetEase(dropEase)
-                   .OnComplete(() =>
-                   {
-                       // Optional: shake camera or play heavy impact SFX
-                    //!    SoundManager.Instance?.Play("ChandelierImpact");
-                    //!    CameraShaker.Instance?.Shake(0.3f, 0.2f);
-                   });
+            // Reset rotation to normal and enable physics
+            transform.rotation = Quaternion.identity;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            // Gravity will naturally accelerate it from 0 velocity
         }
 
         //! SoundManager.Instance?.Play("ChandelierDrop");
@@ -134,9 +140,18 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     void Update()
     {
-        if (behaviorType == ChandelierBehaviorType.Drop && dropOnPlayerApproach)
+        if (behaviorType == ChandelierBehaviorType.Drop && !hasDropped)
         {
             CheckPlayerProximity();
+        }
+
+        // Cap fall speed for physics-based movement
+        if (hasDropped && rb != null)
+        {
+            if (rb.linearVelocity.y < -maxFallSpeed)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
+            }
         }
     }
 
@@ -149,13 +164,56 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     {
         if (behaviorType == ChandelierBehaviorType.Swing)
             StartSwing();
-        else if (behaviorType == ChandelierBehaviorType.Drop && !dropOnPlayerApproach)
+        else if (behaviorType == ChandelierBehaviorType.Drop)
             TriggerDrop();
     }
 
     public void Deactivate()
     {
         DOTween.Pause(transform);
+    }
+
+    protected override void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (hasDropped)
+        {
+            // Check if we hit ground
+            if (collision.gameObject.CompareTag("Ground") || collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                OnGroundImpact();
+            }
+            
+            // Check if we hit player
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                OnPlayerHit();
+            }
+        }
+        
+        // Call base implementation for any additional logic
+        base.OnCollisionEnter2D(collision);
+    }
+
+    void OnGroundImpact()
+    {
+        // Freeze Y position to prevent bouncing
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        // Disable child collider if assigned
+        if (childCollider != null)
+        {
+            childCollider.enabled = false;
+        }
+
+        // Play metallic impact sound
+        //! SoundManager.Instance?.Play("ChandelierImpact");
+
+        // Optional: camera shake
+        //! CameraShaker.Instance?.Shake(0.4f, 0.2f);
     }
 
     protected override void OnPlayerHit()
