@@ -117,6 +117,7 @@ namespace Assets.Scripts.Player
             // Check if jump input is pressed and player is grounded
             if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
+                GetComponent<PlayerDash>()?.CancelDash();
                 // Apply jump force
                 _rb.AddForceY(_jumpForce, ForceMode2D.Impulse);
                 // _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);

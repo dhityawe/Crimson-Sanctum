@@ -8,9 +8,9 @@ namespace Assets.Scripts.Player
     public class PlayerDash : MonoBehaviour
     {
         [Header("Dash Settings")]
-        [SerializeField] private float _dashDuration = 0.2f;
-        [SerializeField] private float _dashSpeed = 20f;
-        [SerializeField] private float _cooldownTime;
+        [SerializeField] protected float _dashDuration = 0.2f;
+        [SerializeField] protected float _dashSpeed = 20f;
+        [SerializeField] protected float _cooldownTime;
 
         private PlayerMove _playerMove;
         private Rigidbody2D _rb;
@@ -23,13 +23,13 @@ namespace Assets.Scripts.Player
         public event Action OnEndDash;
         #endregion
 
-        void Start()
+        protected virtual void Start()
         {
             _playerMove = GetComponent<PlayerMove>();
             _rb = _playerMove.GetComponent<Rigidbody2D>();
         }
 
-        void Update()
+        protected virtual void Update()
         {
             if (!_playerMove.CanMove()) return;
 
@@ -48,7 +48,7 @@ namespace Assets.Scripts.Player
             }
         }
 
-        void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             if (_isDashing)
             {
@@ -56,7 +56,7 @@ namespace Assets.Scripts.Player
             }
         }
 
-        private void StartDash()
+        protected virtual void StartDash()
         {
             _isDashing = true;
             _isCooldown = true;
@@ -68,14 +68,24 @@ namespace Assets.Scripts.Player
             
         }
 
-        private void EndDash()
+        public void CancelDash()
+        {
+            if (_isDashing)
+            {
+                _isDashing = false;
+                _rb.linearVelocity = Vector2.zero; // reset velocity
+                OnEndDash?.Invoke();
+            }
+        }
+
+        protected virtual void EndDash()
         {
             _isDashing = false;
             _rb.linearVelocity = Vector2.zero; // bisa juga biarin momentum jalan normal
             OnEndDash?.Invoke();
         }
 
-        private IEnumerator StartCooldownDash(float cooldownTime)
+        protected virtual IEnumerator StartCooldownDash(float cooldownTime)
         {
             if (_isCooldown)
             {
