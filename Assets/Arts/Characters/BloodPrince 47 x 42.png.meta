@@ -1,0 +1,1032 @@
+fileFormatVersion: 2
+guid: ede14695e67d13344b57b7d6045bf471
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1205330812742342530
+    second: BloodPrince 47 x 42_0
+  - first:
+      213: -2767183673596248776
+    second: BloodPrince 47 x 42_1
+  - first:
+      213: 3862209621502249543
+    second: BloodPrince 47 x 42_2
+  - first:
+      213: 561590884802056364
+    second: BloodPrince 47 x 42_3
+  - first:
+      213: 108552904722197817
+    second: BloodPrince 47 x 42_4
+  - first:
+      213: 4673182047592772133
+    second: BloodPrince 47 x 42_5
+  - first:
+      213: -7214616505841111631
+    second: BloodPrince 47 x 42_6
+  - first:
+      213: 8020425122571136007
+    second: BloodPrince 47 x 42_7
+  - first:
+      213: -3961502197711821296
+    second: BloodPrince 47 x 42_8
+  - first:
+      213: 8903871598213879683
+    second: BloodPrince 47 x 42_9
+  - first:
+      213: -4718120855021705004
+    second: BloodPrince 47 x 42_10
+  - first:
+      213: -1566579450580002866
+    second: BloodPrince 47 x 42_11
+  - first:
+      213: 6449747971816063728
+    second: BloodPrince 47 x 42_12
+  - first:
+      213: 2244353766322934266
+    second: BloodPrince 47 x 42_13
+  - first:
+      213: -4381634363986691243
+    second: BloodPrince 47 x 42_14
+  - first:
+      213: 6836176586337584153
+    second: BloodPrince 47 x 42_15
+  - first:
+      213: 6835003030469942322
+    second: BloodPrince 47 x 42_16
+  - first:
+      213: 533622687885083367
+    second: BloodPrince 47 x 42_17
+  - first:
+      213: 8942887140843910112
+    second: BloodPrince 47 x 42_18
+  - first:
+      213: 8815533301409863673
+    second: BloodPrince 47 x 42_19
+  - first:
+      213: 5351223949528100609
+    second: BloodPrince 47 x 42_20
+  - first:
+      213: 5196859979679159614
+    second: BloodPrince 47 x 42_21
+  - first:
+      213: 6660039268428213373
+    second: BloodPrince 47 x 42_22
+  - first:
+      213: -1374036105115314610
+    second: BloodPrince 47 x 42_23
+  - first:
+      213: -8913364816688983040
+    second: BloodPrince 47 x 42_24
+  - first:
+      213: 4732993803049270958
+    second: BloodPrince 47 x 42_25
+  - first:
+      213: 5624112959348939688
+    second: BloodPrince 47 x 42_26
+  - first:
+      213: 7091183479400305778
+    second: BloodPrince 47 x 42_27
+  - first:
+      213: -5443138865182260732
+    second: BloodPrince 47 x 42_28
+  - first:
+      213: -2076278486919192264
+    second: BloodPrince 47 x 42_29
+  - first:
+      213: 5243442903026364812
+    second: BloodPrince 47 x 42_30
+  - first:
+      213: -9073447169478861919
+    second: BloodPrince 47 x 42_31
+  - first:
+      213: 8654983339928483210
+    second: BloodPrince 47 x 42_32
+  - first:
+      213: -3401113445425301773
+    second: BloodPrince 47 x 42_33
+  - first:
+      213: -5804985501142119587
+    second: BloodPrince 47 x 42_34
+  - first:
+      213: 6776141344086766775
+    second: BloodPrince 47 x 42_35
+  - first:
+      213: 7798728502662130726
+    second: BloodPrince 47 x 42_36
+  - first:
+      213: 3247741051056178846
+    second: BloodPrince 47 x 42_37
+  - first:
+      213: 5493686657135901102
+    second: BloodPrince 47 x 42_38
+  - first:
+      213: 3236952299116062843
+    second: BloodPrince 47 x 42_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 210
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2871752fcf13ab010800000000000000
+      internalID: 1205330812742342530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_1
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 210
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83df80b2c1df899d0800000000000000
+      internalID: -2767183673596248776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_2
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 210
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74accb91033599530800000000000000
+      internalID: 3862209621502249543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_3
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 210
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca059bd2feb2bc700800000000000000
+      internalID: 561590884802056364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_4
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 210
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93dad4daa48a18100800000000000000
+      internalID: 108552904722197817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 168
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 522ff7d005a7ad040800000000000000
+      internalID: 4673182047592772133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_6
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 168
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bdabaa338880eb90800000000000000
+      internalID: -7214616505841111631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_7
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 168
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70ca87aa7264e4f60800000000000000
+      internalID: 8020425122571136007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_8
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 168
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01625787dbae509c0800000000000000
+      internalID: -3961502197711821296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_9
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 168
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3875a393b08e09b70800000000000000
+      internalID: 8903871598213879683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_10
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 168
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d8a11d741ed58eb0800000000000000
+      internalID: -4718120855021705004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 126
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec790cf2a44624ae0800000000000000
+      internalID: -1566579450580002866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_12
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 126
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f284eeab9b128950800000000000000
+      internalID: 6449747971816063728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_13
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 126
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af11dfffbdb852f10800000000000000
+      internalID: 2244353766322934266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_14
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 126
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55bbde6c2ce4133c0800000000000000
+      internalID: -4381634363986691243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_15
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 126
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9148e7ab26afede50800000000000000
+      internalID: 6836176586337584153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_16
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 126
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23c11e5fa0fcade50800000000000000
+      internalID: 6835003030469942322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 84
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e2ca73e10fc76700800000000000000
+      internalID: 533622687885083367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_18
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 84
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e3f86029748b1c70800000000000000
+      internalID: 8942887140843910112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_19
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 84
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f75928b4d0175a70800000000000000
+      internalID: 8815533301409863673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_20
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 84
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10f6f2184dd534a40800000000000000
+      internalID: 5351223949528100609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e35583c0e94fe1840800000000000000
+      internalID: 5196859979679159614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_22
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7ce0d0ad663d6c50800000000000000
+      internalID: 6660039268428213373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_23
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e465a0e31717eece0800000000000000
+      internalID: -1374036105115314610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_24
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 004d9cb9ced5d4480800000000000000
+      internalID: -8913364816688983040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_25
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eae70e299c8fea140800000000000000
+      internalID: 4732993803049270958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_26
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ab1aae40fcdc0e40800000000000000
+      internalID: 5624112959348939688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_27
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27416c6cdc1f86260800000000000000
+      internalID: 7091183479400305778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_28
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40240b58a061674b0800000000000000
+      internalID: -5443138865182260732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_29
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 831656c77b39f23e0800000000000000
+      internalID: -2076278486919192264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_30
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c81fde21a8374c840800000000000000
+      internalID: 5243442903026364812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_31
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ab50fe5fd3a41280800000000000000
+      internalID: -9073447169478861919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_32
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 0
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a857c59dd7dac1870800000000000000
+      internalID: 8654983339928483210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_33
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 0
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f6be9c5751dcc0d0800000000000000
+      internalID: -3401113445425301773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 010d0e1a368be5e44877a64a3ebaffad
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BloodPrince 47 x 42_0: 1205330812742342530
+      BloodPrince 47 x 42_1: -2767183673596248776
+      BloodPrince 47 x 42_10: -4718120855021705004
+      BloodPrince 47 x 42_11: -1566579450580002866
+      BloodPrince 47 x 42_12: 6449747971816063728
+      BloodPrince 47 x 42_13: 2244353766322934266
+      BloodPrince 47 x 42_14: -4381634363986691243
+      BloodPrince 47 x 42_15: 6836176586337584153
+      BloodPrince 47 x 42_16: 6835003030469942322
+      BloodPrince 47 x 42_17: 533622687885083367
+      BloodPrince 47 x 42_18: 8942887140843910112
+      BloodPrince 47 x 42_19: 8815533301409863673
+      BloodPrince 47 x 42_2: 3862209621502249543
+      BloodPrince 47 x 42_20: 5351223949528100609
+      BloodPrince 47 x 42_21: 5196859979679159614
+      BloodPrince 47 x 42_22: 6660039268428213373
+      BloodPrince 47 x 42_23: -1374036105115314610
+      BloodPrince 47 x 42_24: -8913364816688983040
+      BloodPrince 47 x 42_25: 4732993803049270958
+      BloodPrince 47 x 42_26: 5624112959348939688
+      BloodPrince 47 x 42_27: 7091183479400305778
+      BloodPrince 47 x 42_28: -5443138865182260732
+      BloodPrince 47 x 42_29: -2076278486919192264
+      BloodPrince 47 x 42_3: 561590884802056364
+      BloodPrince 47 x 42_30: 5243442903026364812
+      BloodPrince 47 x 42_31: -9073447169478861919
+      BloodPrince 47 x 42_32: 8654983339928483210
+      BloodPrince 47 x 42_33: -3401113445425301773
+      BloodPrince 47 x 42_4: 108552904722197817
+      BloodPrince 47 x 42_5: 4673182047592772133
+      BloodPrince 47 x 42_6: -7214616505841111631
+      BloodPrince 47 x 42_7: 8020425122571136007
+      BloodPrince 47 x 42_8: -3961502197711821296
+      BloodPrince 47 x 42_9: 8903871598213879683
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

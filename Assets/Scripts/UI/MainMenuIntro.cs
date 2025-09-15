@@ -1,16 +1,23 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class MainMenuIntro : MonoBehaviour
 {
     [SerializeField] private float mainMenuDuration;
-    [SerializeField] private TextMeshProUGUI TitleText;
+    [SerializeField] private Image TitleImage;
+    [SerializeField] private GameObject UIButtons;
+    [SerializeField] private float startDelay = 0.5f; // Delay in seconds before animation starts
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        TitleTextAnim();
+        // Make UI elements invisible initially
+        MakeTextInvisible();
+        MakeUIButtonsInvisible();
+        
+        // Start animation after delay
+        Invoke(nameof(StartTitleAnimation), startDelay);
     }
 
     // Update is called once per frame
@@ -19,67 +26,141 @@ public class MainMenuIntro : MonoBehaviour
         
     }
     
+    private void MakeTextInvisible()
+    {
+        if (TitleImage == null) return;
+        
+        // Set alpha to 0 to make image completely invisible
+        Color imageColor = TitleImage.color;
+        imageColor.a = 0f;
+        TitleImage.color = imageColor;
+    }
+    
+    private void MakeUIButtonsInvisible()
+    {
+        if (UIButtons == null) return;
+        
+        // Disable all Button components first
+        Button[] buttons = UIButtons.GetComponentsInChildren<Button>();
+        foreach (Button btn in buttons)
+        {
+            btn.enabled = false;
+        }
+        
+        // Get all Image components in UIButtons and its children
+        Image[] buttonImages = UIButtons.GetComponentsInChildren<Image>();
+        foreach (Image img in buttonImages)
+        {
+            Color buttonColor = img.color;
+            buttonColor.a = 0f;
+            img.color = buttonColor;
+        }
+        
+        // Get all Text components in UIButtons and its children (if any)
+        Text[] buttonTexts = UIButtons.GetComponentsInChildren<Text>();
+        foreach (Text txt in buttonTexts)
+        {
+            Color textColor = txt.color;
+            textColor.a = 0f;
+            txt.color = textColor;
+        }
+        
+        // Get all TextMeshPro components in UIButtons and its children (if any)
+        TMPro.TextMeshProUGUI[] buttonTMPs = UIButtons.GetComponentsInChildren<TMPro.TextMeshProUGUI>();
+        foreach (TMPro.TextMeshProUGUI tmp in buttonTMPs)
+        {
+            Color tmpColor = tmp.color;
+            tmpColor.a = 0f;
+            tmp.color = tmpColor;
+        }
+    }
+    
+    private void StartTitleAnimation()
+    {
+        TitleTextAnim();
+        UIButtonsAnim();
+    }
+    
     private void TitleTextAnim()
     {
-        if (TitleText == null) 
+        if (TitleImage == null) 
         {
-            Debug.LogError("TitleText is null! Please assign the TextMeshPro component in the inspector.");
+            Debug.LogError("TitleImage is null! Please assign the Image component in the inspector.");
             return;
         }
         
-        // Get the material from TextMeshPro (use materialForRendering for runtime)
-        Material titleMaterial = TitleText.materialForRendering;
+        // Create a sequence for the image animation
+        Sequence titleSequence = DOTween.Sequence();
         
-        if (titleMaterial == null)
-        {
-            Debug.LogError("TitleText material is null!");
-            return;
-        }
+        // Calculate timing for each phase
+        float fadeTime = mainMenuDuration * 0.4f; // 40% for fade in
+        float scaleTime = mainMenuDuration * 0.6f; // 60% for scale effect
         
-        // Check if the material has the Face Dilate property
-        if (!titleMaterial.HasProperty("_FaceDilate"))
-        {
-            Debug.LogError("Material doesn't have _FaceDilate property! Make sure you're using a TextMeshPro material.");
-            return;
-        }
+        // Phase 1: Fade in alpha from 0 to 1
+        titleSequence.Append(TitleImage.DOFade(1f, fadeTime)
+                            .SetEase(Ease.OutQuad));
         
-        Debug.Log($"Starting TitleTextAnim with duration: {mainMenuDuration}");
-        
-        // Set initial value
-        titleMaterial.SetFloat("_FaceDilate", -1f);
-        
-        // Create a sequence for the Face Dilate animation
-        Sequence dilateSequence = DOTween.Sequence();
-        
-        // Calculate timing for each phase (0 -> -1 -> 1 -> 0)
-        float phaseTime = mainMenuDuration / 3f;
-        
-        Debug.Log($"Phase time: {phaseTime}");
-        
-        // Phase 1: 0 to -1
-        dilateSequence.Append(DOTween.To(() => titleMaterial.GetFloat("_FaceDilate"), 
-                                        x => titleMaterial.SetFloat("_FaceDilate", x), 
-                                        -1f, phaseTime)
-                             .SetEase(Ease.InOutSine)
-                             .OnComplete(() => Debug.Log("Phase 1 complete: -1")));
-        
-        // Phase 2: -1 to 1
-        dilateSequence.Append(DOTween.To(() => titleMaterial.GetFloat("_FaceDilate"), 
-                                        x => titleMaterial.SetFloat("_FaceDilate", x), 
-                                        1f, phaseTime)
-                             .SetEase(Ease.InOutSine)
-                             .OnComplete(() => Debug.Log("Phase 2 complete: 1")));
-        
-        // Phase 3: 1 to 0
-        dilateSequence.Append(DOTween.To(() => titleMaterial.GetFloat("_FaceDilate"), 
-                                        x => titleMaterial.SetFloat("_FaceDilate", x), 
-                                        0.5f, phaseTime)
-                             .SetEase(Ease.InOutSine)
-                             .OnComplete(() => Debug.Log("Phase 3 complete: 0")));
+        // Phase 2: Scale animation for dramatic effect
+        // Start the image at normal scale but add a punch scale effect
+        titleSequence.Join(TitleImage.transform.DOPunchScale(Vector3.one * 0.1f, scaleTime, 1, 0.5f)
+                          .SetEase(Ease.OutBounce));
         
         // Play the sequence
-        dilateSequence.Play();
+        titleSequence.Play();
+    }
+    
+    private void UIButtonsAnim()
+    {
+        if (UIButtons == null)
+        {
+            Debug.LogError("UIButtons is null! Please assign the GameObject in the inspector.");
+            return;
+        }
         
-        Debug.Log("TitleTextAnim sequence started!");
+        // Create a sequence for the UI buttons animation
+        Sequence buttonsSequence = DOTween.Sequence();
+        
+        // Add a delay so buttons appear after title animation starts
+        float buttonDelay = mainMenuDuration * 0.1f; // Start buttons animation at 10% of title duration
+        float buttonFadeTime = mainMenuDuration * 0.3f; // Fade duration for buttons
+        
+        // Get all Image components and animate them
+        Image[] buttonImages = UIButtons.GetComponentsInChildren<Image>();
+        foreach (Image img in buttonImages)
+        {
+            buttonsSequence.Join(img.DOFade(1f, buttonFadeTime)
+                               .SetDelay(buttonDelay)
+                               .SetEase(Ease.OutQuad));
+        }
+        
+        // Get all Text components and animate them
+        Text[] buttonTexts = UIButtons.GetComponentsInChildren<Text>();
+        foreach (Text txt in buttonTexts)
+        {
+            buttonsSequence.Join(txt.DOFade(1f, buttonFadeTime)
+                               .SetDelay(buttonDelay)
+                               .SetEase(Ease.OutQuad));
+        }
+        
+        // Get all TextMeshPro components and animate them
+        TMPro.TextMeshProUGUI[] buttonTMPs = UIButtons.GetComponentsInChildren<TMPro.TextMeshProUGUI>();
+        foreach (TMPro.TextMeshProUGUI tmp in buttonTMPs)
+        {
+            buttonsSequence.Join(tmp.DOFade(1f, buttonFadeTime)
+                               .SetDelay(buttonDelay)
+                               .SetEase(Ease.OutQuad));
+        }
+        
+        // Enable Button components when animation is complete
+        buttonsSequence.OnComplete(() => {
+            Button[] buttons = UIButtons.GetComponentsInChildren<Button>();
+            foreach (Button btn in buttons)
+            {
+                btn.enabled = true;
+            }
+        });
+        
+        // Play the sequence
+        buttonsSequence.Play();
     }
 }

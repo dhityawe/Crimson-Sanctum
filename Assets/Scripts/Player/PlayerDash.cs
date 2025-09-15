@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Assets.Scripts.Core.Managers;
 using UnityEngine;
+using GabrielBigardi.SpriteAnimator;
 
 namespace Assets.Scripts.Player 
 {
@@ -19,6 +20,9 @@ namespace Assets.Scripts.Player
         private float _dashTimer;
         private Vector2 _dashDirection;
         private float _lastLinearVelocityX;
+
+        [Header("Animator")]
+        [SerializeField] private SpriteAnimator _spriteAnimator;
 
         #region Events
         public event Action OnEndDash;
@@ -63,6 +67,7 @@ namespace Assets.Scripts.Player
             _isDashing = true;
             _isCooldown = true;
             // start the animation of dash should be place here
+            _spriteAnimator.Play("StartSkill").SetOnComplete(() => _spriteAnimator.Play("OnSkill"));
             StartCoroutine(StartCooldownDash(_cooldownTime));
             _dashTimer = _dashDuration;
 
@@ -82,6 +87,8 @@ namespace Assets.Scripts.Player
 
         protected virtual void EndDash()
         {
+            // end the animation of dash should be place here
+            _spriteAnimator.Play("EndSkill").SetOnComplete(() => _spriteAnimator.Play("Move"));
             _isDashing = false;
             _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0); // reset velocity
             OnEndDash?.Invoke();

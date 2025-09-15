@@ -31,6 +31,7 @@ namespace CrimsonSanctum.UI.Animation
         [SerializeField] private Ease easeType = Ease.InOutSine;
         [SerializeField] private bool randomizeStartTime = true;
         [SerializeField] private float maxStartDelay = 1f;
+        [SerializeField] private bool isFlipWhenBack = false;
 
         [Header("Float Settings")]
         [SerializeField] private Vector2 floatDirection = Vector2.up;
@@ -68,6 +69,7 @@ namespace CrimsonSanctum.UI.Animation
         private Vector3 originalScale;
         private Quaternion originalRotation;
         private float originalAlpha;
+        private bool isFlipped = false;
 
         public AnimType AnimType => animType;
         public float EffectStrength => effectStrength;
@@ -150,6 +152,7 @@ namespace CrimsonSanctum.UI.Animation
             rectTransform.localRotation = originalRotation;
             if (canvasGroup != null)
                 canvasGroup.alpha = originalAlpha;
+            ResetFlip();
         }
 
         private Tween CreateAnimation()
@@ -189,6 +192,14 @@ namespace CrimsonSanctum.UI.Animation
             if (tween != null && loop)
             {
                 tween.SetLoops(-1, loopType);
+                
+                // Add flip callback when looping back if enabled
+                if (isFlipWhenBack && loopType == LoopType.Yoyo)
+                {
+                    tween.OnStepComplete(() => {
+                        FlipElement();
+                    });
+                }
             }
 
             // Add random delay to the tween start if specified
@@ -272,6 +283,26 @@ namespace CrimsonSanctum.UI.Animation
             duration = newDuration;
             if (IsPlaying)
                 PlayAnimation();
+        }
+        
+        private void FlipElement()
+        {
+            if (rectTransform == null) return;
+            
+            isFlipped = !isFlipped;
+            Vector3 scale = rectTransform.localScale;
+            scale.x = isFlipped ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+            rectTransform.localScale = scale;
+        }
+        
+        public void ResetFlip()
+        {
+            if (rectTransform == null) return;
+            
+            isFlipped = false;
+            Vector3 scale = rectTransform.localScale;
+            scale.x = Mathf.Abs(scale.x);
+            rectTransform.localScale = scale;
         }
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Collections;
 using GabrielBigardi.SpriteAnimator;
+using System.Collections.Generic;
 
 public class BloodGeyserObstacle : ObstacleBase, IActivatable
 {
@@ -16,9 +17,7 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
     public bool useWarningGlow = true;
     public float warningDuration = 0.4f;
     public Color warningColor = new Color(1f, 0.3f, 0.3f, 0.8f);
-    public string gurgleSFX = "GeyserGurgle";
-    public string eruptionSFX = "GeyserErupt";
-    public string dripSFX = "GeyserDrip";
+    public List<AudioClip> sfxList; // Assign gurgle, eruption, drip sounds in Inspector
 
     [Header("Animator")]
     public SpriteAnimator spriteAnimator;
