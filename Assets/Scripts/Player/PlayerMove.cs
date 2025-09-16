@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Assets.Scripts.Core.Managers;
+using GabrielBigardi.SpriteAnimator;
 
 namespace Assets.Scripts.Player
 {
@@ -25,6 +26,10 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private LayerMask _groundLayer;
         #endregion
+
+        [Header("Animator")]
+        [SerializeField]
+        private SpriteAnimator _spriteAnimator;
 
         [HideInInspector] public float LastLinearVelocityX { get; set; }
 
@@ -69,6 +74,7 @@ namespace Assets.Scripts.Player
             }
             else if (other.gameObject.CompareTag("DeathZone"))
             {
+                _spriteAnimator.Play("Dead");
                 OnDeath?.Invoke();
                 Debug.Log("Player Died");
             }
@@ -82,6 +88,7 @@ namespace Assets.Scripts.Player
         {
             if (other.gameObject.CompareTag("DeathZone"))
             {
+                _spriteAnimator.Play("Dead");
                 OnDeath?.Invoke();
                 Debug.Log("Player Died by Trigger");
             }
@@ -129,10 +136,10 @@ namespace Assets.Scripts.Player
 
         private void HandleJump()
         {
-
             // Check if jump input is pressed and player is grounded
             if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
+                _spriteAnimator.Play("StartJump").SetOnComplete(() => _spriteAnimator.Play("OnAir"));
                 float lastLinearVelocityX = LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
                 // Apply jump force

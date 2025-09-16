@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77fafcc6bd2ee94ebe9ac341b986e7a, type: 3}
+  m_Name: BloodPrince
+  m_EditorClassIdentifier: 
+  SpriteAnimations:
+  - Name: Idle
+    FPS: 6
+    Frames:
+    - {fileID: 1205330812742342530, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -2767183673596248776, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 3862209621502249543, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 561590884802056364, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 108552904722197817, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 0
+  - Name: Move
+    FPS: 8
+    Frames:
+    - {fileID: 4673182047592772133, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -7214616505841111631, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 8020425122571136007, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -3961502197711821296, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 8903871598213879683, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -4718120855021705004, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -1566579450580002866, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 0
+  - Name: Dead
+    FPS: 6
+    Frames:
+    - {fileID: 6449747971816063728, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 2244353766322934266, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -4381634363986691243, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 6836176586337584153, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 6835003030469942322, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 1
+  - Name: StartJump
+    FPS: 6
+    Frames:
+    - {fileID: 533622687885083367, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 8942887140843910112, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 1
+  - Name: OnAir
+    FPS: 8
+    Frames:
+    - {fileID: 8815533301409863673, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 5351223949528100609, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 0
+  - Name: EndJump
+    FPS: 6
+    Frames:
+    - {fileID: 5351223949528100609, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 5196859979679159614, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 6660039268428213373, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 1
+  - Name: StartSkill
+    FPS: 10
+    Frames:
+    - {fileID: 7091183479400305778, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -5443138865182260732, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -2076278486919192264, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 5243442903026364812, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 1
+  - Name: OnSkill
+    FPS: 10
+    Frames:
+    - {fileID: -9073447169478861919, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 8654983339928483210, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -3401113445425301773, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 0
+  - Name: EndSkill
+    FPS: 10
+    Frames:
+    - {fileID: 5243442903026364812, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -2076278486919192264, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -5443138865182260732, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 7091183479400305778, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 1

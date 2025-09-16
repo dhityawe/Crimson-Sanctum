@@ -10,6 +10,7 @@ namespace Assets.Scripts.Core.Managers
         public static ScoreManager Instance;
         public event Action<int> OnScoreChanged;
         public event Action<int> OnNextStage;
+        public event Action<int> OnRecycleStage;
         void Awake()
         {
             Instance = this;
@@ -28,18 +29,24 @@ namespace Assets.Scripts.Core.Managers
         }
 
         #region Public Functions
-        public void AddScore(int value)
+        public void AddScore()
         {
-            Score += value;
+            Score += 1;
             DisplayScore = Score - 1;
             OnScoreChanged?.Invoke(Score);
-            Debug.Log($"Actual Score: {Score}\nDisplay Score: {DisplayScore}");
+            Debug.Log($"Score: {Score}");
         }
 
         public void SetNewFloor()
         {
             int floor = Score + 1;
             OnNextStage?.Invoke(floor);
+        }
+
+        public void RecycleFloor()
+        {
+            int floor = Score + 1;
+            OnRecycleStage?.Invoke(floor);
         }
 
         public void SaveScore()

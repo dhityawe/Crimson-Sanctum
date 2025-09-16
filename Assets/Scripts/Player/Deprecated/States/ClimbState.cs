@@ -44,7 +44,7 @@ namespace Assets.Scripts.Player.States
             player.Rb.position = endPos;
             player.Rb.gravityScale = 1;
             player.SetMove();
-            ScoreManager.Instance.AddScore(1);
+            ScoreManager.Instance.AddScore();
 
             yield return _waitForSeconds0_25;
             player.EnableMove(true);

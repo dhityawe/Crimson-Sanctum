@@ -27,6 +27,7 @@ namespace Assets.Scripts.Generator
             if (isEven)
             {
                 _ladderObject.position = new Vector3(5f, _ladderObject.position.y, _ladderObject.position.z);
+                _ladderObject.rotation = Quaternion.Euler(0, 0, 0);
             }
             else
             {

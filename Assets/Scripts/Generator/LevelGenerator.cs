@@ -32,6 +32,8 @@ namespace Assets.Scripts.Generator
         {
             // lantai 1 statis
             activeFloors[1] = _firstFloor;
+            _firstFloor.transform.position = new Vector3(0, 0, 0); // pastikan di posisi dasar
+            // highestFloor = 1;
 
             // spawn awal lantai 2 & 3
             SpawnFloor(2);
@@ -39,25 +41,40 @@ namespace Assets.Scripts.Generator
 
             // subscribe ke event scoreManager
             ScoreManager.Instance.OnNextStage += HandleScoreChanged;
+            ScoreManager.Instance.OnRecycleStage += HandleDespwan;
         }
 
         private void OnDestroy()
         {
             // jangan lupa unsubscribe biar aman
             ScoreManager.Instance.OnNextStage -= HandleScoreChanged;
+            ScoreManager.Instance.OnRecycleStage -= HandleDespwan;
         }
 
         private void HandleScoreChanged(int currentFloor)
         {
             int nextFloor = highestFloor + 1;
+            Debug.Log($"Spawning floor {nextFloor}");
             SpawnFloor(nextFloor);
 
-            // tentukan lantai yang harus direcycle (misalnya 2 lantai di bawah player)
-            int floorToRecycle = currentFloor - 2;
-            if (activeFloors.ContainsKey(floorToRecycle))
+        }
+
+        private void HandleDespwan(int currentFloor)
+        {
+            if (currentFloor >= 3)
             {
-                pool.Release(activeFloors[floorToRecycle]);
-                activeFloors.Remove(floorToRecycle);
+                int floorToRecycle = currentFloor - 2;
+                Debug.Log($"Recycling floor {floorToRecycle}");
+                if (activeFloors.ContainsKey(floorToRecycle))
+                {
+                    GameObject floorToRecycleObj = activeFloors[floorToRecycle];
+                    
+                    // Move to last position in parent before deactivating
+                    floorToRecycleObj.transform.SetAsLastSibling();
+                    
+                    pool.Release(floorToRecycleObj);
+                    activeFloors.Remove(floorToRecycle);
+                }
             }
         }
 
@@ -65,6 +82,9 @@ namespace Assets.Scripts.Generator
         {
             GameObject floor = pool.Get();
             floor.transform.position = new Vector3(0, (floorNumber - 1) * floorHeight, 0);
+
+            // Move spawned floor to first position in parent
+            floor.transform.SetAsFirstSibling();
 
             if (floor.TryGetComponent<Floor>(out var floorComp))
             {

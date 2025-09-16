@@ -15,6 +15,7 @@ namespace Assets.Scripts.Player
 
         private PlayerMove _playerMove;
         private PlayerDash _playerDash;
+        private bool _isClimbing;
         private Rigidbody2D _rb;
 
         void Awake()
@@ -26,15 +27,32 @@ namespace Assets.Scripts.Player
         void Start()
         {
             _rb = _playerMove.GetRigidbody();
+            _isClimbing = false;
         }
 
         void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.CompareTag("Ladder"))
             {
-                // jalanin animasi manjat
-                _playerDash.enabled = false;
-                StartCoroutine(NextStage(collision.gameObject));
+                _isClimbing = true;
+                if (_isClimbing)
+                {
+                    // jalanin animasi manjat
+                    _playerDash.enabled = false;
+                    StartCoroutine(NextStage(collision.gameObject));
+                    
+                }
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("Ladder"))
+            {
+                _playerDash.enabled = true;
+                ScoreManager.Instance.RecycleFloor();
+                ScoreManager.Instance.AddScore();
+                _isClimbing = false;
             }
         }
 
@@ -50,16 +68,16 @@ namespace Assets.Scripts.Player
 
             Vector2 startPos = _rb.position;
             Vector2 endPos = CalculateLadderTopPosition(ladder);
+            _playerMove.SetMove();
 
             yield return SmoothClimb(startPos, endPos, _climbDuration);
 
-            _playerMove.SetMove();
             yield return _waitForSeconds0_25;
             _playerMove.EnableMove(true);
             _playerMove.enabled = true;
-            ScoreManager.Instance.AddScore(1);
+            // ScoreManager.Instance.AddScore(1);
             _rb.gravityScale = 1;
-            _playerDash.enabled = true;
+            // _playerDash.enabled = true;
         }
 
         private Vector2 CalculateLadderTopPosition(GameObject ladder)
