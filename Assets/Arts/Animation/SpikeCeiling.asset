@@ -21,7 +21,7 @@ MonoBehaviour:
     - {fileID: -7638166379508164405, guid: 5884fc1482cc99d429b0e9ace413cf8e, type: 3}
     - {fileID: -8319173608067569842, guid: 5884fc1482cc99d429b0e9ace413cf8e, type: 3}
     SpriteAnimationType: 0
-  - Name: Falling
+  - Name: OnDrop
     FPS: 12
     Frames:
     - {fileID: 5359138296807805547, guid: 5884fc1482cc99d429b0e9ace413cf8e, type: 3}

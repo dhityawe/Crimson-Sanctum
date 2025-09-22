@@ -431,6 +431,13 @@ namespace CrimsonSanctum.Audio
             }
         }
 
+        public bool HasBGMForScene(string sceneName)
+        {
+            return sceneBGMContainer.ContainsKey(sceneName) && 
+                   sceneBGMContainer[sceneName].bgmTracks != null && 
+                   sceneBGMContainer[sceneName].bgmTracks.Length > 0;
+        }
+
         private void DebugLog(string message, LogType logType = LogType.Log)
         {
             if (config != null && config.enableDebugLogs)

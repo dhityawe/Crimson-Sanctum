@@ -43,6 +43,8 @@ namespace CrimsonSanctum.Audio
         public bool enableSFXPooling = true;
         [Range(0.1f, 5f)]
         public float sfxCleanupInterval = 2f;
+        [Tooltip("Stop any currently playing instances of the same SFX before playing a new one (prevents overlap)")]
+        public bool preventSFXOverlap = true;
         
         [Header("Debug Settings")]
         public bool enableDebugLogs = true;

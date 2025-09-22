@@ -23,6 +23,7 @@ namespace CrimsonSanctum.Audio
             public bool randomizePitch = false;
             [Range(0f, 0.5f)]
             public float pitchVariation = 0.1f;
+            public bool loop = false;
             public bool is3D = false;
             [Range(0f, 500f)]
             public float maxDistance = 50f;
@@ -207,16 +208,28 @@ namespace CrimsonSanctum.Audio
                 return -1;
             }
 
+            // Stop any existing instances of this named SFX if overlap prevention is enabled
+            if (config.preventSFXOverlap)
+            {
+                StopSFX(sfxName);
+            }
+
             SFXClip sfxClip = sfxContainer[sfxName];
             return PlaySFX(sfxClip, volumeMultiplier, position);
         }
 
-        public int PlaySFX(AudioClip clip, float volumeMultiplier = 1f, Vector3 position = default)
+        public int PlaySFX(AudioClip clip, float volumeMultiplier = 1f, Vector3 position = default, bool loop = false)
         {
             if (clip == null)
             {
                 DebugLog("Cannot play null AudioClip", LogType.Warning);
                 return -1;
+            }
+
+            // Stop any existing instances of this audio clip if overlap prevention is enabled
+            if (config.preventSFXOverlap)
+            {
+                StopSFXByClip(clip);
             }
 
             SFXClip tempClip = new SFXClip
@@ -225,10 +238,62 @@ namespace CrimsonSanctum.Audio
                 clip = clip,
                 volume = 1f,
                 pitch = 1f,
+                loop = loop,
                 is3D = position != default
             };
 
             return PlaySFX(tempClip, volumeMultiplier, position);
+        }
+
+        /// <summary>
+        /// Play SFX with explicit overlap control (overrides config setting)
+        /// </summary>
+        public int PlaySFX(AudioClip clip, float volumeMultiplier, Vector3 position, bool loop, bool preventOverlap)
+        {
+            if (clip == null)
+            {
+                DebugLog("Cannot play null AudioClip", LogType.Warning);
+                return -1;
+            }
+
+            // Stop any existing instances if explicitly requested
+            if (preventOverlap)
+            {
+                StopSFXByClip(clip);
+            }
+
+            SFXClip tempClip = new SFXClip
+            {
+                name = clip.name,
+                clip = clip,
+                volume = 1f,
+                pitch = 1f,
+                loop = loop,
+                is3D = position != default
+            };
+
+            return PlaySFX(tempClip, volumeMultiplier, position);
+        }
+
+        /// <summary>
+        /// Play named SFX with explicit overlap control (overrides config setting)
+        /// </summary>
+        public int PlaySFX(string sfxName, float volumeMultiplier, Vector3 position, bool preventOverlap)
+        {
+            if (!sfxContainer.ContainsKey(sfxName))
+            {
+                DebugLog($"SFX '{sfxName}' not found", LogType.Warning);
+                return -1;
+            }
+
+            // Stop any existing instances if explicitly requested
+            if (preventOverlap)
+            {
+                StopSFX(sfxName);
+            }
+
+            SFXClip sfxClip = sfxContainer[sfxName];
+            return PlaySFX(sfxClip, volumeMultiplier, position);
         }
 
         private int PlaySFX(SFXClip sfxClip, float volumeMultiplier, Vector3 position)
@@ -257,6 +322,7 @@ namespace CrimsonSanctum.Audio
             // Configure AudioSource
             source.clip = sfxClip.clip;
             source.volume = sfxClip.volume * volumeMultiplier * config.globalSFXVolume;
+            source.loop = sfxClip.loop; // Set loop from SFXClip
             
             // Handle pitch
             if (sfxClip.randomizePitch)
@@ -284,7 +350,12 @@ namespace CrimsonSanctum.Audio
 
             // Play and setup cleanup
             source.Play();
-            StartCoroutine(ReturnSourceWhenFinished(source));
+            
+            // Only setup auto-cleanup for non-looping sounds
+            if (!sfxClip.loop)
+            {
+                StartCoroutine(ReturnSourceWhenFinished(source));
+            }
 
             int audioID = source.GetInstanceID();
             
@@ -319,7 +390,7 @@ namespace CrimsonSanctum.Audio
                 Destroy(tempGO, sfxClip.clip.length + 1f);
             }
 
-            int audioID = EazySoundManager.PlaySound(sfxClip.clip, volume, false, sourceTransform);
+            int audioID = EazySoundManager.PlaySound(sfxClip.clip, volume, sfxClip.loop, sourceTransform);
             
             // Track named SFX
             if (!string.IsNullOrEmpty(sfxClip.name))
@@ -385,6 +456,60 @@ namespace CrimsonSanctum.Audio
             }
             
             DebugLog($"Stopped all instances of SFX: {sfxName}");
+        }
+
+        public void StopSFX(int audioID)
+        {
+            // Try AudioSource first
+            AudioSource source = activeAudioSources.Find(s => s.GetInstanceID() == audioID);
+            if (source != null)
+            {
+                source.Stop();
+                ReturnAudioSourceToPool(source);
+                DebugLog($"Stopped AudioSource SFX with ID: {audioID}");
+                return;
+            }
+
+            // Try EazySoundManager
+            Hellmade.Sound.Audio audio = EazySoundManager.GetSoundAudio(audioID);
+            if (audio != null)
+            {
+                audio.Stop();
+                DebugLog($"Stopped EazySound SFX with ID: {audioID}");
+                return;
+            }
+
+            DebugLog($"Could not find SFX with ID: {audioID}", LogType.Warning);
+        }
+
+        public void StopSFXByClip(AudioClip clip)
+        {
+            if (clip == null) return;
+
+            // Stop all AudioSource instances playing this clip
+            for (int i = activeAudioSources.Count - 1; i >= 0; i--)
+            {
+                AudioSource source = activeAudioSources[i];
+                if (source != null && source.clip == clip)
+                {
+                    source.Stop();
+                    ReturnAudioSourceToPool(source);
+                }
+            }
+
+            // Stop all EazySoundManager instances playing this clip
+            // Note: EazySoundManager doesn't provide an easy way to stop by clip
+            // So we'll check all tracked named SFX that might use this clip
+            var trackingKeys = new List<string>(namedSFXTracking.Keys);
+            foreach (string sfxName in trackingKeys)
+            {
+                if (sfxContainer.ContainsKey(sfxName) && sfxContainer[sfxName].clip == clip)
+                {
+                    StopSFX(sfxName);
+                }
+            }
+
+            DebugLog($"Stopped all instances of AudioClip: {clip.name}");
         }
 
         public void StopAllSFX()

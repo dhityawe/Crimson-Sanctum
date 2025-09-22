@@ -3,6 +3,8 @@ using DG.Tweening;
 using System.Collections;
 using GabrielBigardi.SpriteAnimator;
 using System.Collections.Generic;
+using CrimsonSanctum.Audio;
+using Hellmade.Sound;
 
 public class BloodGeyserObstacle : ObstacleBase, IActivatable
 {
@@ -17,7 +19,11 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
     public bool useWarningGlow = true;
     public float warningDuration = 0.4f;
     public Color warningColor = new Color(1f, 0.3f, 0.3f, 0.8f);
-    public List<AudioClip> sfxList; // Assign gurgle, eruption, drip sounds in Inspector
+
+    public List<AudioClip> sfxList; 
+
+    [Range(0, 1)]
+    public float sfxVolume = 1f;
 
     [Header("Animator")]
     public SpriteAnimator spriteAnimator;
@@ -32,6 +38,8 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
     private Coroutine cycleCoroutine;
     private bool isErupting = false;
     private bool isTriggered = false; // Track trigger state
+    private int loopingSFXID = -1; // Track the looping SFX ID
+    private List<int> activeSFXIDs = new List<int>(); // Track all active SFX IDs
 
     protected override void Initialize()
     {
@@ -46,8 +54,8 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
         hitColliderComponent = hitCollider.GetComponent<Collider2D>();
         if (hitColliderComponent != null)
             hitColliderComponent.enabled = false; // Start disabled
-
         // Start geyser cycle
+        AudioManager.Instance.PlaySFX(sfxList[0], sfxVolume);
         StartCycle();
     }
 
@@ -98,11 +106,13 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
 
     #region Trigger and Eruption Phases
     protected virtual void OnTriggerWarning()
-    {   
+    {
         spriteAnimator.Play("OnStart");
+        // play sfx list[0] (trigger sound)
 
         // ▶️ Play initial gurgle SFX (trigger sound)
-        //! SoundManager.Instance?.Play(gurgleSFX);
+        int triggerSFXID = AudioManager.Instance.PlaySFX(sfxList[1], sfxVolume);
+        if (triggerSFXID != -1) activeSFXIDs.Add(triggerSFXID);
 
         // ▶️ Add initial trigger effects here (subtle warnings, ground rumble, etc.)
         // Example: StartGroundRumble();
@@ -133,10 +143,15 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
             // Enable hit collider
             if (hitColliderComponent != null)
                 spriteAnimator.Play("Errupting");
+
                 hitColliderComponent.enabled = true;
 
             // Play eruption SFX
-            // SoundManager.Instance?.Play(eruptionSFX);
+            if (sfxList != null && sfxList.Count > 2)
+            {
+                int eruptionSFXID = AudioManager.Instance.PlaySFX(sfxList[2], sfxVolume);
+                if (eruptionSFXID != -1) activeSFXIDs.Add(eruptionSFXID);
+            }
 
             // Play VFX if assigned
             if (eruptionVFX != null)
@@ -154,10 +169,23 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
     {
         // Debug.Log("Geyser: Ending eruption");
         
+        // Stop all active SFX
+        foreach (int sfxID in activeSFXIDs)
+        {
+            AudioManager.Instance.StopSFX(sfxID);
+        }
+        activeSFXIDs.Clear();
+        
+        // Stop the looping SFX (if any)
+        if (loopingSFXID != -1)
+        {
+            AudioManager.Instance.StopSFX(loopingSFXID);
+            loopingSFXID = -1;
+        }
+        
         // play OnEnd animation and then play Idle after its duration
         // If you know the duration of "OnEnd" animation, use a delayed call:
         spriteAnimator.Play("OnEnd").SetOnComplete(() => spriteAnimator.Play("Idle"));
-
         isErupting = false;
         isTriggered = false; // Reset trigger state for next cycle
 
@@ -169,8 +197,9 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
         if (spriteRenderer != null)
             spriteRenderer.DOColor(Color.white, 0.1f);
 
-        // Play drip sound
-        // SoundManager.Instance?.Play(dripSFX);
+        // Play drip sound (final sound, no need to track for stopping)
+        if (sfxList != null && sfxList.Count > 0)
+            AudioManager.Instance.PlaySFX(sfxList[0], sfxVolume);
 
         // Stop warning if still running
         if (warningSequence != null)
@@ -193,6 +222,19 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
 
     private void OnDestroy()
     {
+        // Stop all active SFX when destroyed
+        foreach (int sfxID in activeSFXIDs)
+        {
+            AudioManager.Instance.StopSFX(sfxID);
+        }
+        activeSFXIDs.Clear();
+        
+        // Stop any looping SFX when destroyed
+        if (loopingSFXID != -1)
+        {
+            AudioManager.Instance.StopSFX(loopingSFXID);
+        }
+        
         if (cycleCoroutine != null) StopCoroutine(cycleCoroutine);
         if (warningSequence != null) warningSequence.Kill();
         DOTween.Kill(this);

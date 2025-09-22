@@ -1,5 +1,8 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
+using CrimsonSanctum.Audio;
+using GabrielBigardi.SpriteAnimator;
 
 public enum SpikeTriggerType
 {
@@ -11,7 +14,8 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
 {
     [Header("Spike Ceiling Settings")]
     public SpikeTriggerType triggerType = SpikeTriggerType.OnPlayerEnter;
-    public float triggerDelay = 1f; // If timed
+    public float triggerDelay = 1f; // Delay before drop (works for both trigger types)
+    public float triggerDistance = 3f; // Distance from player to trigger drop
     public bool usePhysics = true; // Use Rigidbody2D for realistic movement
     
     [Header("Physics Settings")]
@@ -24,23 +28,31 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     public bool showWarningGlow = true;
     public float warningDuration = 0.6f;
     public Color warningColor = new Color(0.8f, 0.2f, 0.2f, 0.7f);
-    public string dropSFX = "SpikeCeilingDrop";
-    public string impactSFX = "SpikeCeilingImpact";
-    public string playerHitSFX = "Squish";
+    public List<AudioClip> listSFX;
+    [Range(0, 1)] public float sfxVolume = 1f;
 
-    private SpriteRenderer spriteRenderer;
-    private Collider2D myCollider;
-    private Rigidbody2D rb;
+    [Header("Components")]
+    [SerializeField] private SpriteAnimator spriteAnimator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Collider2D thisCollider;
+    [SerializeField] private Rigidbody2D rb;
+    
+    // Cached components
+    private AudioManager audioManager;
     private bool hasDropped = false;
+    private bool hasTriggered = false; // Prevent multiple triggers for proximity
     private Transform playerTransform;
     private Vector3 originalPosition;
+    private float triggerDistanceSquared; // Cache squared distance for performance
 
     protected override void Initialize()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        myCollider = GetComponent<Collider2D>();
-        rb = GetComponent<Rigidbody2D>();
+        // Cache components and values
         originalPosition = transform.position;
+        audioManager = AudioManager.Instance;
+        triggerDistanceSquared = triggerDistance * triggerDistance; // Cache for performance
+        
+        spriteAnimator?.Play("Idle");
 
         // Setup Rigidbody2D for physics-based movement
         if (usePhysics)
@@ -49,7 +61,7 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             {
                 rb = gameObject.AddComponent<Rigidbody2D>();
             }
-            
+
             // Configure for realistic physics
             rb.bodyType = RigidbodyType2D.Kinematic; // Start as kinematic, switch to dynamic when dropping
             rb.mass = mass; // Set realistic mass
@@ -64,9 +76,10 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         {
             var player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
+            {
                 playerTransform = player.transform;
-            else
-                Debug.LogWarning("Spike Ceiling: Player not found for proximity trigger!");
+                enabled = true; // Keep Update active to check distance
+            }
         }
 
         // Start based on trigger type
@@ -74,15 +87,11 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         {
             DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
         }
-        else if (triggerType == SpikeTriggerType.OnPlayerEnter)
-        {
-            enabled = true; // Keep Update active to check distance
-        }
     }
 
     void Update()
     {
-        if (triggerType == SpikeTriggerType.OnPlayerEnter && !hasDropped)
+        if (triggerType == SpikeTriggerType.OnPlayerEnter && !hasTriggered)
         {
             CheckPlayerProximity();
         }
@@ -101,10 +110,13 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     {
         if (playerTransform != null)
         {
-            float distance = Vector2.Distance(transform.position, playerTransform.position);
-            if (distance < 3f) // hardcoded trigger radius — or make it configurable
+            // Use squared distance for better performance (avoids sqrt calculation)
+            float distanceSquared = (transform.position - playerTransform.position).sqrMagnitude;
+            if (distanceSquared < triggerDistanceSquared)
             {
-                TriggerDrop();
+                // Trigger with delay, just like timed mode
+                hasTriggered = true; // Prevent multiple triggers
+                DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
             }
         }
     }
@@ -112,6 +124,9 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     public void TriggerDrop()
     {
         if (hasDropped) return;
+        spriteAnimator.Play("OnDrop");
+        audioManager.PlaySFX(listSFX[0], sfxVolume);
+        
         hasDropped = true;
 
         // Optional: Visual warning glow
@@ -161,22 +176,16 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         {
             rb.linearVelocity = Vector2.zero;
             rb.bodyType = RigidbodyType2D.Kinematic; // Lock in place
+            thisCollider.enabled = false;
         }
+        
+        spriteAnimator.Play("OnHit");
 
         // Play metallic CLANG
-        //! SoundManager.Instance?.Play(impactSFX);
-
-        // Optional: camera shake
-        //! CameraShaker.Instance?.Shake(0.4f, 0.2f);
-    }
-
-    void OnDropComplete()
-    {
-        // Fallback — if didn't hit ground, just stop
-        if (!hasDropped) return; // already handled
-
-        // If no ground hit, we still stop (safety)
-        // But ideally, your level design ensures ground is below
+        if (audioManager != null && listSFX != null && listSFX.Count > 1 && listSFX[1] != null)
+        {
+            audioManager.PlaySFX(listSFX[1], sfxVolume);
+        }
     }
 
     // ✅ IActivatable — for Room Director or manual control
@@ -189,9 +198,11 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         if (hasDropped)
         {
             PlayHitEffect();
-            //! SoundManager.Instance?.Play(playerHitSFX);
-            // CameraShaker.Instance?.Shake(0.5f, 0.4f);
-            // GameManager.Instance.PlayerDie();
+            spriteAnimator.Play("OnHit");
+            if (audioManager != null && listSFX != null && listSFX.Count > 2 && listSFX[2] != null)
+            {
+                audioManager.PlaySFX(listSFX[2], sfxVolume);
+            }
         }
     }
 }

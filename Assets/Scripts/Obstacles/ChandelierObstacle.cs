@@ -1,6 +1,8 @@
 using UnityEngine;
 using DG.Tweening;
 using GabrielBigardi.SpriteAnimator;
+using System.Collections.Generic;
+using CrimsonSanctum.Audio;
 
 public enum ChandelierBehaviorType
 {
@@ -25,7 +27,6 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     [Header("Warning Effects")]
     [SerializeField] private bool useDropWarning = true;
     [SerializeField] private ParticleSystem warningParticles; // Optional particles for drop warning
-    [SerializeField] private AudioSource warningAudioSource; // Optional audio for creaking sounds
     
     [Header("Physics Settings")]
     [SerializeField] private float mass = 15f; // Mass of the chandelier (heavier than spike ceiling)
@@ -36,23 +37,42 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     [Header("Collider Management")]
     [SerializeField] private Collider2D childCollider; // Collider in child GameObject to disable on ground hit
 
-    [Header("Animator")]
+    [Header("Animator & Audio")]
     public SpriteAnimator spriteAnimator;
+    public List<AudioClip> sfxList; // Assign drop sound here
+    [Range(0, 1)] public float sfxVolume = 1f;
 
+    // Beneficial cached components
     private Transform playerTransform;
-    private SpriteRenderer spriteRenderer;
-    private Rigidbody2D rb;
+    private AudioManager audioManager;
+    
+    // Components
+    [SerializeField]private SpriteRenderer spriteRenderer;
+    [SerializeField]private Rigidbody2D rb;
+    
+    // State tracking
     private bool hasDropped = false;
-    private bool isWarning = false; // Track warning state
+    private bool isWarning = false;
     private Vector3 originalPosition;
+    
+    // Swing SFX tracking
+    private bool hasPlayedPositiveAngleSFX = false;
+    private bool hasPlayedNegativeAngleSFX = false;
+    private float angleThreshold = 5f; // Tolerance for angle detection
+    private bool allowSwingSFX = false; // Prevent initial SFX on start
 
     protected override void Initialize()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
+        // Cache beneficial components only
+        audioManager = AudioManager.Instance;
         originalPosition = transform.position;
         
-        // Get player reference for Drop behavior
+        // Randomize swing angle, speed, and behavior
+        swingAngle = Random.Range(10f, 20f);
+        swingSpeed = Random.Range(0.4f, 0.8f);
+        behaviorType = (ChandelierBehaviorType)Random.Range(0, 2); // 0 = Swing, 1 = Drop
+        
+        // Get and cache player reference for Drop behavior
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) 
         {
@@ -87,6 +107,9 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezePositionX;
         }
 
+        // Ensure script is enabled BEFORE starting behavior
+        enabled = true;
+
         // Start behavior based on type
         if (behaviorType == ChandelierBehaviorType.Swing)
         {
@@ -96,7 +119,6 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         {
             // For Drop behavior, start swinging first, then drop when player approaches
             StartSwing(); // Always start with swing animation
-            enabled = true; // Keep Update active for proximity check
         }
     }
 
@@ -104,15 +126,29 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     {
         DOTween.Kill(transform); // Kill any existing tweens
 
-        // Calculate duration for full swing cycle based on speed
+        // Reset SFX flags and disable SFX initially
+        hasPlayedPositiveAngleSFX = false;
+        hasPlayedNegativeAngleSFX = false;
+        allowSwingSFX = false;
+
+        // Calculate duration for full swing cycle based on swingSpeed (already randomized in Initialize)
         float swingDuration = 1f / swingSpeed; // Time for one direction
 
-        // Start from -swingAngle and swing to +swingAngle, then loop with yoyo
-        transform.localRotation = Quaternion.Euler(0, 0, -swingAngle); // Start at negative angle
+        // Randomly choose starting direction (true = positive angle, false = negative angle)
+        bool startPositive = Random.Range(0, 2) == 0;
+        float startAngle = startPositive ? swingAngle : -swingAngle;
+        float targetAngle = startPositive ? -swingAngle : swingAngle;
+
+        // Start at one extreme angle
+        transform.localRotation = Quaternion.Euler(0, 0, startAngle);
         
-        transform.DOLocalRotate(new Vector3(0, 0, swingAngle), swingDuration)
+        // Animate between the two extreme angles (never passing through 0)
+        transform.DOLocalRotate(new Vector3(0, 0, targetAngle), swingDuration)
                 .SetEase(swingEase)
-                .SetLoops(-1, LoopType.Yoyo); // This will go: -angle -> +angle -> -angle -> +angle...
+                .SetLoops(-1, LoopType.Yoyo); // This will go: startAngle -> targetAngle -> startAngle...
+
+        // Enable swing SFX after a very short delay
+        DOVirtual.DelayedCall(0.1f, () => allowSwingSFX = true);
     }
 
     private void CheckPlayerProximity()
@@ -121,9 +157,10 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         {
             // Use child collider position if available, otherwise fallback to main transform
             Vector3 triggerPosition = childCollider != null ? childCollider.transform.position : transform.position;
-            float distance = Vector2.Distance(triggerPosition, playerTransform.position);
+            float distanceSquared = (triggerPosition - playerTransform.position).sqrMagnitude;
+            float triggerDistanceSquared = triggerDistance * triggerDistance;
             
-            if (distance < triggerDistance)
+            if (distanceSquared < triggerDistanceSquared)
             {
                 TriggerDrop();
             }
@@ -138,10 +175,10 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         // Stop swinging animation
         DOTween.Kill(transform);
 
-        // ▶️ Start drop warning phase
+        // Start drop warning phase
         OnDropWarning();
 
-        // ▶️ Wait for drop delay before actually dropping
+        // Wait for drop delay before actually dropping
         DOVirtual.DelayedCall(dropDelay, StartDrop);
     }
 
@@ -157,10 +194,7 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         }
         
         // ▶️ Play warning audio if assigned
-        if (useDropWarning && warningAudioSource != null)
-        {
-            warningAudioSource.Play();
-        }
+
         
         // ▶️ Add custom warning effects here
         // Example: ShakeChandelier();
@@ -179,7 +213,7 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         spriteAnimator.Play("OnStart").SetOnComplete(() => spriteAnimator.Play("Drop"));
         hasDropped = true;
 
-        // ▶️ End warning phase
+        // End warning phase
         OnDropWarningEnd();
 
         // Physics-based drop - similar to SpikeCeilingObstacle
@@ -190,8 +224,6 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             rb.bodyType = RigidbodyType2D.Dynamic;
             // Gravity will naturally accelerate it from 0 velocity
         }
-
-        //! SoundManager.Instance?.Play("ChandelierDrop");
     }
 
     /// <summary>
@@ -206,10 +238,6 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         }
         
         // ▶️ Stop warning audio
-        if (warningAudioSource != null)
-        {
-            warningAudioSource.Stop();
-        }
         
         // ▶️ Clean up custom warning effects here
         // Example: StopShaking();
@@ -223,6 +251,13 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             CheckPlayerProximity();
         }
 
+        // Check swing angles for SFX (only when swinging)
+        if ((behaviorType == ChandelierBehaviorType.Swing || 
+            (behaviorType == ChandelierBehaviorType.Drop && !hasDropped && !isWarning)))
+        {
+            CheckSwingAngleSFX();
+        }
+
         // Cap fall speed for physics-based movement
         if (hasDropped && rb != null)
         {
@@ -230,6 +265,39 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
             }
+        }
+    }
+
+    private void CheckSwingAngleSFX()
+    {
+        // Don't play SFX if not allowed yet (prevents initial startup sound)
+        if (!allowSwingSFX) return;
+
+        float currentAngle = transform.localRotation.eulerAngles.z;
+        // Convert angle to -180 to 180 range
+        if (currentAngle > 180f) currentAngle -= 360f;
+
+        // Check if we reached positive swing angle
+        if (Mathf.Abs(currentAngle - swingAngle) < angleThreshold && !hasPlayedPositiveAngleSFX)
+        {
+            PlaySwingSFX();
+            hasPlayedPositiveAngleSFX = true;
+            hasPlayedNegativeAngleSFX = false; // Reset the other flag
+        }
+        // Check if we reached negative swing angle
+        else if (Mathf.Abs(currentAngle - (-swingAngle)) < angleThreshold && !hasPlayedNegativeAngleSFX)
+        {
+            PlaySwingSFX();
+            hasPlayedNegativeAngleSFX = true;
+            hasPlayedPositiveAngleSFX = false; // Reset the other flag
+        }
+    }
+
+    private void PlaySwingSFX()
+    {
+        if (sfxList != null && sfxList.Count > 0 && sfxList[0] != null && audioManager != null)
+        {
+            audioManager.PlaySFX(sfxList[0], sfxVolume);
         }
     }
 
@@ -255,6 +323,9 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     {
         if (hasDropped)
         {
+            // Play collision SFX for any collision when dropped
+            PlayCollisionSFX();
+            
             // Check if we hit ground
             if (collision.gameObject.CompareTag("Ground") || collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
@@ -265,6 +336,14 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         
         // Call base implementation for any additional logic
         base.OnCollisionEnter2D(collision);
+    }
+
+    private void PlayCollisionSFX()
+    {
+        if (sfxList != null && sfxList.Count > 1 && sfxList[1] != null && audioManager != null)
+        {
+            audioManager.PlaySFX(sfxList[1], sfxVolume);
+        }
     }
 
     void OnGroundImpact()
@@ -282,8 +361,7 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             childCollider.enabled = false;
         }
 
-        // Play metallic impact sound
-        //! SoundManager.Instance?.Play("ChandelierImpact");
+        // SFX is already played in OnCollisionEnter2D via PlayCollisionSFX()
 
         // Optional: camera shake
         //! CameraShaker.Instance?.Shake(0.4f, 0.2f);
