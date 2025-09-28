@@ -660,7 +660,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -2518,7 +2518,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1972622215}
-  - component: {fileID: 1972622214}
+  - component: {fileID: 1972622216}
   m_Layer: 0
   m_Name: FloorPool
   m_TagString: Untagged
@@ -2526,25 +2526,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1972622214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1972622213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6adf755181d424abea50ad3f4c721a88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floorPrefabs:
-  - {fileID: 8281123297009596770, guid: 82f99ca98da0ea84896b84bfccdca457, type: 3}
-  - {fileID: 326924347123890296, guid: d3c6f2569cafe7b44bc6c19c15afde92, type: 3}
-  - {fileID: 8700735596180871984, guid: 699c87cd8aea9674ca6ca9cb11478357, type: 3}
-  - {fileID: 6965795259561148326, guid: 01c621b94baeb004ba08092dee55985c, type: 3}
-  _firstFloor: {fileID: 326874674}
-  floorHeight: 6
 --- !u!4 &1972622215
 Transform:
   m_ObjectHideFlags: 0
@@ -2560,6 +2541,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1972622216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972622213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a1e34e44e33e432888984a2950d15c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorPrefabs:
+  - {fileID: 6965795259561148326, guid: 01c621b94baeb004ba08092dee55985c, type: 3}
+  - {fileID: 8281123297009596770, guid: 82f99ca98da0ea84896b84bfccdca457, type: 3}
+  - {fileID: 326924347123890296, guid: d3c6f2569cafe7b44bc6c19c15afde92, type: 3}
+  - {fileID: 8700735596180871984, guid: 699c87cd8aea9674ca6ca9cb11478357, type: 3}
+  _firstFloor: {fileID: 326874674}
+  floorHeight: 6
 --- !u!1 &1998989539
 GameObject:
   m_ObjectHideFlags: 0

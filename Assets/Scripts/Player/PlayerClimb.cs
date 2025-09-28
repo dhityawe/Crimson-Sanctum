@@ -30,7 +30,7 @@ namespace Assets.Scripts.Player
             _isClimbing = false;
         }
 
-        void OnTriggerEnter2D(Collider2D collision)
+        void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.gameObject.CompareTag("Ladder"))
             {
@@ -45,7 +45,7 @@ namespace Assets.Scripts.Player
             }
         }
 
-        private void OnTriggerExit2D(Collider2D collider)
+        private void OnCollisionExit2D(Collision2D collider)
         {
             if (collider.gameObject.CompareTag("Ladder"))
             {
