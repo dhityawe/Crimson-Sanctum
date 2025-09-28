@@ -6,6 +6,7 @@ using Unity.Cinemachine;
 public class PlayingState : BaseState<GameManager>
 {
     private bool isSubscribedToPlayerDeath = false;
+    private bool isSubscribedToNewPlayerEvents = false;
     
     public void EnterState(GameManager owner)
     {
@@ -30,23 +31,22 @@ public class PlayingState : BaseState<GameManager>
             
             if (spawnedPlayer != null)
             {
-                Debug.Log($"Playing as {selectedCharacter.Name}");
                 
                 // Assign cinemachine camera to follow the player
                 AssignCameraToPlayer(spawnedPlayer);
                 
-                // Subscribe to player death event
+                // Subscribe to player death events (both old and new systems for compatibility)
                 PlayerMove.OnDeath += OnPlayerDeath;
+                PlayerEvents.OnPlayerDeath += OnPlayerDeathNew;
                 isSubscribedToPlayerDeath = true;
+                isSubscribedToNewPlayerEvents = true;
             }
             else
             {
-                Debug.LogError("Failed to spawn character!");
             }
         }
         else
         {
-            Debug.LogError("Selected character data is null!");
         }
     }
     
@@ -58,11 +58,17 @@ public class PlayingState : BaseState<GameManager>
     
     public void ExitState(GameManager owner)
     {
-        // Unsubscribe from player death event
+        // Unsubscribe from player death events (both old and new systems)
         if (isSubscribedToPlayerDeath)
         {
             PlayerMove.OnDeath -= OnPlayerDeath;
             isSubscribedToPlayerDeath = false;
+        }
+        
+        if (isSubscribedToNewPlayerEvents)
+        {
+            PlayerEvents.OnPlayerDeath -= OnPlayerDeathNew;
+            isSubscribedToNewPlayerEvents = false;
         }
     }
     
@@ -75,6 +81,7 @@ public class PlayingState : BaseState<GameManager>
             gameManager.ChangeToGameOverState();
         }
     }
+
     
     /// <summary>
     /// Assign the cinemachine camera to follow the spawned player
@@ -88,11 +95,9 @@ public class PlayingState : BaseState<GameManager>
         {
             // Set the player as the tracking target
             cinemachineCamera.Follow = player.transform;
-            Debug.Log($"Cinemachine camera now following player: {player.name}");
         }
         else
         {
-            Debug.LogWarning("CinemachineCamera not found in scene!");
         }
     }
     
@@ -101,14 +106,91 @@ public class PlayingState : BaseState<GameManager>
     /// </summary>
     private void EnablePlayerScripts(GameObject character)
     {
-        // Enable PlayerMove script
-        PlayerMove playerMove = character.GetComponent<PlayerMove>();
-        if (playerMove != null)
+        // Enable all player components manually
+        if (character.TryGetComponent<PlayerMove>(out var playerMove))
         {
             playerMove.enabled = true;
         }
         
-        // Enable any other player-specific scripts
-        // Add more scripts here as needed
+        if (character.TryGetComponent<PlayerDash>(out var playerDash))
+        {
+            playerDash.enabled = true;
+        }
+        
+        if (character.TryGetComponent<PlayerClimb>(out var playerClimb))
+        {
+            playerClimb.enabled = true;
+        }
+        
+        if (character.TryGetComponent<PlayerController>(out var playerController))
+        {
+            playerController.enabled = true;
+        }
+        
+        // Initialize the player system
+        InitializePlayerSystem(character);
+    }
+    
+    /// <summary>
+    /// Initialize the new player system components
+    /// </summary>
+    private void InitializePlayerSystem(GameObject character)
+    {
+        // Ensure all required components exist
+        EnsureRequiredComponents(character);
+        
+        // Initialize player state - Change from Preview to Idle for gameplay
+        if (character.TryGetComponent<PlayerStateManager>(out var stateManager))
+        {
+            // Player starts in Preview state, change to Idle when game starts
+            if (stateManager.CurrentState == PlayerState.Preview)
+            {
+                stateManager.ChangeState(PlayerState.Idle);
+            }
+            else
+            {
+                // Fallback: Set to Idle if not in Preview state
+                stateManager.ChangeState(PlayerState.Idle);
+            }
+        }
+        
+    }
+
+    /// <summary>
+    /// Ensure all required components for the new architecture exist
+    /// </summary>
+    private void EnsureRequiredComponents(GameObject character)
+    {
+        // Add PlayerStateManager if missing
+        if (!character.TryGetComponent<PlayerStateManager>(out _))
+        {
+            character.AddComponent<PlayerStateManager>();
+        }
+
+        // Add PlayerCollisionHandler if missing
+        if (!character.TryGetComponent<PlayerCollisionHandler>(out _))
+        {
+            character.AddComponent<PlayerCollisionHandler>();
+        }
+
+        // Add PlayerHealth if missing
+        if (!character.TryGetComponent<PlayerHealth>(out _))
+        {
+            character.AddComponent<PlayerHealth>();
+        }
+        
+    }
+    
+    /// <summary>
+    /// Handle player death using new event system
+    /// </summary>
+    private void OnPlayerDeathNew()
+    {
+        // Find GameManager and change to game over state
+        GameManager gameManager = Object.FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.ChangeToGameOverState();
+        }
     }
 }

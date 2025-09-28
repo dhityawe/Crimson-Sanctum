@@ -109,7 +109,6 @@ public class CharacterSelectState : BaseState<GameManager>
             // Set as current player in GameManager
             owner.SetCurrentPlayer(currentPreviewCharacter);
             
-            Debug.Log($"Preview created for: {characterData.Name}");
         }
     }
     
@@ -118,13 +117,29 @@ public class CharacterSelectState : BaseState<GameManager>
     /// </summary>
     private void DisablePlayerScripts(GameObject character)
     {
-        // Disable PlayerMove script
+        // New Architecture: Set player state to Preview
+        if (character.TryGetComponent<PlayerStateManager>(out var stateManager))
+        {
+            stateManager.ChangeState(PlayerState.Preview);
+        }
+        if (character.TryGetComponent<PlayerController>(out var playerController))
+        {
+            playerController.enabled = false;
+        }
+            
         if (character.TryGetComponent<PlayerMove>(out var playerMove))
         {
             playerMove.enabled = false;
         }
         
-        // Disable any other player-specific scripts that might interfere with preview
-        // Add more scripts here as needed
+        if (character.TryGetComponent<PlayerDash>(out var playerDash))
+        {
+            playerDash.enabled = false;
+        }
+        
+        if (character.TryGetComponent<PlayerClimb>(out var playerClimb))
+        {
+            playerClimb.enabled = false;
+        } 
     }
 }

@@ -1360,7 +1360,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterDataList:
   - {fileID: 11400000, guid: 31f046347baa4463091ea410b4e7d80e, type: 2}
-  - {fileID: 11400000, guid: 4d0efb8840e5a471aab3df662ef195e4, type: 2}
   spawnPoint: {fileID: 820926472}
 --- !u!1 &1037217480
 GameObject:
