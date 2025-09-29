@@ -6,7 +6,7 @@ using GabrielBigardi.SpriteAnimator;
 namespace Assets.Scripts.Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerMove : MonoBehaviour
+    public class PlayerMove : MonoBehaviour, IPlayerAbility
     {
         #region SerializeFields
         [Header("Player Settings")]
@@ -40,63 +40,132 @@ namespace Assets.Scripts.Player
 
         private bool _canMove;
         private Rigidbody2D _rb;
+        private PlayerStateManager _stateManager;
+        private PlayerCollisionHandler _collisionHandler;
+
+        #region IPlayerAbility Implementation
+        public bool IsActive { get; private set; }
+        
+        public bool CanActivate()
+        {
+            return _stateManager == null || 
+                   (_stateManager.CurrentState != PlayerState.Preview &&
+                    _stateManager.CurrentState != PlayerState.Climbing && 
+                    _stateManager.CurrentState != PlayerState.Dead);
+        }
+        
+        public void Activate()
+        {
+            IsActive = true;
+            _canMove = true;
+        }
+        
+        public void Deactivate()
+        {
+            IsActive = false;
+            _canMove = false;
+        }
+        
+        public void SetEnabled(bool enabled)
+        {
+            this.enabled = enabled;
+        }
+        #endregion
 
         void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _stateManager = GetComponent<PlayerStateManager>();
+            _collisionHandler = GetComponent<PlayerCollisionHandler>();
         }
 
         void Start()
         {
             _canMove = true;
             _charSprite.flipX = _isFlipx;
+            IsActive = true;
+            
+            // Subscribe to collision events
+            if (_collisionHandler != null)
+            {
+                _collisionHandler.OnCollisionEnter += HandleCollision;
+                _collisionHandler.OnTriggerEnter += HandleTrigger;
+            }
+        }
+
+        void OnDestroy()
+        {
+            // Unsubscribe from events
+            if (_collisionHandler != null)
+            {
+                _collisionHandler.OnCollisionEnter -= HandleCollision;
+                _collisionHandler.OnTriggerEnter -= HandleTrigger;
+            }
         }
 
         void Update()
         {
-            if (!_canMove) return;
+            if (!enabled || !_canMove) return;
             HandleJump();
         }
 
         void FixedUpdate()
         {
-            if (!_canMove) return;
+            if (!enabled || !_canMove) return;
             HandleMove();
         }
 
         public bool CanMove() => _canMove;
 
-        private void OnCollisionEnter2D(Collision2D other)
+        #region New Collision Handling
+        private void HandleCollision(Collision2D other)
         {
+            if (!enabled) return;
+            
             if (other.gameObject.CompareTag("Bouncable"))
             {
                 SetMove();
             }
             else if (other.gameObject.CompareTag("DeathZone"))
             {
-                _spriteAnimator.Play("Dead");
-                OnDeath?.Invoke();
-                Debug.Log("Player Died");
+                HandleDeath();
             }
             else if (other.gameObject.CompareTag("Pickable"))
             {
-                OnPickupCoin?.Invoke();
+                HandleCoinPickup();
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        private void HandleTrigger(Collider2D other)
         {
+            if (!enabled) return;
+            
             if (other.gameObject.CompareTag("DeathZone"))
             {
-                _spriteAnimator.Play("Dead");
-                OnDeath?.Invoke();
-                Debug.Log("Player Died by Trigger");
+                HandleDeath();
             }
             else if (other.gameObject.CompareTag("Pickable"))
             {
-                OnPickupCoin?.Invoke();
+                HandleCoinPickup();
             }
         }
+
+        private void HandleDeath()
+        {
+            _spriteAnimator.Play("Dead");
+            OnDeath?.Invoke();
+            PlayerEvents.OnPlayerDeath?.Invoke();
+            if (_stateManager != null)
+                _stateManager.ChangeState(PlayerState.Dead);
+        }
+
+        private void HandleCoinPickup()
+        {
+            OnPickupCoin?.Invoke();
+            PlayerEvents.OnCoinPickup?.Invoke();
+        }
+        #endregion
+
 
         public void SetMove()
         {
@@ -124,26 +193,19 @@ namespace Assets.Scripts.Player
 
         public void HandleMove()
         {
-            // version 3
             float direction = _isFlipx ? -1f : 1f;
             float targetX = direction * _moveSpeed;
-
-            // smooth transition ke kecepatan target
             float newX = Mathf.Lerp(_rb.linearVelocityX, targetX, 0.1f);
             _rb.linearVelocity = new Vector2(newX, _rb.linearVelocityY);
-            
         }
 
         private void HandleJump()
         {
-            // Check if jump input is pressed and player is grounded
             if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
                 _spriteAnimator.Play("StartJump").SetOnComplete(() => _spriteAnimator.Play("OnAir"));
-                float lastLinearVelocityX = LastLinearVelocityX = _rb.linearVelocityX;
+                LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
-                // Apply jump force
-                // _rb.AddForce(new Vector2(lastLinearVelocityX, _jumpForce), ForceMode2D.Impulse);
                 _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
             }
         }
