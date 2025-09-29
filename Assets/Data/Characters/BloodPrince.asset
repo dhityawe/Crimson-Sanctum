@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240870d41acb34108922e0cb5d6abf6e, type: 3}
+  m_Name: BloodPrince
+  m_EditorClassIdentifier: 
+  Name: Blood Prince
+  Description: ahihihihihi
+  CharacterPrefab: {fileID: 3516105614590239424, guid: a6416a7a265e84b77888db96f958be50, type: 3}

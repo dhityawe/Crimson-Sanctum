@@ -6,7 +6,7 @@ using GabrielBigardi.SpriteAnimator;
 
 namespace Assets.Scripts.Player 
 {
-    public class PlayerDash : MonoBehaviour
+    public class PlayerDash : MonoBehaviour, IPlayerAbility
     {
         [Header("Dash Settings")]
         [SerializeField] protected float _dashDuration = 0.2f;
@@ -20,6 +20,7 @@ namespace Assets.Scripts.Player
         private float _dashTimer;
         private Vector2 _dashDirection;
         private float _lastLinearVelocityX;
+        private PlayerStateManager _stateManager;
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
@@ -28,10 +29,46 @@ namespace Assets.Scripts.Player
         public event Action OnEndDash;
         #endregion
 
+        #region IPlayerAbility Implementation
+        public bool IsActive { get; private set; }
+        
+        public bool CanActivate()
+        {
+            return _stateManager == null || 
+                   (_stateManager.CurrentState != PlayerState.Preview &&
+                    _stateManager.CurrentState != PlayerState.Climbing && 
+                    _stateManager.CurrentState != PlayerState.Dead &&
+                    !_isDashing && !_isCooldown);
+        }
+        
+        public void Activate()
+        {
+            if (CanActivate())
+            {
+                StartDash();
+            }
+        }
+        
+        public void Deactivate()
+        {
+            if (_isDashing)
+            {
+                CancelDash();
+            }
+        }
+        
+        public void SetEnabled(bool enabled)
+        {
+            this.enabled = enabled;
+        }
+        #endregion
+
         protected virtual void Start()
         {
             _playerMove = GetComponent<PlayerMove>();
             _rb = _playerMove.GetComponent<Rigidbody2D>();
+            _stateManager = GetComponent<PlayerStateManager>();
+            IsActive = true;
         }
 
         protected virtual void Update()
@@ -66,13 +103,10 @@ namespace Assets.Scripts.Player
             _lastLinearVelocityX = _rb.linearVelocityX;
             _isDashing = true;
             _isCooldown = true;
-            // start the animation of dash should be place here
             _spriteAnimator.Play("StartSkill").SetOnComplete(() => _spriteAnimator.Play("OnSkill"));
             StartCoroutine(StartCooldownDash(_cooldownTime));
             _dashTimer = _dashDuration;
-
             _dashDirection = _playerMove.IsFlipX() ? Vector2.left : Vector2.right;
-            
         }
 
         public void CancelDash()
@@ -80,17 +114,16 @@ namespace Assets.Scripts.Player
             if (_isDashing)
             {
                 _isDashing = false;
-                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0); // reset velocity
+                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
                 OnEndDash?.Invoke();
             }
         }
 
         protected virtual void EndDash()
         {
-            // end the animation of dash should be place here
             _spriteAnimator.Play("EndSkill").SetOnComplete(() => _spriteAnimator.Play("Move"));
             _isDashing = false;
-            _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0); // reset velocity
+            _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
             OnEndDash?.Invoke();
         }
 
@@ -98,7 +131,6 @@ namespace Assets.Scripts.Player
         {
             if (_isCooldown)
             {
-                // Debug.Log("dash is cooldown");
                 float elapsed = 0f;
                 while (elapsed < cooldownTime)
                 {
@@ -106,7 +138,6 @@ namespace Assets.Scripts.Player
                     yield return null;
                 }
                 _isCooldown = false;
-                // Debug.Log("you can use dash again");
             }
         }
     }
