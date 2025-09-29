@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpriteAnimations:
   - Name: Idle
-    FPS: 6
+    FPS: 8
     Frames:
     - {fileID: 1205330812742342530, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: -2767183673596248776, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
@@ -31,11 +31,11 @@ MonoBehaviour:
     - {fileID: -3961502197711821296, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: 8903871598213879683, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: -4718120855021705004, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: -1566579450580002866, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     SpriteAnimationType: 0
   - Name: Dead
     FPS: 6
     Frames:
+    - {fileID: -1566579450580002866, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: 6449747971816063728, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: 2244353766322934266, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: -4381634363986691243, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
@@ -57,30 +57,47 @@ MonoBehaviour:
   - Name: EndJump
     FPS: 6
     Frames:
-    - {fileID: 5351223949528100609, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 8942887140843910112, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 533622687885083367, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 1
+  - Name: Climb
+    FPS: 12
+    Frames:
     - {fileID: 5196859979679159614, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     - {fileID: 6660039268428213373, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    SpriteAnimationType: 1
+    - {fileID: -1374036105115314610, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 0
   - Name: StartSkill
-    FPS: 10
+    FPS: 16
     Frames:
-    - {fileID: 7091183479400305778, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: -5443138865182260732, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: -2076278486919192264, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: 5243442903026364812, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -1412881471, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 1784332256, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -735907738, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -92556303, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -1412881471, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     SpriteAnimationType: 1
   - Name: OnSkill
-    FPS: 10
+    FPS: 16
     Frames:
-    - {fileID: -9073447169478861919, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: 8654983339928483210, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: -3401113445425301773, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -74481494, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 1020459566, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -455778022, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     SpriteAnimationType: 0
   - Name: EndSkill
-    FPS: 10
+    FPS: 16
     Frames:
-    - {fileID: 5243442903026364812, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: -2076278486919192264, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: -5443138865182260732, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
-    - {fileID: 7091183479400305778, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -92556303, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -735907738, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 1784332256, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -1412881471, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
     SpriteAnimationType: 1
+  - Name: gatau
+    FPS: 8
+    Frames:
+    - {fileID: 5624112959348939688, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 7091183479400305778, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -5443138865182260732, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: -2076278486919192264, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 5243442903026364812, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    - {fileID: 64453568, guid: ede14695e67d13344b57b7d6045bf471, type: 3}
+    SpriteAnimationType: 0
