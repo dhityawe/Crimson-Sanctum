@@ -12,11 +12,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Desktop/MainMenu.unity
     guid: 3393c00ea253df849b9c5c9ad023093e
   - enabled: 1
-    path: Assets/Scenes/Awe - Gameplay.unity
+    path: Assets/Scenes/Desktop/Awe - Gameplay.unity
     guid: 0fcfbc014ec56094693284e668ef4e59
   - enabled: 1
     path: Assets/Scenes/Desktop/Gameplay.unity
     guid: c4144b60fd717ea46954240cda9bfa7f
+  - enabled: 1
+    path: Assets/Scenes/Testing Gameplay.unity
+    guid: 25ae44090fc34412c94366e6e76dbf5d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -25,7 +25,24 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Initialize state machine
-        stateMachine = new StateMachine<GameManager>();
+        InitializeStateMachine();
+    }
+    
+    /// <summary>
+    /// Initialize the state machine - can be called manually if needed
+    /// </summary>
+    public void Initialize()
+    {
+        InitializeStateMachine();
+    }
+    
+    private void InitializeStateMachine()
+    {
+        if (stateMachine == null)
+        {
+            stateMachine = new StateMachine<GameManager>();
+            Debug.Log("GameManager: State machine initialized");
+        }
         
         // Start with character select state
         stateMachine.ChangeState(new CharacterSelectState(), this);
@@ -33,8 +50,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // Update current state
-        stateMachine.Update(this);
+        // Update current state only if state machine exists
+        if (stateMachine != null)
+        {
+            stateMachine.Update(this);
+        }
     }
     
     /// <summary>
@@ -42,6 +62,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ChangeToPlayingState(int characterIndex)
     {
+        // Ensure state machine is initialized
+        if (stateMachine == null)
+        {
+            Debug.LogWarning("GameManager: StateMachine is null, initializing...");
+            InitializeStateMachine();
+        }
+        
         SelectedCharacterIndex = characterIndex;
         stateMachine.ChangeState(new PlayingState(), this);
     }
@@ -51,6 +78,23 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ChangeToGameOverState()
     {
+        Debug.Log("GameManager: ChangeToGameOverState called");
+        
+        // Ensure state machine is initialized
+        if (stateMachine == null)
+        {
+            Debug.LogWarning("GameManager: StateMachine is null, initializing on-demand...");
+            InitializeStateMachine();
+            
+            // If still null after initialization, there's a bigger problem
+            if (stateMachine == null)
+            {
+                Debug.LogError("GameManager: Failed to initialize StateMachine! Cannot change to GameOver state.");
+                return;
+            }
+        }
+        
+        Debug.Log("GameManager: Changing to GameOver state");
         stateMachine.ChangeState(new GameOverState(), this);
     }
     

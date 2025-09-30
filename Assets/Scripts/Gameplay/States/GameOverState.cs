@@ -1,12 +1,20 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assets.Scripts.Systems;
+using CrimsonSanctum.UI;
+using Object = UnityEngine.Object;
 
 public class GameOverState : BaseState<GameManager>
 {
+    private bool gameOverUITriggered = false;
+    
     public void EnterState(GameManager owner)
     {
-        Debug.Log("Game Over");
+        Debug.Log("Game Over - Triggering Visual Effects");
+        
+        // Trigger the Hades-style game over effect
+        TriggerGameOverVisuals(owner);
+        
         Debug.Log("Press R to restart the game");
     }
     
@@ -21,11 +29,46 @@ public class GameOverState : BaseState<GameManager>
     
     public void ExitState(GameManager owner)
     {
-        // Clean up if needed
+        // Hide game over UI when exiting state
+        if (GameOverManager.Instance != null)
+        {
+            GameOverManager.Instance.HideGameOver();
+        }
+        
+        gameOverUITriggered = false;
+    }
+    
+    private void TriggerGameOverVisuals(GameManager owner)
+    {
+        if (gameOverUITriggered) return;
+        
+        gameOverUITriggered = true;
+        
+        // Find the current player for masking
+        GameObject currentPlayer = owner.CurrentPlayer;
+        Transform playerTransform = currentPlayer != null ? currentPlayer.transform : null;
+        
+        // Try to use existing GameOverManager
+        if (GameOverManager.Instance != null)
+        {
+            GameOverManager.Instance.TriggerGameOver(playerTransform);
+        }
+        else
+        {
+            // No GameOverManager found - user needs to set it up manually
+            Debug.LogWarning("No GameOverManager found in scene! Please add a GameOverManager with proper UI setup for the game over effect.");
+            Debug.Log("GAME OVER - Press R to restart (fallback message)");
+        }
     }
     
     private void RestartScene()
     {
+        // Hide game over effects before restarting
+        if (GameOverManager.Instance != null)
+        {
+            GameOverManager.Instance.HideGameOver();
+        }
+        
         // Get current scene name and reload it
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);

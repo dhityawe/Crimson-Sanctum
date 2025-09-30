@@ -74,6 +74,7 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         // Get player if using proximity trigger
         if (triggerType == SpikeTriggerType.OnPlayerEnter)
         {
+            Debug.Log("PLAYER MASUK ANJINGG");
             var player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
