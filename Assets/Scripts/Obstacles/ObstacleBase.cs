@@ -7,7 +7,7 @@ public abstract class ObstacleBase : MonoBehaviour
     public ObstacleData data;
 
     // 🧠 Lifecycle — Called automatically
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         Initialize(); // Force all obstacles to init
     }
