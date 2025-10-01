@@ -95,33 +95,6 @@ TextureImporter:
   - first:
       213: 5243442903026364812
     second: BloodPrince 47 x 42_30
-  - first:
-      213: -9073447169478861919
-    second: BloodPrince 47 x 42_31
-  - first:
-      213: 8654983339928483210
-    second: BloodPrince 47 x 42_32
-  - first:
-      213: -3401113445425301773
-    second: BloodPrince 47 x 42_33
-  - first:
-      213: -5804985501142119587
-    second: BloodPrince 47 x 42_34
-  - first:
-      213: 6776141344086766775
-    second: BloodPrince 47 x 42_35
-  - first:
-      213: 7798728502662130726
-    second: BloodPrince 47 x 42_36
-  - first:
-      213: 3247741051056178846
-    second: BloodPrince 47 x 42_37
-  - first:
-      213: 5493686657135901102
-    second: BloodPrince 47 x 42_38
-  - first:
-      213: 3236952299116062843
-    second: BloodPrince 47 x 42_39
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -189,7 +162,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -234,11 +207,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 210
+        y: 252
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -256,11 +229,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 47
-        y: 210
+        y: 252
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -278,11 +251,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 94
-        y: 210
+        y: 252
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -300,11 +273,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 141
-        y: 210
+        y: 252
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -322,11 +295,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 188
-        y: 210
+        y: 252
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -344,11 +317,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 168
+        y: 210
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -366,11 +339,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 47
-        y: 168
+        y: 210
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -388,11 +361,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 94
-        y: 168
+        y: 210
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -410,11 +383,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 141
-        y: 168
+        y: 210
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -432,11 +405,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 188
-        y: 168
+        y: 210
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -454,11 +427,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 235
-        y: 168
+        y: 210
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -476,11 +449,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 126
+        y: 168
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -498,11 +471,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 47
-        y: 126
+        y: 168
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -520,11 +493,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 94
-        y: 126
+        y: 168
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -542,11 +515,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 141
-        y: 126
+        y: 168
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -564,11 +537,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 188
-        y: 126
+        y: 168
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -586,11 +559,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 235
-        y: 126
+        y: 168
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -608,11 +581,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 84
+        y: 126
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -630,11 +603,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 47
-        y: 84
+        y: 126
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -652,11 +625,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 94
-        y: 84
+        y: 126
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -674,11 +647,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 141
-        y: 84
+        y: 126
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -696,11 +669,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 42
+        y: 84
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -718,11 +691,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 47
-        y: 42
+        y: 84
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -740,11 +713,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 94
-        y: 42
+        y: 84
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -761,12 +734,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_24
       rect:
         serializedVersion: 2
-        x: 141
-        y: 42
+        x: 329
+        y: 84
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -783,12 +756,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_25
       rect:
         serializedVersion: 2
-        x: 188
-        y: 42
+        x: 423
+        y: 84
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -805,12 +778,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_26
       rect:
         serializedVersion: 2
-        x: 235
+        x: 0
         y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -827,12 +800,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_27
       rect:
         serializedVersion: 2
-        x: 282
+        x: 47
         y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -849,12 +822,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_28
       rect:
         serializedVersion: 2
-        x: 329
+        x: 94
         y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -871,12 +844,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_29
       rect:
         serializedVersion: 2
-        x: 376
+        x: 141
         y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -893,12 +866,12 @@ TextureImporter:
       name: BloodPrince 47 x 42_30
       rect:
         serializedVersion: 2
-        x: 423
+        x: 188
         y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -915,20 +888,20 @@ TextureImporter:
       name: BloodPrince 47 x 42_31
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 235
+        y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1ab50fe5fd3a41280800000000000000
-      internalID: -9073447169478861919
+      spriteID: 150974eb943f9304890d759ac6f4d659
+      internalID: 64453568
       vertices: []
       indices: 
       edges: []
@@ -937,20 +910,20 @@ TextureImporter:
       name: BloodPrince 47 x 42_32
       rect:
         serializedVersion: 2
-        x: 47
-        y: 0
+        x: 282
+        y: 42
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a857c59dd7dac1870800000000000000
-      internalID: 8654983339928483210
+      spriteID: 1a2b7d8146e886a44815c1f0c3bec835
+      internalID: -1412881471
       vertices: []
       indices: 
       edges: []
@@ -959,20 +932,152 @@ TextureImporter:
       name: BloodPrince 47 x 42_33
       rect:
         serializedVersion: 2
+        x: 329
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5351b06e4b9ebec4e8b9ba8d3efa5c98
+      internalID: 1784332256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_34
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d79ad8738b6b834ea4cd967b3660201
+      internalID: -735907738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_35
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 42
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2cec85ee8cdcf9d4eb20b8be5bd326d5
+      internalID: -92556303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0bae6cf150522d4aac489400ad6aac7
+      internalID: -74481494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_37
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 0
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e8e384e39718f943a6e837a18ff1f7f
+      internalID: 1020459566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_38
+      rect:
+        serializedVersion: 2
         x: 94
         y: 0
         width: 47
         height: 42
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3f6be9c5751dcc0d0800000000000000
-      internalID: -3401113445425301773
+      spriteID: 8e7310bc6f6999c47b2a805f7cf1630a
+      internalID: -455778022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodPrince 47 x 42_39
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 0
+        width: 47
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd845756848538e4ca5c109613e8a07f
+      internalID: -1883019546
       vertices: []
       indices: 
       edges: []
@@ -981,7 +1086,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 010d0e1a368be5e44877a64a3ebaffad
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -1016,9 +1121,15 @@ TextureImporter:
       BloodPrince 47 x 42_29: -2076278486919192264
       BloodPrince 47 x 42_3: 561590884802056364
       BloodPrince 47 x 42_30: 5243442903026364812
-      BloodPrince 47 x 42_31: -9073447169478861919
-      BloodPrince 47 x 42_32: 8654983339928483210
-      BloodPrince 47 x 42_33: -3401113445425301773
+      BloodPrince 47 x 42_31: 64453568
+      BloodPrince 47 x 42_32: -1412881471
+      BloodPrince 47 x 42_33: 1784332256
+      BloodPrince 47 x 42_34: -735907738
+      BloodPrince 47 x 42_35: -92556303
+      BloodPrince 47 x 42_36: -74481494
+      BloodPrince 47 x 42_37: 1020459566
+      BloodPrince 47 x 42_38: -455778022
+      BloodPrince 47 x 42_39: -1883019546
       BloodPrince 47 x 42_4: 108552904722197817
       BloodPrince 47 x 42_5: 4673182047592772133
       BloodPrince 47 x 42_6: -7214616505841111631
