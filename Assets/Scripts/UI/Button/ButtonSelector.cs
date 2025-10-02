@@ -29,6 +29,13 @@ namespace CrimsonSanctum.UI
         [SerializeField] private float fadeDuration = 1.2f;
         [SerializeField] private Ease fadeEase = Ease.InOutSine;
         
+        [Header("Arrow Indicator")]
+        [SerializeField] private GameObject arrowPrefab;
+        [SerializeField] private float arrowOffsetX = -20f;
+        [SerializeField] private bool animateArrow = true;
+        [SerializeField] private float arrowBounceDistance = 5f;
+        [SerializeField] private float arrowBounceDuration = 0.5f;
+        
         [Header("Audio (Optional)")]
         [SerializeField] private AudioClip navigateSound;
         [SerializeField] private AudioClip selectSound;
@@ -38,7 +45,9 @@ namespace CrimsonSanctum.UI
         private int currentSelectedIndex = 0;
         private bool isVerticalLayout = true;
         private Tween currentFadeTween;
+        private Tween arrowBounceTween;
         private AudioSource audioSource;
+        private GameObject currentArrowInstance;
         
         void Awake()
         {
@@ -58,11 +67,13 @@ namespace CrimsonSanctum.UI
             currentSelectedIndex = Mathf.Clamp(startingIndex, 0, buttons.Count - 1);
             UpdateButtonVisuals();
             StartFadeAnimation();
+            UpdateArrowPosition();
         }
         
         void OnDisable()
         {
             StopFadeAnimation();
+            DestroyArrow();
         }
         
         void Update()
@@ -108,10 +119,6 @@ namespace CrimsonSanctum.UI
             {
                 Debug.LogWarning("ButtonSelector: No interactable buttons found in buttonParent!");
             }
-            else
-            {
-                Debug.Log($"ButtonSelector: Found {buttons.Count} buttons");
-            }
         }
         
         void DetectLayoutType()
@@ -125,18 +132,15 @@ namespace CrimsonSanctum.UI
             if (verticalLayout != null)
             {
                 isVerticalLayout = true;
-                Debug.Log("ButtonSelector: Detected Vertical Layout - Using Up/Down navigation");
             }
             else if (horizontalLayout != null)
             {
                 isVerticalLayout = false;
-                Debug.Log("ButtonSelector: Detected Horizontal Layout - Using Left/Right navigation");
             }
             else
             {
                 // Default to vertical if no layout component found
                 isVerticalLayout = true;
-                Debug.LogWarning("ButtonSelector: No LayoutGroup found, defaulting to Vertical Layout");
             }
         }
         
@@ -200,6 +204,7 @@ namespace CrimsonSanctum.UI
             PlaySound(navigateSound);
             UpdateButtonVisuals();
             RestartFadeAnimation();
+            UpdateArrowPosition();
         }
         
         void OnButtonPressed()
@@ -228,6 +233,7 @@ namespace CrimsonSanctum.UI
                 currentSelectedIndex = index;
                 UpdateButtonVisuals();
                 RestartFadeAnimation();
+                UpdateArrowPosition();
             }
         }
         
@@ -250,6 +256,95 @@ namespace CrimsonSanctum.UI
                 }
             }
         }
+        
+        #region Arrow Indicator
+        
+        void UpdateArrowPosition()
+        {
+            if (arrowPrefab == null) return;
+            if (currentSelectedIndex < 0 || currentSelectedIndex >= buttons.Count) return;
+            
+            Button selectedButton = buttons[currentSelectedIndex];
+            TextMeshProUGUI selectedText = buttonTexts[currentSelectedIndex];
+            
+            if (selectedButton == null) return;
+            
+            // Create arrow instance if it doesn't exist
+            if (currentArrowInstance == null)
+            {
+                currentArrowInstance = Instantiate(arrowPrefab);
+                currentArrowInstance.name = "ArrowIndicator";
+            }
+            
+            // Parent arrow to the selected button
+            currentArrowInstance.transform.SetParent(selectedButton.transform, false);
+            
+            // Calculate position based on text width
+            float textWidth = 0f;
+            if (selectedText != null)
+            {
+                // Get the preferred width of the text
+                textWidth = selectedText.preferredWidth;
+            }
+            
+            // Position arrow to the left of the text
+            RectTransform arrowRect = currentArrowInstance.GetComponent<RectTransform>();
+            if (arrowRect != null)
+            {
+                arrowRect.anchorMin = new Vector2(0.5f, 0.5f);
+                arrowRect.anchorMax = new Vector2(0.5f, 0.5f);
+                arrowRect.pivot = new Vector2(0.5f, 0.5f);
+                
+                float xPosition = -(textWidth / 2f) + arrowOffsetX;
+                arrowRect.anchoredPosition = new Vector2(xPosition, 0f);
+            }
+            
+            // Animate arrow if enabled
+            if (animateArrow)
+            {
+                AnimateArrow();
+            }
+        }
+        
+        void AnimateArrow()
+        {
+            if (currentArrowInstance == null) return;
+            
+            // Kill existing animation
+            if (arrowBounceTween != null)
+            {
+                arrowBounceTween.Kill();
+            }
+            
+            RectTransform arrowRect = currentArrowInstance.GetComponent<RectTransform>();
+            if (arrowRect != null)
+            {
+                Vector2 originalPos = arrowRect.anchoredPosition;
+                Vector2 bouncePos = originalPos + new Vector2(-arrowBounceDistance, 0f);
+                
+                arrowBounceTween = arrowRect.DOAnchorPos(bouncePos, arrowBounceDuration)
+                                           .SetLoops(-1, LoopType.Yoyo)
+                                           .SetEase(Ease.InOutSine)
+                                           .SetUpdate(true);
+            }
+        }
+        
+        void DestroyArrow()
+        {
+            if (arrowBounceTween != null)
+            {
+                arrowBounceTween.Kill();
+                arrowBounceTween = null;
+            }
+            
+            if (currentArrowInstance != null)
+            {
+                Destroy(currentArrowInstance);
+                currentArrowInstance = null;
+            }
+        }
+        
+        #endregion
         
         void ShowPressedFeedback()
         {
@@ -336,6 +431,7 @@ namespace CrimsonSanctum.UI
                 currentSelectedIndex = index;
                 UpdateButtonVisuals();
                 RestartFadeAnimation();
+                UpdateArrowPosition();
             }
         }
         
@@ -360,6 +456,7 @@ namespace CrimsonSanctum.UI
         void OnDestroy()
         {
             StopFadeAnimation();
+            DestroyArrow();
             
             // Clean up button listeners
             foreach (Button button in buttons)

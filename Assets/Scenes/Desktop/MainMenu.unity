@@ -382,6 +382,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 69807013}
   m_CullTransparentMesh: 1
+--- !u!1 &112692593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 112692595}
+  - component: {fileID: 112692594}
+  m_Layer: 0
+  m_Name: MainMenuIntro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &112692594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112692593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f5cc650555f6a43ad83e90a5a9cf90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuDuration: 5
+  titleLogo: {fileID: 1309693171}
+  titleBg: {fileID: 1216734362}
+  UIButtons: {fileID: 554937490}
+  startDelay: 2
+--- !u!4 &112692595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112692593}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1090.6761, y: 652.6772, z: -3.4937947}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &119780611
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,6 +1481,11 @@ MonoBehaviour:
   fadeMaxAlpha: 1
   fadeDuration: 1.2
   fadeEase: 4
+  arrowPrefab: {fileID: 8183175498877363587, guid: 703179e0e178a8a4fbfcdd50f531095d, type: 3}
+  arrowOffsetX: -20
+  animateArrow: 1
+  arrowBounceDistance: 5
+  arrowBounceDuration: 0.5
   navigateSound: {fileID: 0}
   selectSound: {fileID: 0}
 --- !u!114 &554937496
@@ -6683,7 +6737,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2032347499}
-  - component: {fileID: 2032347498}
   - component: {fileID: 2032347500}
   m_Layer: 0
   m_Name: _MainMenuManager
@@ -6692,23 +6745,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2032347498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2032347497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f5cc650555f6a43ad83e90a5a9cf90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainMenuDuration: 5
-  titleLogo: {fileID: 1309693171}
-  titleBg: {fileID: 1216734362}
-  UIButtons: {fileID: 554937490}
-  startDelay: 2
 --- !u!4 &2032347499
 Transform:
   m_ObjectHideFlags: 0
@@ -7422,3 +7458,4 @@ SceneRoots:
   - {fileID: 1009328637}
   - {fileID: 2032347499}
   - {fileID: 1653307358}
+  - {fileID: 112692595}

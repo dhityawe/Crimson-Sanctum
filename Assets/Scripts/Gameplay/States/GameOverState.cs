@@ -46,7 +46,24 @@ public class GameOverState : BaseState<GameManager>
         
         // Find the current player for masking
         GameObject currentPlayer = owner.CurrentPlayer;
+        Debug.Log($"<color=yellow>[GameOverState] TriggerGameOverVisuals - CurrentPlayer from GameManager: {(currentPlayer != null ? currentPlayer.name : "<color=red>NULL</color>")}</color>");
+        
         Transform playerTransform = currentPlayer != null ? currentPlayer.transform : null;
+        
+        // If no player from GameManager, try to find by tag
+        if (playerTransform == null)
+        {
+            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+            if (foundPlayer != null)
+            {
+                playerTransform = foundPlayer.transform;
+                Debug.Log($"<color=orange>[GameOverState] Player not in GameManager, found by tag: {foundPlayer.name}</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=red>[GameOverState] Could not find player transform anywhere!</color>");
+            }
+        }
         
         // Try to use existing GameOverManager
         if (GameOverManager.Instance != null)

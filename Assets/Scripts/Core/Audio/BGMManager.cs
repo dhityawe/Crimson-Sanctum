@@ -97,13 +97,11 @@ namespace CrimsonSanctum.Audio
                 }
             }
             
-            DebugLog($"BGMManager initialized with {sceneBGMContainer.Count} scene configurations");
         }
 
         public void HandleSceneLoaded(string sceneName)
         {
             currentSceneName = sceneName;
-            DebugLog($"BGM Scene loaded: {currentSceneName}");
             
             if (config.enableStartDelay && config.startDelayOnlyOnGameStart && hasGameStarted)
             {
@@ -115,7 +113,7 @@ namespace CrimsonSanctum.Audio
             }
             else if (config.enableStartDelay && config.startDelayOnlyOnGameStart && !hasGameStarted)
             {
-                DebugLog("Start delay already running from initialization, skipping scene load delay");
+                Debug.Log("ff");
             }
             else
             {
@@ -145,7 +143,6 @@ namespace CrimsonSanctum.Audio
 
             if (!sceneBGMContainer.ContainsKey(sceneName))
             {
-                DebugLog($"No BGM configuration found for scene: {sceneName}", LogType.Warning);
                 return;
             }
 
@@ -153,7 +150,7 @@ namespace CrimsonSanctum.Audio
             
             if (sceneBGM.bgmTracks == null || sceneBGM.bgmTracks.Length == 0)
             {
-                DebugLog($"No BGM tracks configured for scene: {sceneName}", LogType.Warning);
+                Debug.Log("");
                 return;
             }
 
@@ -179,7 +176,7 @@ namespace CrimsonSanctum.Audio
         {
             if (track == null || track.audioClip == null)
             {
-                DebugLog("Cannot play BGM track: track or audio clip is null", LogType.Warning);
+                Debug.Log("f");
                 return;
             }
 
@@ -206,8 +203,6 @@ namespace CrimsonSanctum.Audio
 
             // Cache the audio reference for efficient access
             currentAudio = EazySoundManager.GetMusicAudio(currentMusicID);
-
-            DebugLog($"Playing BGM: {track.trackName} (ID: {currentMusicID}) - FadeIn: {shouldFadeIn}");
             
             if (shouldFadeIn && fadeInDuration > 0f)
             {
@@ -238,15 +233,12 @@ namespace CrimsonSanctum.Audio
             
             if (currentAudio == null)
             {
-                DebugLog("Failed to get audio for fade-in", LogType.Error);
                 isFadingIn = false;
                 yield break;
             }
             
             float elapsedTime = 0f;
             float startVolume = 0f;
-            
-            DebugLog($"Starting fade-in: 0 -> {targetVolume} over {fadeInDuration} seconds");
             
             currentAudio.SetVolume(startVolume, 0f);
             
@@ -286,9 +278,7 @@ namespace CrimsonSanctum.Audio
                     float currentTime = currentAudio.AudioSource.time;
                     
                     if (currentTime < lastPlaybackTime - 0.5f)
-                    {
-                        DebugLog($"Loop restart detected for {currentTrack.trackName}");
-                        
+                    {                     
                         if (config.fadeInOnLoopRestart && !isFadingIn)
                         {
                             float fadeInDuration = currentTrack.fadeInSeconds > 0 ? currentTrack.fadeInSeconds : config.defaultFadeInDuration;
@@ -314,7 +304,6 @@ namespace CrimsonSanctum.Audio
 
         private IEnumerator StartDelayedBGMCoroutine(string sceneName, bool isGameStart)
         {
-            DebugLog($"Starting BGM delay for scene: {sceneName} (Game Start: {isGameStart})");
             yield return new WaitForSeconds(config.startDelayDuration);
             
             if (currentStartDelayCoroutine != null)
@@ -330,7 +319,6 @@ namespace CrimsonSanctum.Audio
             {
                 StopCoroutine(currentStartDelayCoroutine);
                 currentStartDelayCoroutine = null;
-                DebugLog("Cancelled ongoing start delay due to manual BGM start");
             }
         }
 
@@ -436,25 +424,6 @@ namespace CrimsonSanctum.Audio
             return sceneBGMContainer.ContainsKey(sceneName) && 
                    sceneBGMContainer[sceneName].bgmTracks != null && 
                    sceneBGMContainer[sceneName].bgmTracks.Length > 0;
-        }
-
-        private void DebugLog(string message, LogType logType = LogType.Log)
-        {
-            if (config != null && config.enableDebugLogs)
-            {
-                switch (logType)
-                {
-                    case LogType.Warning:
-                        Debug.LogWarning($"[BGMManager] {message}");
-                        break;
-                    case LogType.Error:
-                        Debug.LogError($"[BGMManager] {message}");
-                        break;
-                    default:
-                        Debug.Log($"[BGMManager] {message}");
-                        break;
-                }
-            }
         }
     }
 }

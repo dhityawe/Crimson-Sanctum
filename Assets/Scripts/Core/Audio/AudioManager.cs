@@ -90,9 +90,7 @@ namespace CrimsonSanctum.Audio
         /// Initialize the entire audio system
         /// </summary>
         private void InitializeAudioSystem()
-        {
-            Debug.Log("[AudioManager] Starting audio system initialization...");
-            
+        {   
             // Validate configuration
             if (audioConfig == null)
             {
@@ -112,7 +110,6 @@ namespace CrimsonSanctum.Audio
 
             // Handle initial scene BGM
             string currentSceneName = SceneManager.GetActiveScene().name;
-            Debug.Log($"[AudioManager] Starting BGM for scene: {currentSceneName}");
             
             bgmManager.StartInitialBGM(currentSceneName);
 
@@ -161,7 +158,6 @@ namespace CrimsonSanctum.Audio
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             string sceneName = scene.name;
-            Debug.Log($"[AudioManager] Scene loaded: {sceneName}");
             
             // Let BGM Manager handle scene-specific logic
             bgmManager.HandleSceneLoaded(sceneName);
