@@ -1343,6 +1343,9 @@ GameObject:
   - component: {fileID: 554937491}
   - component: {fileID: 554937493}
   - component: {fileID: 554937494}
+  - component: {fileID: 554937495}
+  - component: {fileID: 554937497}
+  - component: {fileID: 554937496}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1407,6 +1410,91 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &554937495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554937490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d6e416318412048a40ea707d8710da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonParent: {fileID: 554937491}
+  startingIndex: 0
+  selectedColor: {r: 0.78039217, g: 0.12156863, b: 0.13333334, a: 1}
+  pressedColor: {r: 0.4862745, g: 0.07450981, b: 0.15294118, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  enableFadeAnimation: 1
+  fadeMinAlpha: 0.5
+  fadeMaxAlpha: 1
+  fadeDuration: 1.2
+  fadeEase: 4
+  navigateSound: {fileID: 0}
+  selectSound: {fileID: 0}
+--- !u!114 &554937496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554937490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13f367da21f9e04496171e95fbca1db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadAction: 0
+  sceneName: 
+  loadOnClick: 1
+  hideGameOverOnLoad: 1
+  enableDebugLogs: 0
+--- !u!114 &554937497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554937490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &582429127
 GameObject:
   m_ObjectHideFlags: 0
@@ -4092,9 +4180,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2032347500}
-        m_TargetAssemblyTypeName: GameSceneManager, Assembly-CSharp
-        m_MethodName: Load
+      - m_Target: {fileID: 554937496}
+        m_TargetAssemblyTypeName: CrimsonSanctum.UI.SceneLoaderButton, Assembly-CSharp
+        m_MethodName: LoadSceneByName
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6597,7 +6685,6 @@ GameObject:
   - component: {fileID: 2032347499}
   - component: {fileID: 2032347498}
   - component: {fileID: 2032347500}
-  - component: {fileID: 2032347501}
   m_Layer: 0
   m_Name: _MainMenuManager
   m_TagString: Untagged
@@ -6656,31 +6743,17 @@ MonoBehaviour:
     sceneAsset: {fileID: 0}
     sceneName: 
   mainMenuScene:
-    sceneAsset: {fileID: 0}
+    sceneAsset: {fileID: 102900000, guid: 3393c00ea253df849b9c5c9ad023093e, type: 3}
     sceneName: 
   gameplayScene:
     sceneAsset: {fileID: 0}
     sceneName: 
   availableScenes: []
-  useAsyncLoading: 1
+  useAsyncLoading: 0
   showLoadingProgress: 1
   minimumLoadingTime: 1
   allowSceneActivation: 1
   enableDebugLogs: 1
---- !u!114 &2032347501
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2032347497}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e6df0b35770d4302b00dcb11e60d055, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterDataList: []
-  spawnPoint: {fileID: 0}
 --- !u!1 &2042420007
 GameObject:
   m_ObjectHideFlags: 0

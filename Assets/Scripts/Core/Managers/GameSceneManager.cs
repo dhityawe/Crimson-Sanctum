@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -416,15 +415,6 @@ public class GameSceneManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Reload the current scene
-    /// </summary>
-    public void ReloadCurrentScene()
-    {
-        string currentScene = GetCurrentSceneName();
-        LoadScene(currentScene);
-    }
-    
-    /// <summary>
     /// Set the next scene to load
     /// </summary>
     public void SetNextScene(string sceneName)
@@ -525,6 +515,25 @@ public class GameSceneManager : MonoBehaviour
     public static void Reload()
     {
         Instance.ReloadCurrentScene();
+    }
+    
+    #endregion
+    
+    #region Scene Reload
+    
+    /// <summary>
+    /// Reload the current scene
+    /// </summary>
+    public void ReloadCurrentScene()
+    {
+        string currentScene = GetCurrentSceneName();
+        
+        if (enableDebugLogs)
+        {
+            Debug.Log($"[GameSceneManager] Reloading current scene: {currentScene}");
+        }
+        
+        LoadScene(currentScene);
     }
     
     #endregion

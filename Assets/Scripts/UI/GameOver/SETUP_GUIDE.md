@@ -54,11 +54,26 @@ Adjust animation timing in GameOverManager:
 - Title Fade Duration: 1s
 - Prompt Appear Delay: 2.5s
 
+### 7. Configure Camera Zoom (New!)
+Adjust camera zoom effect in GameOverManager:
+- **Enable Camera Zoom**: Enable/disable the zoom effect
+- **Zoom Amount**: 0.7 = zoom in to 70%, 1.0 = no zoom, lower = more zoom
+- **Zoom Duration**: How long the zoom animation takes (2s default)
+- **Center On Character**: Whether to center camera on player
+- **Center Offset**: Position offset from character center
+- **Center Duration**: How long centering takes (1.5s default)
+- **Zoom Ease**: Easing curve for smooth animation
+
 ## Performance Benefits
 ✅ **No runtime UI creation** - better performance  
 ✅ **Pre-built UI** - no instantiation overhead  
 ✅ **Manual control** - customize exactly what you need  
 ✅ **Cleaner code** - no fallback complexity  
+✅ **Smooth camera zoom** - dramatic Hades-style effect on character
 
 ## Result
-When player dies → Game over effect triggers with your custom UI setup!
+When player dies → Game over effect triggers with:
+- Camera zooms in and centers on character
+- Screen fades to black (with optional character masking)
+- "GAME OVER" text appears with dramatic animation
+- Restart prompt with breathing effect
