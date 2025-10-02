@@ -51,10 +51,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         // Update current state only if state machine exists
-        if (stateMachine != null)
-        {
-            stateMachine.Update(this);
-        }
+        stateMachine?.Update(this);
     }
     
     /// <summary>

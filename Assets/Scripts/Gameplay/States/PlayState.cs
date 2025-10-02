@@ -83,7 +83,7 @@ public class PlayingState : BaseState<GameManager>
             Debug.Log("PlayingState: GameManager found, ensuring it's initialized...");
             
             // Ensure GameManager is initialized (in case Start() hasn't been called yet)
-            gameManager.Initialize();
+            // gameManager.Initialize();
             
             Debug.Log("PlayingState: Calling ChangeToGameOverState...");
             gameManager.ChangeToGameOverState();
@@ -91,9 +91,6 @@ public class PlayingState : BaseState<GameManager>
         else
         {
             Debug.LogError("PlayingState: No GameManager found in scene!");
-        }
-        {
-            Debug.LogError("GameManager not found! Make sure GameManager exists in the scene.");
         }
     }
 
