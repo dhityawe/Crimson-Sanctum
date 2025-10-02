@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using GabrielBigardi.SpriteAnimator;
 
 public class MainMenuIntro : MonoBehaviour
 {
     [SerializeField] private float mainMenuDuration;
-    [SerializeField] private Image TitleImage;
+    [SerializeField] private Image titleLogo;
+    [SerializeField] private Image titleBg;
     [SerializeField] private GameObject UIButtons;
     [SerializeField] private float startDelay = 0.5f; // Delay in seconds before animation starts
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,21 +21,24 @@ public class MainMenuIntro : MonoBehaviour
         // Start animation after delay
         Invoke(nameof(StartTitleAnimation), startDelay);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     
     private void MakeTextInvisible()
     {
-        if (TitleImage == null) return;
-        
-        // Set alpha to 0 to make image completely invisible
-        Color imageColor = TitleImage.color;
-        imageColor.a = 0f;
-        TitleImage.color = imageColor;
+        if (titleLogo != null)
+        {
+            // Set alpha to 0 to make image completely invisible
+            Color imageColor = titleLogo.color;
+            imageColor.a = 0f;
+            titleLogo.color = imageColor;
+        }
+
+        if (titleBg != null)
+        {
+            // Set alpha to 0 to make background image completely invisible
+            Color bgColor = titleBg.color;
+            bgColor.a = 0f;
+            titleBg.color = bgColor;
+        }
     }
     
     private void MakeUIButtonsInvisible()
@@ -80,31 +85,39 @@ public class MainMenuIntro : MonoBehaviour
         TitleTextAnim();
         UIButtonsAnim();
     }
-    
+
     private void TitleTextAnim()
     {
-        if (TitleImage == null) 
+        if (titleLogo == null)
         {
-            Debug.LogError("TitleImage is null! Please assign the Image component in the inspector.");
+            Debug.LogError("titleLogo is null! Please assign the Image component in the inspector.");
             return;
         }
-        
+
         // Create a sequence for the image animation
         Sequence titleSequence = DOTween.Sequence();
-        
+
         // Calculate timing for each phase
         float fadeTime = mainMenuDuration * 0.4f; // 40% for fade in
         float scaleTime = mainMenuDuration * 0.6f; // 60% for scale effect
-        
+
         // Phase 1: Fade in alpha from 0 to 1
-        titleSequence.Append(TitleImage.DOFade(1f, fadeTime)
+        titleSequence.Append(titleLogo.DOFade(1f, fadeTime)
                             .SetEase(Ease.OutQuad));
-        
+
         // Phase 2: Scale animation for dramatic effect
         // Start the image at normal scale but add a punch scale effect
-        titleSequence.Join(TitleImage.transform.DOPunchScale(Vector3.one * 0.1f, scaleTime, 1, 0.5f)
+        titleSequence.Join(titleLogo.transform.DOPunchScale(Vector3.one * 0.1f, scaleTime, 1, 0.5f)
                           .SetEase(Ease.OutBounce));
-        
+
+        // Animate titleBg if it exists
+        if (titleBg != null)
+        {
+            // Fade in the background image alongside the logo
+            titleSequence.Join(titleBg.DOFade(1f, fadeTime)
+                              .SetEase(Ease.OutQuad));
+        }
+
         // Play the sequence
         titleSequence.Play();
     }

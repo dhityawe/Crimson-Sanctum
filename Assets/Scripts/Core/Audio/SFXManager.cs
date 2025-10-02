@@ -95,8 +95,6 @@ namespace CrimsonSanctum.Audio
                     sfxContainer[sfxClip.name] = sfxClip;
                 }
             }
-            
-            DebugLog($"SFXManager initialized with {sfxContainer.Count} SFX clips");
         }
 
         private void InitializeAudioSourcePool()
@@ -117,8 +115,6 @@ namespace CrimsonSanctum.Audio
             {
                 CreatePooledAudioSource();
             }
-            
-            DebugLog($"AudioSource pool initialized with {audioSourcePool.Count} sources");
         }
 
         private AudioSource CreatePooledAudioSource()
@@ -170,7 +166,6 @@ namespace CrimsonSanctum.Audio
                 source = activeAudioSources[0];
                 activeAudioSources.RemoveAt(0);
                 source.Stop();
-                DebugLog("Reusing oldest AudioSource due to limit reached");
             }
             
             if (source != null)
@@ -204,7 +199,6 @@ namespace CrimsonSanctum.Audio
         {
             if (!sfxContainer.ContainsKey(sfxName))
             {
-                DebugLog($"SFX '{sfxName}' not found", LogType.Warning);
                 return -1;
             }
 
@@ -222,7 +216,6 @@ namespace CrimsonSanctum.Audio
         {
             if (clip == null)
             {
-                DebugLog("Cannot play null AudioClip", LogType.Warning);
                 return -1;
             }
 
@@ -252,7 +245,6 @@ namespace CrimsonSanctum.Audio
         {
             if (clip == null)
             {
-                DebugLog("Cannot play null AudioClip", LogType.Warning);
                 return -1;
             }
 
@@ -282,7 +274,6 @@ namespace CrimsonSanctum.Audio
         {
             if (!sfxContainer.ContainsKey(sfxName))
             {
-                DebugLog($"SFX '{sfxName}' not found", LogType.Warning);
                 return -1;
             }
 
@@ -315,7 +306,6 @@ namespace CrimsonSanctum.Audio
             AudioSource source = GetPooledAudioSource();
             if (source == null)
             {
-                DebugLog("No available AudioSource for SFX", LogType.Warning);
                 return -1;
             }
 
@@ -368,8 +358,6 @@ namespace CrimsonSanctum.Audio
                 }
                 namedSFXTracking[sfxClip.name].Add(audioID);
             }
-
-            DebugLog($"Playing SFX: {sfxClip.name} (AudioSource ID: {audioID})");
             return audioID;
         }
 
@@ -401,8 +389,6 @@ namespace CrimsonSanctum.Audio
                 }
                 namedSFXTracking[sfxClip.name].Add(audioID);
             }
-
-            DebugLog($"Playing SFX via EazySound: {sfxClip.name} (ID: {audioID})");
             return audioID;
         }
 
@@ -455,7 +441,6 @@ namespace CrimsonSanctum.Audio
                 namedSFXTracking.Remove(sfxName);
             }
             
-            DebugLog($"Stopped all instances of SFX: {sfxName}");
         }
 
         public void StopSFX(int audioID)
@@ -466,7 +451,6 @@ namespace CrimsonSanctum.Audio
             {
                 source.Stop();
                 ReturnAudioSourceToPool(source);
-                DebugLog($"Stopped AudioSource SFX with ID: {audioID}");
                 return;
             }
 
@@ -475,11 +459,9 @@ namespace CrimsonSanctum.Audio
             if (audio != null)
             {
                 audio.Stop();
-                DebugLog($"Stopped EazySound SFX with ID: {audioID}");
                 return;
             }
 
-            DebugLog($"Could not find SFX with ID: {audioID}", LogType.Warning);
         }
 
         public void StopSFXByClip(AudioClip clip)
@@ -509,7 +491,6 @@ namespace CrimsonSanctum.Audio
                 }
             }
 
-            DebugLog($"Stopped all instances of AudioClip: {clip.name}");
         }
 
         public void StopAllSFX()
@@ -529,8 +510,6 @@ namespace CrimsonSanctum.Audio
             
             // Clear tracking
             namedSFXTracking.Clear();
-            
-            DebugLog("Stopped all SFX");
         }
 
         public void SetSFXVolume(float volume)
@@ -548,7 +527,6 @@ namespace CrimsonSanctum.Audio
                 }
             }
             
-            DebugLog($"Set SFX volume to: {volume}");
         }
 
         private IEnumerator CleanupInactiveSources()
@@ -602,7 +580,6 @@ namespace CrimsonSanctum.Audio
             if (!string.IsNullOrEmpty(newClip.name) && newClip.clip != null)
             {
                 sfxContainer[newClip.name] = newClip;
-                DebugLog($"Added new SFX clip: {newClip.name}");
             }
         }
 
@@ -622,23 +599,6 @@ namespace CrimsonSanctum.Audio
             PlaySFX(clip, volume, position);
         }
 
-        private void DebugLog(string message, LogType logType = LogType.Log)
-        {
-            if (config != null && config.enableDebugLogs)
-            {
-                switch (logType)
-                {
-                    case LogType.Warning:
-                        Debug.LogWarning($"[SFXManager] {message}");
-                        break;
-                    case LogType.Error:
-                        Debug.LogError($"[SFXManager] {message}");
-                        break;
-                    default:
-                        Debug.Log($"[SFXManager] {message}");
-                        break;
-                }
-            }
-        }
+
     }
 }

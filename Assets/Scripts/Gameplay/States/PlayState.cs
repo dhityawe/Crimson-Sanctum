@@ -74,11 +74,26 @@ public class PlayingState : BaseState<GameManager>
     
     private void OnPlayerDeath()
     {
+        Debug.Log("PlayingState: Player death detected, looking for GameManager...");
+        
         // Find GameManager and change to game over state
         GameManager gameManager = Object.FindFirstObjectByType<GameManager>();
         if (gameManager != null)
         {
+            Debug.Log("PlayingState: GameManager found, ensuring it's initialized...");
+            
+            // Ensure GameManager is initialized (in case Start() hasn't been called yet)
+            gameManager.Initialize();
+            
+            Debug.Log("PlayingState: Calling ChangeToGameOverState...");
             gameManager.ChangeToGameOverState();
+        }
+        else
+        {
+            Debug.LogError("PlayingState: No GameManager found in scene!");
+        }
+        {
+            Debug.LogError("GameManager not found! Make sure GameManager exists in the scene.");
         }
     }
 
@@ -190,7 +205,12 @@ public class PlayingState : BaseState<GameManager>
         GameManager gameManager = Object.FindFirstObjectByType<GameManager>();
         if (gameManager != null)
         {
+            Debug.Log("GameManager found (new event system), changing to GameOver state...");
             gameManager.ChangeToGameOverState();
+        }
+        else
+        {
+            Debug.LogError("GameManager not found (new event system)! Make sure GameManager exists in the scene.");
         }
     }
 }
