@@ -15,7 +15,8 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     [Header("Spike Ceiling Settings")]
     public SpikeTriggerType triggerType = SpikeTriggerType.OnPlayerEnter;
     public float triggerDelay = 1f; // Delay before drop (works for both trigger types)
-    public float triggerDistance = 3f; // Distance from player to trigger drop
+    public float raycastDistance = 3f; // Raycast distance downward to detect player
+    public LayerMask playerLayer; // Layer to detect (set to Player layer)
     public bool usePhysics = true; // Use Rigidbody2D for realistic movement
     
     [Header("Physics Settings")]
@@ -43,14 +44,12 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     private bool hasTriggered = false; // Prevent multiple triggers for proximity
     private Transform playerTransform;
     private Vector3 originalPosition;
-    private float triggerDistanceSquared; // Cache squared distance for performance
 
     protected override void Initialize()
     {
         // Cache components and values
         originalPosition = transform.position;
         audioManager = AudioManager.Instance;
-        triggerDistanceSquared = triggerDistance * triggerDistance; // Cache for performance
         
         spriteAnimator?.Play("Idle");
 
@@ -74,12 +73,12 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         // Get player if using proximity trigger
         if (triggerType == SpikeTriggerType.OnPlayerEnter)
         {
-            Debug.Log("PLAYER MASUK ANJINGG");
             var player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
                 playerTransform = player.transform;
                 enabled = true; // Keep Update active to check distance
+                Debug.Log("PLAYER MASUK ANJINGG");
             }
         }
 
@@ -109,16 +108,14 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
 
     void CheckPlayerProximity()
     {
-        if (playerTransform != null)
+        // Cast a ray downward from the spike ceiling
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastDistance, playerLayer);
+        
+        if (hit.collider != null)
         {
-            // Use squared distance for better performance (avoids sqrt calculation)
-            float distanceSquared = (transform.position - playerTransform.position).sqrMagnitude;
-            if (distanceSquared < triggerDistanceSquared)
-            {
-                // Trigger with delay, just like timed mode
-                hasTriggered = true; // Prevent multiple triggers
-                DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
-            }
+            // Player detected below the spike ceiling
+            hasTriggered = true; // Prevent multiple triggers
+            DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
         }
     }
 
@@ -205,5 +202,25 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
                 audioManager.PlaySFX(listSFX[2], sfxVolume);
             }
         }
+    }
+
+    // Visualize the raycast range in the editor
+    private void OnDrawGizmos()
+    {
+        // Draw the raycast line
+        Gizmos.color = hasTriggered ? Color.red : Color.yellow;
+        Vector3 startPos = Application.isPlaying ? transform.position : transform.position;
+        Vector3 endPos = startPos + Vector3.down * raycastDistance;
+        
+        Gizmos.DrawLine(startPos, endPos);
+        
+        // Draw a small sphere at the end of the raycast
+        Gizmos.DrawWireSphere(endPos, 0.2f);
+        
+        // Draw a box around the detection area
+        Gizmos.color = new Color(1f, 1f, 0f, 0.3f);
+        Vector3 boxSize = new Vector3(1f, raycastDistance, 0f);
+        Vector3 boxCenter = startPos + Vector3.down * (raycastDistance * 0.5f);
+        Gizmos.DrawWireCube(boxCenter, boxSize);
     }
 }

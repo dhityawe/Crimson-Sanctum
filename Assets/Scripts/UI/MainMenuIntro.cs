@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using GabrielBigardi.SpriteAnimator;
+using CrimsonSanctum.UI;
 
 public class MainMenuIntro : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class MainMenuIntro : MonoBehaviour
     [SerializeField] private Image titleLogo;
     [SerializeField] private Image titleBg;
     [SerializeField] private GameObject UIButtons;
+    [SerializeField] private ButtonSelector buttonSelector;
     [SerializeField] private float startDelay = 0.5f; // Delay in seconds before animation starts
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -166,6 +168,7 @@ public class MainMenuIntro : MonoBehaviour
         
         // Enable Button components when animation is complete
         buttonsSequence.OnComplete(() => {
+            buttonSelector.enabled = true;
             Button[] buttons = UIButtons.GetComponentsInChildren<Button>();
             foreach (Button btn in buttons)
             {

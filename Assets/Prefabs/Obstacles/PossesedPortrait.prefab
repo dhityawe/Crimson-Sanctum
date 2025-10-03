@@ -78,7 +78,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -530033591
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 1748275806, guid: 62af0fa54e0db5d46b8747641be95134, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4891,7 +4891,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 854252335
-  m_SortingLayer: 5
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -5052,7 +5052,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -530033591
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
@@ -5194,7 +5194,7 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -530033591
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Positions:
   - {x: 3, y: 0, z: 0}
@@ -5392,11 +5392,11 @@ MonoBehaviour:
   laserImpactEffect: {fileID: 3179226713580624665}
   impactLight: {fileID: 6209777764272071130}
   laserBeamLight: {fileID: 6912278489115388203}
-  laserColliderPrefab: {fileID: 0}
-  whisperSFX: PortraitWhisper
-  chargeSFX: PortraitCharge
-  laserSFX: PortraitLaser
-  sizzleSFX: PortraitSizzle
+  sfxList:
+  - {fileID: 8300000, guid: 71ff4b49291b22a448287597cab5dd2f, type: 3}
+  - {fileID: 8300000, guid: d355a856f25783046910c76bb9e468f8, type: 3}
+  - {fileID: 8300000, guid: 61ccba849c1d8fa43852350251b10a91, type: 3}
+  - {fileID: 8300000, guid: f2e8b54f7b3370e4989e51213fc08ed7, type: 3}
   detectionZone: {fileID: 6378560353103968927}
 --- !u!61 &6378560353103968927
 BoxCollider2D:
@@ -5519,7 +5519,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -530033591
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}

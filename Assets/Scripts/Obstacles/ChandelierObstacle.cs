@@ -22,7 +22,8 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     [Header("Drop Settings")]
     [SerializeField] private float dropDelay = 1f;
-    [SerializeField] private float triggerDistance = 3f;
+    [SerializeField] private float raycastDistance = 3f; // Raycast distance downward to detect player
+    [SerializeField] private LayerMask playerLayer; // Layer to detect (set to Player layer)
     
     [Header("Warning Effects")]
     [SerializeField] private bool useDropWarning = true;
@@ -153,15 +154,17 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
 
     private void CheckPlayerProximity()
     {
-        if (playerTransform != null && !hasDropped && !isWarning)
+        if (!hasDropped && !isWarning)
         {
             // Use child collider position if available, otherwise fallback to main transform
-            Vector3 triggerPosition = childCollider != null ? childCollider.transform.position : transform.position;
-            float distanceSquared = (triggerPosition - playerTransform.position).sqrMagnitude;
-            float triggerDistanceSquared = triggerDistance * triggerDistance;
+            Vector3 raycastOrigin = childCollider != null ? childCollider.transform.position : transform.position;
             
-            if (distanceSquared < triggerDistanceSquared)
+            // Cast a ray downward from the chandelier
+            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, Vector2.down, raycastDistance, playerLayer);
+            
+            if (hit.collider != null)
             {
+                // Player detected below the chandelier
                 TriggerDrop();
             }
         }
@@ -219,6 +222,9 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         // Physics-based drop - similar to SpikeCeilingObstacle
         if (rb != null)
         {
+            // Unfreeze Y position to allow falling (prefab has it frozen initially)
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            
             // Reset rotation to normal and enable physics
             transform.rotation = Quaternion.identity;
             rb.bodyType = RigidbodyType2D.Dynamic;
@@ -378,22 +384,34 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
         DOTween.Kill(transform); // Kill any tweens targeting this transform
     }
 
-    // Debug visualization for trigger distance
+    // Debug visualization for raycast detection
     private void OnDrawGizmos()
     {
         if (behaviorType == ChandelierBehaviorType.Drop)
         {
             // Use child collider position if available, otherwise fallback to main transform
-            Vector3 triggerPosition = childCollider != null ? childCollider.transform.position : transform.position;
+            Vector3 raycastOrigin = childCollider != null ? childCollider.transform.position : transform.position;
             
-            // Draw trigger distance as a wire sphere
+            // Choose color based on state
             Gizmos.color = hasDropped ? Color.red : (isWarning ? new Color(1f, 0.5f, 0f) : Color.yellow);
-            Gizmos.DrawWireSphere(triggerPosition, triggerDistance);
+            
+            // Draw the raycast line
+            Vector3 endPos = raycastOrigin + Vector3.down * raycastDistance;
+            Gizmos.DrawLine(raycastOrigin, endPos);
+            
+            // Draw a small sphere at the end of the raycast
+            Gizmos.DrawWireSphere(endPos, 0.2f);
+            
+            // Draw a box around the detection area
+            Gizmos.color = new Color(1f, 1f, 0f, 0.3f);
+            Vector3 boxSize = new Vector3(1f, raycastDistance, 0f);
+            Vector3 boxCenter = raycastOrigin + Vector3.down * (raycastDistance * 0.5f);
+            Gizmos.DrawWireCube(boxCenter, boxSize);
             
             // Draw a label
             string state = hasDropped ? "DROPPED" : (isWarning ? "WARNING" : "WAITING");
-            UnityEditor.Handles.Label(triggerPosition + Vector3.up * (triggerDistance + 0.5f), 
-                $"Trigger: {triggerDistance}m\n{state}\n{(childCollider != null ? "From Child" : "From Main")}");
+            UnityEditor.Handles.Label(raycastOrigin + Vector3.up * 0.5f, 
+                $"Raycast: {raycastDistance}m\n{state}\n{(childCollider != null ? "From Child" : "From Main")}");
         }
     }
 }

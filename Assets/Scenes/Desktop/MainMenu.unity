@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 112692595}
   - component: {fileID: 112692594}
   m_Layer: 0
-  m_Name: MainMenuIntro
+  m_Name: _MainMenuIntro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -415,6 +415,7 @@ MonoBehaviour:
   titleLogo: {fileID: 1309693171}
   titleBg: {fileID: 1216734362}
   UIButtons: {fileID: 554937490}
+  buttonSelector: {fileID: 554937495}
   startDelay: 2
 --- !u!4 &112692595
 Transform:
@@ -1466,7 +1467,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 554937490}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3d6e416318412048a40ea707d8710da, type: 3}
   m_Name: 

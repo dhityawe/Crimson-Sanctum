@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PossessedPortraitObstacle : ObstacleBase, IActivatable
 {
@@ -21,11 +22,8 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     public ParticleSystem laserImpactEffect; // Particle effect for laser impact
     public Light2D impactLight; // Light that flashes at impact point
     public Light2D laserBeamLight; // Light that follows the laser beam
-    public GameObject laserColliderPrefab; // Prefab with BoxCollider2D tagged as "DeathZone"
-    public string whisperSFX = "PortraitWhisper";
-    public string chargeSFX = "PortraitCharge";
-    public string laserSFX = "PortraitLaser";
-    public string sizzleSFX = "PortraitSizzle";
+    // public GameObject laserColliderPrefab; // Prefab with BoxCollider2D tagged as "DeathZone"
+    [SerializeField] private List<AudioClip> sfxList;
 
     [Header("Components")]
     public Collider2D detectionZone; // Drag your trigger collider here
