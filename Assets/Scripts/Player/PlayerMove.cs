@@ -352,8 +352,7 @@ namespace Assets.Scripts.Player
             _rb.linearVelocity = new Vector2(newX, _rb.linearVelocityY);
             if (IsGrounded() && _spriteAnimator.CurrentAnimation.Name != "StartSkill" || _spriteAnimator.CurrentAnimation.Name != "OnSkill")
             {
-                if(_spriteAnimator.CurrentAnimation.Name == "OnAir")
-                    _stateManager.ChangeState(PlayerState.Moving);
+                _stateManager.ChangeState(PlayerState.Moving);
                 // Debug.Log($"current state: {_stateManager.CurrentState}");
             }
         }
@@ -362,7 +361,11 @@ namespace Assets.Scripts.Player
         {
             if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
-                _spriteAnimator.Play("StartJump").SetOnComplete(() => _spriteAnimator.Play("OnAir"));
+                _spriteAnimator.Play("StartJump").SetOnComplete(() => _spriteAnimator.Play("OnAir").SetOnComplete(() =>
+                {
+                    if (IsGrounded())
+                        _spriteAnimator.Play("Move");
+                }));
                 // _stateManager.ChangeState(PlayerState.Jumping);
                 LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
