@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: e476e9f034779bb4bbe9137d52de9b44
+guid: 9a390f04a27389a47bea6d48956f7404
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4020489315770918266
-    second: solo bat walk 16x16_0
-  - first:
-      213: -3876171354595194312
-    second: solo bat walk 16x16_1
-  - first:
-      213: 4748115329498316820
-    second: solo bat walk 16x16_2
-  - first:
-      213: -7547989969680397639
-    second: solo bat walk 16x16_3
+      213: -1474224021176862780
+    second: laser beam_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -123,7 +114,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -135,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: solo bat walk 16x16_0
+      name: laser beam_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 27
+        height: 3
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,74 +141,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7567c13bb5abc730800000000000000
-      internalID: 4020489315770918266
+      spriteID: 4c7b76240118a8be0800000000000000
+      internalID: -1474224021176862780
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: solo bat walk 16x16_1
+      name: laser beam_1
       rect:
         serializedVersion: 2
-        x: 16
+        x: 27
         y: 0
-        width: 16
-        height: 16
+        width: 27
+        height: 3
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 83a0fc890b2153ac0800000000000000
-      internalID: -3876171354595194312
+      spriteID: 5fbf56ba26d90bb4c9f7c0e334a4c7fc
+      internalID: -1506043732
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: solo bat walk 16x16_2
+      name: laser beam_2
       rect:
         serializedVersion: 2
-        x: 32
+        x: 54
         y: 0
-        width: 16
-        height: 16
+        width: 27
+        height: 3
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 410855f4cb1b4e140800000000000000
-      internalID: 4748115329498316820
+      spriteID: c80e3859e1315544ca6beb71f93cab41
+      internalID: -601304415
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: solo bat walk 16x16_3
+      name: laser beam_3
       rect:
         serializedVersion: 2
-        x: 48
+        x: 81
         y: 0
-        width: 16
-        height: 16
+        width: 27
+        height: 3
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9ba0df01d17204790800000000000000
-      internalID: -7547989969680397639
+      spriteID: c3ad8abccab49ba4fb0676b8f494c1ce
+      internalID: -1205863460
       vertices: []
       indices: 
       edges: []
@@ -226,7 +217,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 709d103ca8d42e145a3381f46a42c672
+    spriteID: ff48a047abf30074cad1c973d9b8b0d4
     internalID: 0
     vertices: []
     indices: 
@@ -236,10 +227,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      solo bat walk 16x16_0: 4020489315770918266
-      solo bat walk 16x16_1: -3876171354595194312
-      solo bat walk 16x16_2: 4748115329498316820
-      solo bat walk 16x16_3: -7547989969680397639
+      laser beam_0: -1474224021176862780
+      laser beam_1: -1506043732
+      laser beam_2: -601304415
+      laser beam_3: -1205863460
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

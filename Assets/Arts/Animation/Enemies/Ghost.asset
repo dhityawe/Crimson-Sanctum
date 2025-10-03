@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77fafcc6bd2ee94ebe9ac341b986e7a, type: 3}
+  m_Name: Ghost
+  m_EditorClassIdentifier: 
+  SpriteAnimations:
+  - Name: Move
+    FPS: 8
+    Frames:
+    - {fileID: -6192944720681037143, guid: e83f9256bd1c40c45b15e142a9f047ce, type: 3}
+    - {fileID: -450290788453369813, guid: e83f9256bd1c40c45b15e142a9f047ce, type: 3}
+    - {fileID: 5434059936570022886, guid: e83f9256bd1c40c45b15e142a9f047ce, type: 3}
+    SpriteAnimationType: 0

@@ -50,7 +50,7 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 53cd095f229bf1a49a29187f87bd4014, type: 2}
   triggerType: 0
   triggerDelay: 0.8
-  raycastDistance: 3
+  raycastDistance: 4
   playerLayer:
     serializedVersion: 2
     m_Bits: 128

@@ -4988,6 +4988,7 @@ GameObject:
   - component: {fileID: 3757985939970574350}
   - component: {fileID: 3261696956033651120}
   - component: {fileID: 2419247956015825590}
+  - component: {fileID: 883065219231153952}
   m_Layer: 0
   m_Name: LeftEye
   m_TagString: Untagged
@@ -5004,9 +5005,9 @@ Transform:
   m_GameObject: {fileID: 6100376832458998957}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.125, y: 0.34399998, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.05, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0.34399998, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4114402108147871061}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5054,12 +5055,12 @@ SpriteRenderer:
   m_SortingLayerID: -530033591
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -1205863460, guid: 9a390f04a27389a47bea6d48956f7404, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 1
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 12, y: 6.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -5117,6 +5118,21 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &883065219231153952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6100376832458998957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d4337bea670e194ca021e2a54e31bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playAutomatically: 1
+  _spriteAnimationObject: {fileID: 11400000, guid: 42723d2c3d40b9643a6a04410f3a9da7, type: 2}
+  _spriteRenderer: {fileID: 3261696956033651120}
 --- !u!1 &7016262862546167239
 GameObject:
   m_ObjectHideFlags: 0
@@ -5377,14 +5393,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: acb25ac7afd22974ba507487a1066501, type: 2}
-  fireInterval: 3
-  chargeDuration: 0.5
-  laserTravelTime: 0.1
+  fireInterval: 2
+  chargeDuration: 0.8
+  laserTravelTime: 0.3
+  maxLaserDistance: 20
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
   laserLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  leftEye: {fileID: 0}
-  rightEye: {fileID: 0}
   shootPoint: {fileID: 6488622774476449580}
   leftEyeLight: {fileID: 2419247956015825590}
   rightEyeLight: {fileID: 6289049443745768841}
@@ -5392,11 +5410,21 @@ MonoBehaviour:
   laserImpactEffect: {fileID: 3179226713580624665}
   impactLight: {fileID: 6209777764272071130}
   laserBeamLight: {fileID: 6912278489115388203}
+  eyeAnimators:
+  - {fileID: 883065219231153952}
+  - {fileID: 7109444643718408306}
   sfxList:
   - {fileID: 8300000, guid: 71ff4b49291b22a448287597cab5dd2f, type: 3}
   - {fileID: 8300000, guid: d355a856f25783046910c76bb9e468f8, type: 3}
   - {fileID: 8300000, guid: 61ccba849c1d8fa43852350251b10a91, type: 3}
   - {fileID: 8300000, guid: f2e8b54f7b3370e4989e51213fc08ed7, type: 3}
+  sfxVolume: 1
+  chargePitchStart: 0.5
+  chargePitchEnd: 2
+  impactPitchStart: 0.5
+  impactPitchPeak: 1.2
+  eyeBlinkTriggerPercent: 0.8
+  impactFadeOutStartPercent: 0.7
   detectionZone: {fileID: 6378560353103968927}
 --- !u!61 &6378560353103968927
 BoxCollider2D:
@@ -5442,7 +5470,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 9, y: 5}
+  m_Size: {x: 8, y: 5}
   m_EdgeRadius: 0
 --- !u!1 &8329602925395257384
 GameObject:
@@ -5455,6 +5483,7 @@ GameObject:
   - component: {fileID: 3904891806575459946}
   - component: {fileID: 1107918055166777397}
   - component: {fileID: 6289049443745768841}
+  - component: {fileID: 7109444643718408306}
   m_Layer: 0
   m_Name: RightEye
   m_TagString: Untagged
@@ -5471,9 +5500,9 @@ Transform:
   m_GameObject: {fileID: 8329602925395257384}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.125, y: 0.34399998, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.05, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0.25, y: 0.34399998, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4114402108147871061}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5521,12 +5550,12 @@ SpriteRenderer:
   m_SortingLayerID: -530033591
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -1205863460, guid: 9a390f04a27389a47bea6d48956f7404, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 1
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 12, y: 6.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -5584,6 +5613,21 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &7109444643718408306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8329602925395257384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d4337bea670e194ca021e2a54e31bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playAutomatically: 1
+  _spriteAnimationObject: {fileID: 11400000, guid: 42723d2c3d40b9643a6a04410f3a9da7, type: 2}
+  _spriteRenderer: {fileID: 1107918055166777397}
 --- !u!1 &8815482287877319072
 GameObject:
   m_ObjectHideFlags: 0

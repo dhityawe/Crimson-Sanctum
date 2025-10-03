@@ -160,6 +160,7 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             if (collision.gameObject.CompareTag("Player"))
             {
                 OnPlayerHit();
+                IgnorePlayerCollision(collision.gameObject); // Exclude player collision so spike passes through
             }
         }
         
@@ -197,10 +198,21 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         {
             PlayHitEffect();
             spriteAnimator.Play("OnHit");
+            
             if (audioManager != null && listSFX != null && listSFX.Count > 2 && listSFX[2] != null)
             {
                 audioManager.PlaySFX(listSFX[2], sfxVolume);
             }
+        }
+    }
+
+    private void IgnorePlayerCollision(GameObject player)
+    {
+        // Ignore collision between spike ceiling and player
+        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        if (playerCollider != null && thisCollider != null)
+        {
+            Physics2D.IgnoreCollision(thisCollider, playerCollider, true);
         }
     }
 
