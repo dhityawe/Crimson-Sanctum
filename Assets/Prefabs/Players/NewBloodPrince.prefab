@@ -178,6 +178,10 @@ PrefabInstance:
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 1.3125
       objectReference: {fileID: 0}
+    - target: {fileID: 5465875182821028195, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _spriteAnimator
+      value: 
+      objectReference: {fileID: 2550659789004114872}
     - target: {fileID: 6738638805431067453, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: m_Name
       value: NewBloodPrince
@@ -380,6 +384,7 @@ MonoBehaviour:
   _stateManager: {fileID: 5902580510281986173}
   _collisionHandler: {fileID: 2363208360216372094}
   _health: {fileID: 1395773541135346789}
+  _spriteAnimator: {fileID: 2550659789004114872}
 --- !u!114 &2363208360216372094
 MonoBehaviour:
   m_ObjectHideFlags: 0

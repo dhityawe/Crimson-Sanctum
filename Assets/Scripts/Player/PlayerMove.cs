@@ -182,7 +182,7 @@ namespace Assets.Scripts.Player
 
         private void HandleDeath()
         {
-            _spriteAnimator.Play("Dead");
+            // _spriteAnimator.Play("Dead");
             OnDeath?.Invoke();
             PlayerEvents.OnPlayerDeath?.Invoke();
             if (_stateManager != null)
@@ -350,6 +350,12 @@ namespace Assets.Scripts.Player
             float targetX = direction * _moveSpeed;
             float newX = Mathf.Lerp(_rb.linearVelocityX, targetX, 0.1f);
             _rb.linearVelocity = new Vector2(newX, _rb.linearVelocityY);
+            if (IsGrounded() && _spriteAnimator.CurrentAnimation.Name != "StartSkill" || _spriteAnimator.CurrentAnimation.Name != "OnSkill")
+            {
+                if(_spriteAnimator.CurrentAnimation.Name == "OnAir")
+                    _stateManager.ChangeState(PlayerState.Moving);
+                // Debug.Log($"current state: {_stateManager.CurrentState}");
+            }
         }
 
         private void HandleJump()
@@ -357,6 +363,7 @@ namespace Assets.Scripts.Player
             if (GameInput.Instance.IsJumpPressed() && IsGrounded())
             {
                 _spriteAnimator.Play("StartJump").SetOnComplete(() => _spriteAnimator.Play("OnAir"));
+                // _stateManager.ChangeState(PlayerState.Jumping);
                 LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
                 _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);

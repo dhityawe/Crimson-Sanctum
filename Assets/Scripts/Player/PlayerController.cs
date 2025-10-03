@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using GabrielBigardi.SpriteAnimator;
 
 namespace Assets.Scripts.Player
 {
@@ -12,6 +13,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private PlayerStateManager _stateManager;
         [SerializeField] private PlayerCollisionHandler _collisionHandler;
         [SerializeField] private PlayerHealth _health;
+        [SerializeField] private SpriteAnimator _spriteAnimator;
 
         private IPlayerAbility[] _abilities;
         
@@ -78,28 +80,52 @@ namespace Assets.Scripts.Player
                     SetAbilityEnabled(_climb, false);
                     break;
                 case PlayerState.Climbing:
+                    // _spriteAnimator.Play("Climb");
+                    PlayAnimation("Climb");
                     SetAbilityEnabled(_move, false);
                     SetAbilityEnabled(_dash, false);
                     SetAbilityEnabled(_climb, true);
                     break;
                 case PlayerState.Dead:
+                    // _spriteAnimator.Play("Dead");
+                    PlayAnimation("Dead");
                     SetAbilityEnabled(_move, false);
                     SetAbilityEnabled(_dash, false);
                     SetAbilityEnabled(_climb, false);
                     break;
                 case PlayerState.Dashing:
+                    // _spriteAnimator.Play("StartSkill").SetOnComplete(() => _spriteAnimator.Play("OnSkill"));
+                    PlayAnimation("StartSkill", "OnSkill");
                     SetAbilityEnabled(_move, false);
                     SetAbilityEnabled(_dash, true);
                     SetAbilityEnabled(_climb, false);
                     break;
                 case PlayerState.Idle:
                 case PlayerState.Moving:
+                    // _spriteAnimator.Play("Move");
+                    PlayAnimation("Move");
+                    SetAbilityEnabled(_move, true);
+                    SetAbilityEnabled(_dash, true);
+                    SetAbilityEnabled(_climb, true);
+                    break;
                 case PlayerState.Jumping:
+                    // _spriteAnimator.Play("StartJump").SetOnComplete(() => _spriteAnimator.Play("OnAir"));
+                    PlayAnimation("StartJump", "OnAir");
                     SetAbilityEnabled(_move, true);
                     SetAbilityEnabled(_dash, true);
                     SetAbilityEnabled(_climb, true);
                     break;
             }
+        }
+
+        public void PlayAnimation(string animationName, string onCompleteAnimation = null)
+        {
+            if (string.IsNullOrEmpty(onCompleteAnimation))
+                _spriteAnimator.Play(animationName);
+            else
+                _spriteAnimator.Play(animationName).SetOnComplete(() => _spriteAnimator.Play(onCompleteAnimation));
+
+            Debug.Log($"Playing animation: {_spriteAnimator.CurrentAnimation.Name}");
         }
 
         private void SetAbilityEnabled(IPlayerAbility ability, bool enabled)

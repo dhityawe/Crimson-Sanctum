@@ -172,7 +172,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 67888128}
-  - component: {fileID: 67888127}
   m_Layer: 0
   m_Name: GameOver
   m_TagString: Untagged
@@ -180,24 +179,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &67888127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 67888126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41990ba782514964a898164744d4e5a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  autoSetupOnStart: 1
-  overlayColor: {r: 0, g: 0, b: 0, a: 1}
-  gameOverText: GAME OVER
-  restartText: Press R to Restart
-  canvasSortOrder: 1000
-  canvasRenderMode: 0
 --- !u!4 &67888128
 Transform:
   m_ObjectHideFlags: 0

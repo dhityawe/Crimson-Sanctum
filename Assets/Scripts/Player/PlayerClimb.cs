@@ -131,7 +131,7 @@ namespace Assets.Scripts.Player
             
             _isClimbing = false;
             IsActive = false;
-            
+
             // Re-enable dash
             if (_playerDash != null)
                 _playerDash.SetEnabled(true);
