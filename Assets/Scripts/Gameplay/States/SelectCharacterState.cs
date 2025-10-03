@@ -18,10 +18,11 @@ public class CharacterSelectState : BaseState<GameManager>
                 Debug.Log($"Character: {firstCharacter.Name}");
                 Debug.Log($"Description: {firstCharacter.Description}");
                 Debug.Log("Use Left/Right Arrow to select character, Press ENTER to start playing!");
-                
+
                 // Create preview of first character
                 CreateCharacterPreview(owner, firstCharacter);
             }
+            owner.SetActiveUI(true);
         }
         else
         {
@@ -47,12 +48,13 @@ public class CharacterSelectState : BaseState<GameManager>
             owner.ChangeToPlayingState(currentCharacterIndex);
         }
     }
-    
+
     public void ExitState(GameManager owner)
     {
         // Don't destroy preview character - it will be used in PlayState
         // Just clear the reference
         currentPreviewCharacter = null;
+        owner.SetActiveUI(false);
     }
     
     private void SelectPreviousCharacter(GameManager owner)
