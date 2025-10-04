@@ -184,9 +184,13 @@ namespace CrimsonSanctum.UI
         {
             QuitGame();
         }
-        
+
+        public void LoadScene(string sceneName)
+        {
+            GameSceneManager.Instance.LoadingScene(sceneName);
+        }
         #endregion
-        
+
         void OnDestroy()
         {
             if (button != null && loadOnClick)

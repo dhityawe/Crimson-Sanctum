@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Custom GameSceneManager for handling scene transitions with drag-and-drop scene configuration.
@@ -8,6 +9,8 @@ using System.Collections.Generic;
 /// </summary>
 public class GameSceneManager : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_25 = new WaitForSeconds(0.25f);
+
     [System.Serializable]
     public class SceneReference
     {
@@ -80,6 +83,8 @@ public class GameSceneManager : MonoBehaviour
     [Range(0f, 5f)]
     [SerializeField] private float minimumLoadingTime = 1f;
     [SerializeField] private bool allowSceneActivation = true;
+    [Space(2.5f)]
+    [SerializeField] private LoadingSceneUI _loadingSceneUI;
     
     [Header("Debug Settings")]
     [SerializeField] private bool enableDebugLogs = true;
@@ -101,7 +106,7 @@ public class GameSceneManager : MonoBehaviour
                 instance = FindFirstObjectByType<GameSceneManager>();
                 if (instance == null)
                 {
-                    GameObject sceneManagerGO = new GameObject("GameSceneManager");
+                    GameObject sceneManagerGO = new("GameSceneManager");
                     instance = sceneManagerGO.AddComponent<GameSceneManager>();
                     DontDestroyOnLoad(sceneManagerGO);
                 }
@@ -319,6 +324,11 @@ public class GameSceneManager : MonoBehaviour
             OnSceneLoadFailed?.Invoke(sceneName);
         }
     }
+
+    public void LoadingScene(string sceneName)
+    {
+        StartCoroutine(LoadingSceneAsync(sceneName));
+    }
     
     /// <summary>
     /// Asynchronous scene loading with progress tracking
@@ -381,17 +391,45 @@ public class GameSceneManager : MonoBehaviour
             Debug.Log($"[GameSceneManager] Scene '{sceneName}' loaded successfully (Async)");
         }
     }
-    
+
+    private IEnumerator LoadingSceneAsync(string sceneName)
+    {
+        _loadingSceneUI.ShowLoadingScene();
+
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+        operation.allowSceneActivation = false;
+
+        float minTime = 2f;
+        float timer = 0;
+
+        while (!operation.isDone)
+        {
+            // float progress = Mathf.Clamp01(operation.progress / 0.9f);
+
+            timer += Time.deltaTime;
+
+            if (operation.progress >= 0.9f && timer >= minTime)
+            {
+                yield return _waitForSeconds0_25;
+                operation.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
+
+        _loadingSceneUI.HideLoadingScene();
+        
+    }
     #endregion
-    
+
     #region Utility Methods
-    
+
     /// <summary>
     /// Get the current scene name
     /// </summary>
     public string GetCurrentSceneName()
     {
-        return UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        return SceneManager.GetActiveScene().name;
     }
     
     /// <summary>
