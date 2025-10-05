@@ -46,7 +46,7 @@ public class GameSceneManager : MonoBehaviour
 
         while (!operation.isDone)
         {
-            timer += Time.time;
+            timer += Time.deltaTime;
             if (operation.progress >= 0.9f && timer >= _minTimeLoading)
             {
                 yield return _waitForSeconds0_5;

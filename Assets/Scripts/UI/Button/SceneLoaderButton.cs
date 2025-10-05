@@ -34,8 +34,8 @@ namespace CrimsonSanctum.UI
         
         [Header("Debug")]
         [SerializeField] private bool enableDebugLogs = false;
-        
-        
+
+
         /// <summary>
         /// Quit the application
         /// </summary>
@@ -45,12 +45,11 @@ namespace CrimsonSanctum.UI
             {
                 Debug.Log("[SceneLoaderButton] Quitting game...");
             }
-            
-            #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-            #else
-                Application.Quit();
-            #endif
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
         
         #region Public Helper Methods for Direct Button Assignment
