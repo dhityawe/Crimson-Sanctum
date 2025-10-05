@@ -8,7 +8,7 @@ public class LoadingSceneUI : MonoBehaviour
 {
     [Header("Text Tutorial Component")]
     [SerializeField] private TMP_Text _tutorialText;
-    [SerializeField] private List<string> _tutorialContents = new();
+    [SerializeField, TextArea(2, 10)] private List<string> _tutorialContents = new();
 
     [Header("Animation Data Component")]
     [SerializeField] private UISpriteAnimator _uISprite;

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 486712065481401819}
   - component: {fileID: 615007691922936290}
   - component: {fileID: 5498199091439531550}
+  - component: {fileID: 6826558808127861235}
   m_Layer: 5
   m_Name: CanvasLoading
   m_TagString: Untagged
@@ -102,6 +103,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6826558808127861235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4318030894099326092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6756d9d6434a6341b4a239e6051b4c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _loadingSceneUI: {fileID: 5136758565538007430}
+  _minTimeLoading: 5
 --- !u!1001 &5189691019173891757
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -110,6 +125,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8849881349421693533}
     m_Modifications:
+    - target: {fileID: 1102276690143577899, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: '_tutorialContents.Array.data[2]'
+      value: "Walls aren\u2019t barriers, they\u2019re rhythm."
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102276690143577899, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: '_tutorialContents.Array.data[7]'
+      value: "Your dash is not escape, it\u2019s declaration."
+      objectReference: {fileID: 0}
     - target: {fileID: 2813141575283401927, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -190,6 +213,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5529601572550032196, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 5529601572550032196, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: c42a3d4019ea46b428936ceb64752746, type: 2}
+    - target: {fileID: 5529601572550032196, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 5529601572550032196, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7134156278495401154, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 900
+      objectReference: {fileID: 0}
     - target: {fileID: 7511714695859684656, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
       propertyPath: m_Name
       value: Loading
@@ -207,6 +250,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+--- !u!114 &5136758565538007430 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1102276690143577899, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
+  m_PrefabInstance: {fileID: 5189691019173891757}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d857026923a4c159bfb81d7330f9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8002673508545161834 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2813141575283401927, guid: 955f94d6089d240ada2e648913fb3948, type: 3}
