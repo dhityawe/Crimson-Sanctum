@@ -5145,7 +5145,7 @@ GameObject:
   - component: {fileID: 8991430961116365520}
   - component: {fileID: 4529138133300137967}
   - component: {fileID: 6912278489115388203}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Laser
   m_TagString: DeathZone
   m_Icon: {fileID: 0}

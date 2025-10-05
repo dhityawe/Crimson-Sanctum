@@ -21,6 +21,8 @@ namespace Assets.Scripts.Player
         private Vector2 _dashDirection;
         private float _lastLinearVelocityX;
         private PlayerStateManager _stateManager;
+        private PlayerHealth _playerHealth;
+        private AfterImageEffect _afterImageEffect;
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
@@ -68,7 +70,36 @@ namespace Assets.Scripts.Player
             _playerMove = GetComponent<PlayerMove>();
             _rb = _playerMove.GetComponent<Rigidbody2D>();
             _stateManager = GetComponent<PlayerStateManager>();
+            _playerHealth = GetComponent<PlayerHealth>();
+            _afterImageEffect = GetComponent<AfterImageEffect>();
             IsActive = true;
+            
+            // Subscribe to health events to cancel dash when hit
+            if (_playerHealth != null)
+            {
+                PlayerHealth.OnInvulnerabilityStart += OnPlayerHit;
+            }
+        }
+        
+        protected virtual void OnDestroy()
+        {
+            // Unsubscribe from health events
+            PlayerHealth.OnInvulnerabilityStart -= OnPlayerHit;
+        }
+        
+        /// <summary>
+        /// Called when player takes damage - cancels dash to allow knockback
+        /// </summary>
+        private void OnPlayerHit()
+        {
+            if (_isDashing)
+            {
+                // Cancel dash WITHOUT resetting velocity - let knockback apply
+                _spriteAnimator.Play("Move"); // Reset animator to Move
+                _isDashing = false;
+                OnEndDash?.Invoke();
+                // Don't call CancelDash() because it resets velocity!
+            }
         }
 
         protected virtual void Update()
@@ -94,7 +125,8 @@ namespace Assets.Scripts.Player
         {
             if (_isDashing)
             {
-                _rb.linearVelocity = _dashDirection * _dashSpeed;
+                // Freeze Y velocity for flying effect
+                _rb.linearVelocity = new Vector2(_dashDirection.x * _dashSpeed, 0f);
             }
         }
 
@@ -107,12 +139,19 @@ namespace Assets.Scripts.Player
             StartCoroutine(StartCooldownDash(_cooldownTime));
             _dashTimer = _dashDuration;
             _dashDirection = _playerMove.IsFlipX() ? Vector2.left : Vector2.right;
+            
+            // Start afterimage effect
+            if (_afterImageEffect != null)
+            {
+                _afterImageEffect.StartAfterimage();
+            }
         }
 
         public void CancelDash()
         {
             if (_isDashing)
             {
+                _spriteAnimator.Play("Move"); // Reset animator to Move
                 _isDashing = false;
                 _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
                 OnEndDash?.Invoke();

@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 8572900374584995086}
   - component: {fileID: 7176129152441627686}
   - component: {fileID: 4586891629969844357}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: DeathZone
   m_Icon: {fileID: 0}

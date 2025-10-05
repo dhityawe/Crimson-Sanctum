@@ -9,23 +9,13 @@ public class GameOverState : BaseState<GameManager>
     private bool gameOverUITriggered = false;
     
     public void EnterState(GameManager owner)
-    {
-        Debug.Log("Game Over - Triggering Visual Effects");
-        
+    {     
         // Trigger the Hades-style game over effect
         TriggerGameOverVisuals(owner);
-        
-        Debug.Log("Press R to restart the game");
     }
     
     public void UpdateState(GameManager owner)
-    {
-        // Check for restart input
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            RestartScene();
-        }
-    }
+    {}
     
     public void ExitState(GameManager owner)
     {
@@ -76,18 +66,5 @@ public class GameOverState : BaseState<GameManager>
             Debug.LogWarning("No GameOverManager found in scene! Please add a GameOverManager with proper UI setup for the game over effect.");
             Debug.Log("GAME OVER - Press R to restart (fallback message)");
         }
-    }
-    
-    private void RestartScene()
-    {
-        // Hide game over effects before restarting
-        if (GameOverManager.Instance != null)
-        {
-            GameOverManager.Instance.HideGameOver();
-        }
-        
-        // Get current scene name and reload it
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
     }
 }

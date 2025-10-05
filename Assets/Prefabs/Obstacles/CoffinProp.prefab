@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5837829185612292534}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CoffinProp
   m_TagString: Bouncable
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2014209410427139866}
   - component: {fileID: 2375810680472367869}
   - component: {fileID: 7751674007262591743}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Model
   m_TagString: Bouncable
   m_Icon: {fileID: 0}

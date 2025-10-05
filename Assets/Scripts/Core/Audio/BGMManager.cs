@@ -111,10 +111,6 @@ namespace CrimsonSanctum.Audio
             {
                 StartDelayedBGM(currentSceneName, false);
             }
-            else if (config.enableStartDelay && config.startDelayOnlyOnGameStart && !hasGameStarted)
-            {
-                Debug.Log("ff");
-            }
             else
             {
                 PlaySceneBGM(currentSceneName);
@@ -174,12 +170,6 @@ namespace CrimsonSanctum.Audio
 
         private void PlayBGMTrack(BGMTrack track)
         {
-            if (track == null || track.audioClip == null)
-            {
-                Debug.Log("f");
-                return;
-            }
-
             // Stop current music if playing
             if (currentMusicID != -1)
             {

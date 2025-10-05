@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 53cd095f229bf1a49a29187f87bd4014, type: 2}
-  triggerType: 0
   triggerDelay: 0.8
   raycastDistance: 4
   playerLayer:
@@ -125,7 +124,7 @@ GameObject:
   - component: {fileID: 8217113514816577921}
   - component: {fileID: 7220562315053778323}
   - component: {fileID: 6989731075953532649}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: DeathZone
   m_Icon: {fileID: 0}

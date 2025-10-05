@@ -36,7 +36,7 @@ public class PlayingState : BaseState<GameManager>
                 AssignCameraToPlayer(spawnedPlayer);
                 
                 // Subscribe to player death events (both old and new systems for compatibility)
-                PlayerMove.OnDeath += OnPlayerDeath;
+                PlayerHealth.OnDeath += OnPlayerDeath;
                 PlayerEvents.OnPlayerDeath += OnPlayerDeathNew;
                 isSubscribedToPlayerDeath = true;
                 isSubscribedToNewPlayerEvents = true;
@@ -61,7 +61,7 @@ public class PlayingState : BaseState<GameManager>
         // Unsubscribe from player death events (both old and new systems)
         if (isSubscribedToPlayerDeath)
         {
-            PlayerMove.OnDeath -= OnPlayerDeath;
+            PlayerHealth.OnDeath -= OnPlayerDeath;
             isSubscribedToPlayerDeath = false;
         }
         

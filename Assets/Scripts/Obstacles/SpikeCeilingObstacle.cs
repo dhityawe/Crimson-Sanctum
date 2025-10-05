@@ -4,20 +4,13 @@ using System.Collections.Generic;
 using CrimsonSanctum.Audio;
 using GabrielBigardi.SpriteAnimator;
 
-public enum SpikeTriggerType
-{
-    OnPlayerEnter,
-    Timed
-}
-
 public class SpikeCeilingObstacle : ObstacleBase, IActivatable
 {
     [Header("Spike Ceiling Settings")]
-    public SpikeTriggerType triggerType = SpikeTriggerType.OnPlayerEnter;
-    public float triggerDelay = 1f; // Delay before drop (works for both trigger types)
-    public float raycastDistance = 3f; // Raycast distance downward to detect player
-    public LayerMask playerLayer; // Layer to detect (set to Player layer)
-    public bool usePhysics = true; // Use Rigidbody2D for realistic movement
+    [SerializeField] private float triggerDelay = 1f; // Delay before drop after player detection
+    [SerializeField] private float raycastDistance = 3f; // Raycast distance downward to detect player
+    [SerializeField] private LayerMask playerLayer; // Layer to detect (set to Player layer)
+    [SerializeField] private bool usePhysics = true; // Use Rigidbody2D for realistic movement
     
     [Header("Physics Settings")]
     [SerializeField] private float mass = 10f; // Mass of the spike ceiling
@@ -38,18 +31,27 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     [SerializeField] private Collider2D thisCollider;
     [SerializeField] private Rigidbody2D rb;
     
-    // Cached components
+    // Cached components and state
     private AudioManager audioManager;
-    private bool hasDropped = false;
-    private bool hasTriggered = false; // Prevent multiple triggers for proximity
-    private Transform playerTransform;
     private Vector3 originalPosition;
+    
+    // State flags
+    private bool hasDropped = false;
+    private bool hasTriggered = false; // Prevent multiple triggers
 
     protected override void Initialize()
     {
-        // Cache components and values
+        // Cache components and values at start
         originalPosition = transform.position;
         audioManager = AudioManager.Instance;
+        
+        // Cache and validate components
+        if (spriteAnimator == null)
+            spriteAnimator = GetComponent<SpriteAnimator>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        if (thisCollider == null)
+            thisCollider = GetComponent<Collider2D>();
         
         spriteAnimator?.Play("Idle");
 
@@ -58,7 +60,9 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         {
             if (rb == null)
             {
-                rb = gameObject.AddComponent<Rigidbody2D>();
+                rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                    rb = gameObject.AddComponent<Rigidbody2D>();
             }
 
             // Configure for realistic physics
@@ -70,28 +74,14 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             rb.freezeRotation = true; // Keep it upright
         }
 
-        // Get player if using proximity trigger
-        if (triggerType == SpikeTriggerType.OnPlayerEnter)
-        {
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                playerTransform = player.transform;
-                enabled = true; // Keep Update active to check distance
-                Debug.Log("PLAYER MASUK ANJINGG");
-            }
-        }
-
-        // Start based on trigger type
-        if (triggerType == SpikeTriggerType.Timed)
-        {
-            DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
-        }
+        // Keep Update active to check for player proximity via raycast
+        enabled = true;
     }
 
     void Update()
     {
-        if (triggerType == SpikeTriggerType.OnPlayerEnter && !hasTriggered)
+        // Check for player proximity if not yet triggered
+        if (!hasTriggered)
         {
             CheckPlayerProximity();
         }
