@@ -1,18 +1,16 @@
 using UnityEngine;
 using DG.Tweening;
-
-public enum SpikeTriggerType
-{
-    OnPlayerEnter,
-    Timed
-}
+using System.Collections.Generic;
+using CrimsonSanctum.Audio;
+using GabrielBigardi.SpriteAnimator;
 
 public class SpikeCeilingObstacle : ObstacleBase, IActivatable
 {
     [Header("Spike Ceiling Settings")]
-    public SpikeTriggerType triggerType = SpikeTriggerType.OnPlayerEnter;
-    public float triggerDelay = 1f; // If timed
-    public bool usePhysics = true; // Use Rigidbody2D for realistic movement
+    [SerializeField] private float triggerDelay = 1f; // Delay before drop after player detection
+    [SerializeField] private float raycastDistance = 3f; // Raycast distance downward to detect player
+    [SerializeField] private LayerMask playerLayer; // Layer to detect (set to Player layer)
+    [SerializeField] private bool usePhysics = true; // Use Rigidbody2D for realistic movement
     
     [Header("Physics Settings")]
     [SerializeField] private float mass = 10f; // Mass of the spike ceiling
@@ -24,32 +22,49 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     public bool showWarningGlow = true;
     public float warningDuration = 0.6f;
     public Color warningColor = new Color(0.8f, 0.2f, 0.2f, 0.7f);
-    public string dropSFX = "SpikeCeilingDrop";
-    public string impactSFX = "SpikeCeilingImpact";
-    public string playerHitSFX = "Squish";
+    public List<AudioClip> listSFX;
+    [Range(0, 1)] public float sfxVolume = 1f;
 
-    private SpriteRenderer spriteRenderer;
-    private Collider2D myCollider;
-    private Rigidbody2D rb;
-    private bool hasDropped = false;
-    private Transform playerTransform;
+    [Header("Components")]
+    [SerializeField] private SpriteAnimator spriteAnimator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Collider2D thisCollider;
+    [SerializeField] private Rigidbody2D rb;
+    
+    // Cached components and state
+    private AudioManager audioManager;
     private Vector3 originalPosition;
+    
+    // State flags
+    private bool hasDropped = false;
+    private bool hasTriggered = false; // Prevent multiple triggers
 
     protected override void Initialize()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        myCollider = GetComponent<Collider2D>();
-        rb = GetComponent<Rigidbody2D>();
+        // Cache components and values at start
         originalPosition = transform.position;
+        audioManager = AudioManager.Instance;
+        
+        // Cache and validate components
+        if (spriteAnimator == null)
+            spriteAnimator = GetComponent<SpriteAnimator>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        if (thisCollider == null)
+            thisCollider = GetComponent<Collider2D>();
+        
+        spriteAnimator?.Play("Idle");
 
         // Setup Rigidbody2D for physics-based movement
         if (usePhysics)
         {
             if (rb == null)
             {
-                rb = gameObject.AddComponent<Rigidbody2D>();
+                rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                    rb = gameObject.AddComponent<Rigidbody2D>();
             }
-            
+
             // Configure for realistic physics
             rb.bodyType = RigidbodyType2D.Kinematic; // Start as kinematic, switch to dynamic when dropping
             rb.mass = mass; // Set realistic mass
@@ -59,30 +74,14 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             rb.freezeRotation = true; // Keep it upright
         }
 
-        // Get player if using proximity trigger
-        if (triggerType == SpikeTriggerType.OnPlayerEnter)
-        {
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-                playerTransform = player.transform;
-            else
-                Debug.LogWarning("Spike Ceiling: Player not found for proximity trigger!");
-        }
-
-        // Start based on trigger type
-        if (triggerType == SpikeTriggerType.Timed)
-        {
-            DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
-        }
-        else if (triggerType == SpikeTriggerType.OnPlayerEnter)
-        {
-            enabled = true; // Keep Update active to check distance
-        }
+        // Keep Update active to check for player proximity via raycast
+        enabled = true;
     }
 
     void Update()
     {
-        if (triggerType == SpikeTriggerType.OnPlayerEnter && !hasDropped)
+        // Check for player proximity if not yet triggered
+        if (!hasTriggered)
         {
             CheckPlayerProximity();
         }
@@ -99,19 +98,23 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
 
     void CheckPlayerProximity()
     {
-        if (playerTransform != null)
+        // Cast a ray downward from the spike ceiling
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastDistance, playerLayer);
+        
+        if (hit.collider != null)
         {
-            float distance = Vector2.Distance(transform.position, playerTransform.position);
-            if (distance < 3f) // hardcoded trigger radius — or make it configurable
-            {
-                TriggerDrop();
-            }
+            // Player detected below the spike ceiling
+            hasTriggered = true; // Prevent multiple triggers
+            DOVirtual.DelayedCall(triggerDelay, TriggerDrop);
         }
     }
 
     public void TriggerDrop()
     {
         if (hasDropped) return;
+        spriteAnimator.Play("OnDrop");
+        audioManager.PlaySFX(listSFX[0], sfxVolume);
+        
         hasDropped = true;
 
         // Optional: Visual warning glow
@@ -147,6 +150,7 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             if (collision.gameObject.CompareTag("Player"))
             {
                 OnPlayerHit();
+                IgnorePlayerCollision(collision.gameObject); // Exclude player collision so spike passes through
             }
         }
         
@@ -161,22 +165,16 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         {
             rb.linearVelocity = Vector2.zero;
             rb.bodyType = RigidbodyType2D.Kinematic; // Lock in place
+            thisCollider.enabled = false;
         }
+        
+        spriteAnimator.Play("OnHit");
 
         // Play metallic CLANG
-        //! SoundManager.Instance?.Play(impactSFX);
-
-        // Optional: camera shake
-        //! CameraShaker.Instance?.Shake(0.4f, 0.2f);
-    }
-
-    void OnDropComplete()
-    {
-        // Fallback — if didn't hit ground, just stop
-        if (!hasDropped) return; // already handled
-
-        // If no ground hit, we still stop (safety)
-        // But ideally, your level design ensures ground is below
+        if (audioManager != null && listSFX != null && listSFX.Count > 1 && listSFX[1] != null)
+        {
+            audioManager.PlaySFX(listSFX[1], sfxVolume);
+        }
     }
 
     // ✅ IActivatable — for Room Director or manual control
@@ -189,9 +187,42 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         if (hasDropped)
         {
             PlayHitEffect();
-            //! SoundManager.Instance?.Play(playerHitSFX);
-            // CameraShaker.Instance?.Shake(0.5f, 0.4f);
-            // GameManager.Instance.PlayerDie();
+            spriteAnimator.Play("OnHit");
+            
+            if (audioManager != null && listSFX != null && listSFX.Count > 2 && listSFX[2] != null)
+            {
+                audioManager.PlaySFX(listSFX[2], sfxVolume);
+            }
         }
+    }
+
+    private void IgnorePlayerCollision(GameObject player)
+    {
+        // Ignore collision between spike ceiling and player
+        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        if (playerCollider != null && thisCollider != null)
+        {
+            Physics2D.IgnoreCollision(thisCollider, playerCollider, true);
+        }
+    }
+
+    // Visualize the raycast range in the editor
+    private void OnDrawGizmos()
+    {
+        // Draw the raycast line
+        Gizmos.color = hasTriggered ? Color.red : Color.yellow;
+        Vector3 startPos = Application.isPlaying ? transform.position : transform.position;
+        Vector3 endPos = startPos + Vector3.down * raycastDistance;
+        
+        Gizmos.DrawLine(startPos, endPos);
+        
+        // Draw a small sphere at the end of the raycast
+        Gizmos.DrawWireSphere(endPos, 0.2f);
+        
+        // Draw a box around the detection area
+        Gizmos.color = new Color(1f, 1f, 0f, 0.3f);
+        Vector3 boxSize = new Vector3(1f, raycastDistance, 0f);
+        Vector3 boxCenter = startPos + Vector3.down * (raycastDistance * 0.5f);
+        Gizmos.DrawWireCube(boxCenter, boxSize);
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6293972890091701046}
   - component: {fileID: 7751765182528133066}
   - component: {fileID: 8424531454387510369}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Model
   m_TagString: Bouncable
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3448599357236910371}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bookshelf
   m_TagString: Bouncable
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ Transform:
   m_GameObject: {fileID: 2517942792970690335}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -2, z: 0}
+  m_LocalPosition: {x: 2, y: -1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

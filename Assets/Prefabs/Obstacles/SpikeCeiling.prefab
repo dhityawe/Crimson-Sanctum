@@ -10,9 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5374928470733814618}
   - component: {fileID: 7920385398487341018}
+  - component: {fileID: 629904861785689757}
+  - component: {fileID: 1319982443311710519}
   m_Layer: 0
   m_Name: SpikeCeiling
-  m_TagString: Untagged
+  m_TagString: DeathZone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423755725509277486}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -46,8 +48,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 53cd095f229bf1a49a29187f87bd4014, type: 2}
-  triggerType: 0
-  triggerDelay: 1
+  triggerDelay: 0.8
+  raycastDistance: 4
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
   usePhysics: 1
   mass: 5
   maxFallSpeed: 10
@@ -56,9 +61,57 @@ MonoBehaviour:
   showWarningGlow: 1
   warningDuration: 0.6
   warningColor: {r: 0.8, g: 0.2, b: 0.2, a: 0.7}
-  dropSFX: SpikeCeilingDrop
-  impactSFX: SpikeCeilingImpact
-  playerHitSFX: Squish
+  listSFX:
+  - {fileID: 8300000, guid: 213256f08360c5d418ad6748aa02b0fb, type: 3}
+  - {fileID: 8300000, guid: 04d7fab918f94f14c900ef29fe436166, type: 3}
+  - {fileID: 8300000, guid: d4fc2efa596322e4d9a2aafd2b453a9b, type: 3}
+  sfxVolume: 0.6
+  spriteAnimator: {fileID: 629904861785689757}
+  spriteRenderer: {fileID: 8217113514816577921}
+  thisCollider: {fileID: 7220562315053778323}
+  rb: {fileID: 1319982443311710519}
+--- !u!114 &629904861785689757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423755725509277486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d4337bea670e194ca021e2a54e31bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playAutomatically: 1
+  _spriteAnimationObject: {fileID: 11400000, guid: e962b7cbd3ffa0945a1e5a8d61aa185f, type: 2}
+  _spriteRenderer: {fileID: 8217113514816577921}
+--- !u!50 &1319982443311710519
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423755725509277486}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &2828613653355007160
 GameObject:
   m_ObjectHideFlags: 0
@@ -71,7 +124,7 @@ GameObject:
   - component: {fileID: 8217113514816577921}
   - component: {fileID: 7220562315053778323}
   - component: {fileID: 6989731075953532649}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: DeathZone
   m_Icon: {fileID: 0}
@@ -135,14 +188,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -530033591
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3b792d15541b08e43aa397657f4132ec, type: 3}
+  m_Sprite: {fileID: 5359138296807805547, guid: 5884fc1482cc99d429b0e9ace413cf8e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -187,12 +240,12 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 2, y: 2}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 0.32, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5, y: 1.2}
+  m_Size: {x: 1.6, y: 1.6}
   m_EdgeRadius: 0
 --- !u!114 &6989731075953532649
 MonoBehaviour:
@@ -209,9 +262,9 @@ MonoBehaviour:
   m_ComponentVersion: 2
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
+  m_FalloffIntensity: 0.8
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 0.2
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 00000000db0afecbe31538afbd19e5c5495468e06374e49f
@@ -223,7 +276,7 @@ MonoBehaviour:
   m_NormalMapDistance: 3
   m_NormalMapQuality: 2
   m_UseNormalMap: 0
-  m_ShadowsEnabled: 1
+  m_ShadowsEnabled: 0
   m_ShadowIntensity: 0.75
   m_ShadowSoftness: 0.3
   m_ShadowSoftnessFalloffIntensity: 0.5

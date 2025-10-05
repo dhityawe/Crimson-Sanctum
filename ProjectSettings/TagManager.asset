@@ -17,8 +17,8 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
-  - 
+  - Player
+  - DeathZone
   - 
   - 
   - 
@@ -57,6 +57,9 @@ TagManager:
     locked: 0
   - name: Properties/Ladder
     uniqueID: 1221934609
+    locked: 0
+  - name: Enemy
+    uniqueID: 1558642345
     locked: 0
   - name: Player
     uniqueID: 3320125885

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8450660027114978499}
   - component: {fileID: 7203832555203785614}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Bouncable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 114025367192032328}
   - component: {fileID: 5961854650408210759}
   - component: {fileID: 9189595355516309994}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TrapdoorCoffin
   m_TagString: DeathZone
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2700191355206388249}
   - component: {fileID: 7709825732750823902}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -530033591
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 8047359977315704081, guid: 956239a185da6b74894d884901c85256, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
