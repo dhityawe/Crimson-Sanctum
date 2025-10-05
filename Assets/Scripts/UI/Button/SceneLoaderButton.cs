@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,7 +26,7 @@ namespace CrimsonSanctum.UI
         
         [Header("Scene Loading Settings")]
         [SerializeField] private SceneLoadAction loadAction = SceneLoadAction.LoadByName;
-        [SerializeField] private string sceneName = "";
+        [SerializeField, Scene] private string _gameplayScene, _mainMenuScene;
         
         [Header("Options")]
         [SerializeField] private bool loadOnClick = true;
@@ -33,82 +35,6 @@ namespace CrimsonSanctum.UI
         [Header("Debug")]
         [SerializeField] private bool enableDebugLogs = false;
         
-        private Button button;
-        
-        void Awake()
-        {
-            button = GetComponent<Button>();
-            
-            if (loadOnClick)
-            {
-                button.onClick.AddListener(OnButtonClick);
-            }
-        }
-        
-        void OnButtonClick()
-        {
-            ExecuteLoadAction();
-        }
-        
-        /// <summary>
-        /// Execute the configured scene load action
-        /// </summary>
-        public void ExecuteLoadAction()
-        {
-            if (enableDebugLogs)
-            {
-                Debug.Log($"[SceneLoaderButton] Executing action: {loadAction}");
-            }
-            
-            // Hide game over screen if enabled
-            if (hideGameOverOnLoad && GameOverManager.Instance != null)
-            {
-                GameOverManager.Instance.HideGameOver();
-            }
-            
-            // Execute the appropriate action
-            switch (loadAction)
-            {
-                case SceneLoadAction.LoadByName:
-                    if (!string.IsNullOrEmpty(sceneName))
-                    {
-                        GameSceneManager.Load(sceneName);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[SceneLoaderButton] Scene name is empty! Cannot load scene.");
-                    }
-                    break;
-                    
-                case SceneLoadAction.LoadNext:
-                    GameSceneManager.LoadNext();
-                    break;
-                    
-                case SceneLoadAction.LoadPrevious:
-                    GameSceneManager.LoadPrevious();
-                    break;
-                    
-                case SceneLoadAction.LoadMainMenu:
-                    GameSceneManager.GoToMainMenu();
-                    break;
-                    
-                case SceneLoadAction.LoadGameplay:
-                    GameSceneManager.StartGameplay();
-                    break;
-                    
-                case SceneLoadAction.ReloadCurrent:
-                    GameSceneManager.Reload();
-                    break;
-                    
-                case SceneLoadAction.QuitGame:
-                    QuitGame();
-                    break;
-                    
-                default:
-                    Debug.LogWarning($"[SceneLoaderButton] Unknown load action: {loadAction}");
-                    break;
-            }
-        }
         
         /// <summary>
         /// Quit the application
@@ -138,8 +64,15 @@ namespace CrimsonSanctum.UI
             {
                 GameOverManager.Instance.HideGameOver();
             }
-            GameSceneManager.Load(name);
+            GameSceneManager.Instance.LoadingScene(name);
         }
+
+        public void LoadMainMenu()
+        {
+            GameSceneManager.Instance.LoadingScene(_mainMenuScene);
+        }
+
+        public void LoadGameplay() => GameSceneManager.Instance.LoadingScene(_gameplayScene);
         
         /// <summary>
         /// Reload current scene (can be assigned directly to Button.onClick)
@@ -150,31 +83,7 @@ namespace CrimsonSanctum.UI
             {
                 GameOverManager.Instance.HideGameOver();
             }
-            GameSceneManager.Reload();
-        }
-        
-        /// <summary>
-        /// Load main menu (can be assigned directly to Button.onClick)
-        /// </summary>
-        public void LoadMainMenu()
-        {
-            if (hideGameOverOnLoad && GameOverManager.Instance != null)
-            {
-                GameOverManager.Instance.HideGameOver();
-            }
-            GameSceneManager.GoToMainMenu();
-        }
-        
-        /// <summary>
-        /// Load next scene (can be assigned directly to Button.onClick)
-        /// </summary>
-        public void LoadNext()
-        {
-            if (hideGameOverOnLoad && GameOverManager.Instance != null)
-            {
-                GameOverManager.Instance.HideGameOver();
-            }
-            GameSceneManager.LoadNext();
+            GameSceneManager.Instance.Reload();
         }
         
         /// <summary>
@@ -190,13 +99,5 @@ namespace CrimsonSanctum.UI
             GameSceneManager.Instance.LoadingScene(sceneName);
         }
         #endregion
-
-        void OnDestroy()
-        {
-            if (button != null && loadOnClick)
-            {
-                button.onClick.RemoveListener(OnButtonClick);
-            }
-        }
     }
 }

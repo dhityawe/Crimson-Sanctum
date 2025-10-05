@@ -1182,7 +1182,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadAction: 0
-  sceneName: 
+  _gameplayScene: Assets/Scenes/Desktop/Awe - Gameplay.unity
+  _mainMenuScene: Assets/Scenes/Desktop/MainMenu.unity
   loadOnClick: 1
   hideGameOverOnLoad: 1
   enableDebugLogs: 0

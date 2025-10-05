@@ -1501,7 +1501,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadAction: 0
-  sceneName: 
+  _gameplayScene: Assets/Scenes/Desktop/Awe - Gameplay.unity
+  _mainMenuScene: Assets/Scenes/Desktop/MainMenu.unity
   loadOnClick: 1
   hideGameOverOnLoad: 1
   enableDebugLogs: 0
@@ -5190,25 +5191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6756d9d6434a6341b4a239e6051b4c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene:
-    sceneAsset: {fileID: 0}
-    sceneName: 
-  previousScene:
-    sceneAsset: {fileID: 0}
-    sceneName: 
-  mainMenuScene:
-    sceneAsset: {fileID: 102900000, guid: 3393c00ea253df849b9c5c9ad023093e, type: 3}
-    sceneName: 
-  gameplayScene:
-    sceneAsset: {fileID: 0}
-    sceneName: 
-  availableScenes: []
-  useAsyncLoading: 0
-  showLoadingProgress: 1
-  minimumLoadingTime: 1
-  allowSceneActivation: 1
   _loadingSceneUI: {fileID: 1610782999}
-  enableDebugLogs: 1
+  _minTimeLoading: 2
 --- !u!1 &1625114380
 GameObject:
   m_ObjectHideFlags: 0
