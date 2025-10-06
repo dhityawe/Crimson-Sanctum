@@ -30,11 +30,11 @@ namespace Assets.Scripts.Enemies
             {
                 if (direction.x < 0) // Moving left
                 {
-                    _spriteRenderer.flipX = false;
+                    _spriteRenderer.flipX = true;
                 }
                 else if (direction.x > 0) // Moving right
                 {
-                    _spriteRenderer.flipX = true;
+                    _spriteRenderer.flipX = false;
                 }
             }
         }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using GabrielBigardi.SpriteAnimator;
+using System.Collections.Generic;
 
 public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 {
@@ -26,9 +27,8 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
     [SerializeField] private ParticleSystem warningParticles; // Optional particle system for warning
 
     [Header("Audio")]
-    public string creakSFX = "CoffinCreak";
-    public string openSFX = "CoffinOpen";
-    public string closeSFX = "CoffinSlam";
+    [SerializeField] private List<AudioClip> sfxList;
+    [SerializeField] private int sfxVolume;
 
     private Collider2D bodyColliderComponent;
     private int originalSortingOrder;

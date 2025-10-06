@@ -66,11 +66,11 @@ namespace Assets.Scripts.Enemies
                     
                     if (moveDirection.x < 0) // Moving left
                     {
-                        _spriteRenderer.flipX = false;
+                        _spriteRenderer.flipX = true;
                     }
                     else if (moveDirection.x > 0) // Moving right
                     {
-                        _spriteRenderer.flipX = true;
+                        _spriteRenderer.flipX = false;
                     }
                 }
             }
