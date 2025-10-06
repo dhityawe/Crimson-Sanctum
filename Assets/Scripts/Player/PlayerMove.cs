@@ -3,6 +3,7 @@ using UnityEngine;
 using Assets.Scripts.Core.Managers;
 using GabrielBigardi.SpriteAnimator;
 
+
 namespace Assets.Scripts.Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
@@ -43,6 +44,7 @@ namespace Assets.Scripts.Player
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
+        [SerializeField] private SpriteAnimator _effectAnimator;
 
         [HideInInspector] public float LastLinearVelocityX { get; set; }
 
@@ -55,6 +57,7 @@ namespace Assets.Scripts.Player
         private PlayerStateManager _stateManager;
         private PlayerCollisionHandler _collisionHandler;
         private PlayerHealth _playerHealth; // Cached reference to PlayerHealth component
+        private AfterImageEffect _afterImageEffect; // Cached reference to AfterImageEffect component
         
         // Knockback tracking
         private bool _isKnockbackActive = false;
@@ -104,6 +107,7 @@ namespace Assets.Scripts.Player
             _stateManager = GetComponent<PlayerStateManager>();
             _collisionHandler = GetComponent<PlayerCollisionHandler>();
             _playerHealth = GetComponent<PlayerHealth>();
+            _afterImageEffect = GetComponent<AfterImageEffect>();
         }
 
         void Start()
@@ -219,6 +223,14 @@ namespace Assets.Scripts.Player
         private void ApplyKnockback()
         {
             if (_rb == null) return;
+
+            _playerHealth.ApplyEffect();
+            
+            // Start afterimage effect during knockback
+            if (_afterImageEffect != null)
+            {
+                _afterImageEffect.StartAfterimage();
+            }
             
             // Calculate knockback direction (opposite to facing direction)
             float knockbackDirection = _isFlipx ? 1f : -1f; // Push opposite to facing direction
@@ -244,23 +256,32 @@ namespace Assets.Scripts.Player
             _isKnockbackActive = false;
             _isRecoveringFromKnockback = true;
             _knockbackRecoveryTimer = _knockbackRecoveryTime;
+            
+            // Stop afterimage effect when knockback ends
+            if (_afterImageEffect != null)
+            {
+                _afterImageEffect.StopAfterimage();
+            }
         }
+        
         
         private void HandleCoinPickup()
         {
             OnPickupCoin?.Invoke();
             PlayerEvents.OnCoinPickup?.Invoke();
-        }        private void CheckBouncableCollision()
+        }
+
+        private void CheckBouncableCollision()
         {
             if (_horizontalRaycastPoint == null || _verticalRaycastPoint == null) return;
-            
+
             Vector2 currentPosition = transform.position;
             float currentTime = Time.fixedTime; // Use fixedTime for FixedUpdate
-            
+
             // Enhanced stuck detection using velocity
             bool isVelocityStuck = Mathf.Abs(_rb.linearVelocityX) < _stuckVelocityThreshold;
             bool hasBeenStuckLongEnough = currentTime - _stuckCheckStartTime >= _stuckCheckTime;
-            
+
             // Check if cooldown period has ended and player might be stuck
             if (currentTime - _lastBounceTime >= _bounceCooldown)
             {
@@ -268,7 +289,7 @@ namespace Assets.Scripts.Player
                 if (hasBeenStuckLongEnough && isVelocityStuck)
                 {
                     float distanceMoved = Vector2.Distance(currentPosition, _positionBeforeCooldown);
-                    
+
                     if (distanceMoved < _stuckThreshold)
                     {
                         PerformBounce(currentPosition, currentTime, true);
@@ -284,12 +305,12 @@ namespace Assets.Scripts.Player
                     return;
                 }
             }
-            
+
             // Smart raycasting - only check relevant directions
-            bool foundBouncable = _useSmartRaycasting ? 
-                CheckBouncableSmartRaycast(currentPosition) : 
+            bool foundBouncable = _useSmartRaycasting ?
+                CheckBouncableSmartRaycast(currentPosition) :
                 CheckBouncableAllDirections(currentPosition);
-            
+
             if (foundBouncable)
             {
                 PerformBounce(currentPosition, currentTime, false);

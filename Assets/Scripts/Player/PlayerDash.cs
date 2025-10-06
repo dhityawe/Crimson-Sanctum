@@ -95,7 +95,11 @@ namespace Assets.Scripts.Player
             if (_isDashing)
             {
                 // Cancel dash WITHOUT resetting velocity - let knockback apply
-                _spriteAnimator.Play("Move"); // Reset animator to Move
+                // Only play Move animation if not climbing
+                if (_stateManager == null || _stateManager.CurrentState != PlayerState.Climbing)
+                {
+                    _spriteAnimator.Play("Move");
+                }
                 _isDashing = false;
                 OnEndDash?.Invoke();
                 // Don't call CancelDash() because it resets velocity!
@@ -151,7 +155,11 @@ namespace Assets.Scripts.Player
         {
             if (_isDashing)
             {
-                _spriteAnimator.Play("Move"); // Reset animator to Move
+                // Only play Move animation if not climbing
+                if (_stateManager == null || _stateManager.CurrentState != PlayerState.Climbing)
+                {
+                    _spriteAnimator.Play("Move");
+                }
                 _isDashing = false;
                 _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
                 OnEndDash?.Invoke();
@@ -160,10 +168,22 @@ namespace Assets.Scripts.Player
 
         protected virtual void EndDash()
         {
-            _spriteAnimator.Play("EndSkill").SetOnComplete(() => _spriteAnimator.Play("Move"));
-            _isDashing = false;
-            _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
-            OnEndDash?.Invoke();
+            // Only play EndSkill and transition to Move if not climbing
+            if (_stateManager != null && _stateManager.CurrentState == PlayerState.Climbing)
+            {
+                // Just stop dashing, let climb animation continue
+                _isDashing = false;
+                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
+                OnEndDash?.Invoke();
+            }
+            else
+            {
+                // Normal end dash sequence
+                _spriteAnimator.Play("EndSkill").SetOnComplete(() => _spriteAnimator.Play("Move"));
+                _isDashing = false;
+                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
+                OnEndDash?.Invoke();
+            }
         }
 
         protected virtual IEnumerator StartCooldownDash(float cooldownTime)
