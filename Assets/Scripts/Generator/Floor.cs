@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Assets.Scripts.Core.Managers;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
@@ -9,7 +10,9 @@ namespace Assets.Scripts.Generator
     {
         [Tooltip("GameObject Ladder")]
         [SerializeField] private Transform _ladderObject;
+        [SerializeField] private List<ObstacleBase> _obstacles = new List<ObstacleBase>();
         // Start is called once before the first execution of Update after the MonoBehaviour is created
+
         void Start()
         {
 
@@ -19,6 +22,14 @@ namespace Assets.Scripts.Generator
         void Update()
         {
 
+        }
+
+        public void ResetObstacles()
+        {
+            foreach (var obstacle in _obstacles)
+            {
+                obstacle.ResetObstacle();
+            }
         }
 
         public void SetActiveLevel(bool isEven = false)

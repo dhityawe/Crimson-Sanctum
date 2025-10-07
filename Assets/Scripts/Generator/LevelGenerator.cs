@@ -90,6 +90,7 @@ namespace Assets.Scripts.Generator
             {
                 bool isEven = floorNumber % 2 == 0;
                 floorComp.SetActiveLevel(isEven);
+                floorComp.ResetObstacles();
             }
 
             activeFloors[floorNumber] = floor;

@@ -53,21 +53,79 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     // State tracking
     private bool hasDropped = false;
     private bool isWarning = false;
-    private Vector3 originalPosition;
+    private Vector3 originalLocalPosition;
+
+    public override void ResetObstacle()
+    {
+        if (hasDropped == false) return; // Only reset if it has dropped
+
+        // Reset state
+        hasDropped = false;
+        isWarning = false;
+
+        // Reset position and rotation
+        transform.localPosition = originalLocalPosition;
+        transform.rotation = Quaternion.identity;
+
+        // Reset Rigidbody2D if used
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic; // Reset to kinematic
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezePositionX; // Freeze Y for swing
+        }
+
+        // Re-enable child collider if assigned
+        if (childCollider != null)
+        {
+            childCollider.enabled = true;
+            // Re-enable collision with Player/DeathZone layers in case it was disabled
+            int playerLayer = LayerMask.NameToLayer("Player");
+            int deathZoneLayer = LayerMask.NameToLayer("DeathZone");
+            Physics2D.IgnoreLayerCollision(playerLayer, deathZoneLayer, false);
+        }
+
+        // Reset animator to idle state
+        if (spriteAnimator != null)
+        {
+            spriteAnimator.Play("Idle");
+        }
+
+        // Stop any warning particles
+        if (warningParticles != null)
+        {
+            warningParticles.Stop();
+            warningParticles.Clear();
+        }
+
+        // Stop all tweens on this transform
+        DOTween.Kill(transform);
+
+        // Restart behavior based on type
+        if (behaviorType == ChandelierBehaviorType.Swing)
+        {
+            StartSwing();
+        }
+        else if (behaviorType == ChandelierBehaviorType.Drop)
+        {
+            StartSwing(); // Always start with swing animation
+        }
+    }
 
     protected override void Initialize()
     {
         // Cache beneficial components only (audioManager is cached in base class)
-        originalPosition = transform.position;
-        
+        originalLocalPosition = transform.localPosition;
+
         // Randomize swing angle, speed, and behavior
         swingAngle = Random.Range(10f, 20f);
         swingSpeed = Random.Range(0.4f, 0.8f);
         behaviorType = (ChandelierBehaviorType)Random.Range(0, 2); // 0 = Swing, 1 = Drop
-        
+
         // Get and cache player reference for Drop behavior
         var player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) 
+        if (player != null)
         {
             playerTransform = player.transform;
         }
@@ -79,7 +137,7 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             {
                 rb = gameObject.AddComponent<Rigidbody2D>();
             }
-            
+
             // Configure for realistic physics
             rb.bodyType = RigidbodyType2D.Kinematic; // Start as kinematic, switch to dynamic when dropping
             rb.mass = mass;
@@ -95,7 +153,7 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             {
                 rb = gameObject.AddComponent<Rigidbody2D>();
             }
-            
+
             rb.bodyType = RigidbodyType2D.Kinematic;
             rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezePositionX;
         }
