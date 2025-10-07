@@ -32,6 +32,11 @@ namespace Assets.Scripts.Player
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
+        
+        /// <summary>
+        /// Returns true if the player is currently performing a dash
+        /// </summary>
+        public bool IsDashing => _isDashing;
 
         #region Audio Management
         

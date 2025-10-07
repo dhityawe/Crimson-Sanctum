@@ -531,6 +531,10 @@ namespace Assets.Scripts.Player
 
         public void HandleMove()
         {
+            // Handle footstep sound system FIRST (before knockback check)
+            // This ensures footsteps play during recovery phase
+            HandleFootstepSound();
+            
             // Don't allow movement control during active knockback
             if (_isKnockbackActive)
             {
@@ -540,9 +544,6 @@ namespace Assets.Scripts.Player
             
             float direction = _isFlipx ? -1f : 1f;
             float targetX = direction * _moveSpeed;
-            
-            // Handle footstep sound system
-            HandleFootstepSound();
             
             // Smooth transition after knockback ends
             if (_isRecoveringFromKnockback)
@@ -593,9 +594,9 @@ namespace Assets.Scripts.Player
             bool isGrounded = IsGroundedRaycast();
             
             // Check if dashing - don't play footsteps while dashing
-            bool isDashing = _playerDash != null && _stateManager != null && 
-                           (_stateManager.CurrentState == PlayerState.Dashing || 
-                            (_playerDash.IsActive && _stateManager.CurrentState == PlayerState.Moving));
+            // Check both PlayerState AND the actual _isDashing state from PlayerDash
+            bool isDashing = (_stateManager != null && _stateManager.CurrentState == PlayerState.Dashing) ||
+                           (_playerDash != null && _playerDash.IsDashing);
             
             // Player is grounded and NOT dashing - handle footstep rhythm
             if (isGrounded && !isDashing)

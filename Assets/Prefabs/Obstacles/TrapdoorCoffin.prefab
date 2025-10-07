@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 980624778360454827}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -1.5, z: 0}
+  m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -129,7 +129,7 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: acb25ac7afd22974ba507487a1066501, type: 2}
   triggerType: 0
   triggerRadius: 2
-  triggerDelay: 0.5
+  triggerDelay: 0.1
   closeDelay: 2.5
   openEase: 13
   closeEase: 27

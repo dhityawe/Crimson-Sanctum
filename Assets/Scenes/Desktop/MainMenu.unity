@@ -5417,7 +5417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fed4b65befb19048a9c7bc53763dc46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioConfig: {fileID: 11400000, guid: 55741ffb140942d46852c0b13392bcdf, type: 2}
+  audioConfig: {fileID: 11400000, guid: a361b940eb9828c4bbbb2864e16321bd, type: 2}
   bgmManager: {fileID: 1653307360}
   sfxManager: {fileID: 1653307359}
   crossFadeHandler: {fileID: 1653307361}

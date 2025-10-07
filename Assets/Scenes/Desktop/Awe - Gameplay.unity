@@ -2211,6 +2211,8 @@ MonoBehaviour:
   centerOffset: {x: 0, y: 0, z: 0}
   centerDuration: 1.5
   zoomEase: 7
+  sfxList:
+  - {fileID: 8300000, guid: 43875cb728687e349be18fb515ef7607, type: 3}
 --- !u!1 &1598768583
 GameObject:
   m_ObjectHideFlags: 0
@@ -3872,6 +3874,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7920385398487341018, guid: dff24a9ff08b50a4bb012acb0b91ee58, type: 3}
+      propertyPath: spatialPreset
+      value: 
+      objectReference: {fileID: 11400000, guid: 3ef8a630e81cfbc439c74a0e2e86d7d3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

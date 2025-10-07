@@ -12,15 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556666da479e5a2469d028bbc5e7eefb, type: 3}
   m_Name: AudioConfig
   m_EditorClassIdentifier: 
-  globalMusicVolume: 0.4
+  globalMasterVolume: 1
+  globalMusicVolume: 1
   globalSFXVolume: 1
+  bgmVolume: 0.7
+  playerSFXVolume: 0.8
+  environmentSFXVolume: 0.4
+  obstacleSFXVolume: 0.5
+  uiSFXVolume: 0.6
+  gameOverSFXVolume: 0.8
+  combatSFXVolume: 0
+  voiceOverVolume: 0
   persistAcrossScenes: 1
   enableCrossFade: 1
   crossFadeDuration: 2
   crossFadeOnSceneChange: 1
-  crossFadeOnTrackChange: 0
+  crossFadeOnTrackChange: 1
   alwaysFadeInFromZero: 1
-  fadeInOnLoopRestart: 0
+  fadeInOnLoopRestart: 1
   defaultFadeInDuration: 1.5
   enableStartDelay: 1
   startDelayDuration: 2

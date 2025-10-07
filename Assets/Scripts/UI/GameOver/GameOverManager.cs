@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 using Unity.Cinemachine;
+using System.Collections.Generic;
 
 namespace CrimsonSanctum.UI
 {
@@ -41,11 +42,14 @@ namespace CrimsonSanctum.UI
         [SerializeField] private Vector3 centerOffset = Vector3.zero;
         [SerializeField] private float centerDuration = 1.5f;
         [SerializeField] private Ease zoomEase = Ease.InOutQuad;
-        
+
+        [Header("Audio Settings")]
+        [SerializeField] private List<AudioClip> sfxList;
+
         #endregion
-        
+
         #region Private Fields
-        
+
         private Camera mainCamera;
         private CinemachineCamera cinemachineCamera;
         private float originalCameraSize;
@@ -57,6 +61,9 @@ namespace CrimsonSanctum.UI
         private Transform playerTransform;
         private Sequence gameOverSequence;
         private bool isActive;
+        
+        // Audio Management
+        private Dictionary<string, AudioSource> _gameOverAudioSources = new Dictionary<string, AudioSource>();
         
         #endregion
         
@@ -169,6 +176,16 @@ namespace CrimsonSanctum.UI
             gameOverSequence?.Kill();
             
             SetupInitialStates();
+            
+            // Play game over sound effect
+            if (sfxList != null && sfxList.Count > 0 && sfxList[0] != null)
+            {
+                AudioSource gameOverSource = CreateGameOverAudioSource("GameOver", sfxList[0], 1f, false);
+                if (gameOverSource != null)
+                {
+                    gameOverSource.Play();
+                }
+            }
             
             if (maskedOverlay != null && playerTransform != null)
                 maskedOverlay.SetTarget(playerTransform);
@@ -307,6 +324,80 @@ namespace CrimsonSanctum.UI
             
             if (mainCamera != null)
                 mainCamera.DOKill();
+            
+            // Cleanup audio sources
+            CleanupGameOverAudioSources();
+        }
+        
+        #endregion
+        
+        #region Audio Management
+        
+        /// <summary>
+        /// Creates a persistent AudioSource for game over sounds
+        /// </summary>
+        private AudioSource CreateGameOverAudioSource(string name, AudioClip clip, float volume = 1f, bool loop = false)
+        {
+            if (clip == null) return null;
+            
+            // Check if AudioSource already exists
+            if (_gameOverAudioSources.ContainsKey(name))
+            {
+                var existingSource = _gameOverAudioSources[name];
+                if (existingSource != null)
+                {
+                    existingSource.clip = clip;
+                    existingSource.volume = volume;
+                    existingSource.loop = loop;
+                    return existingSource;
+                }
+            }
+            
+            // Create new AudioSource GameObject as child
+            GameObject audioObject = new GameObject($"GameOverAudio_{name}");
+            audioObject.transform.SetParent(transform);
+            audioObject.transform.localPosition = Vector3.zero;
+            
+            AudioSource source = audioObject.AddComponent<AudioSource>();
+            source.clip = clip;
+            source.volume = volume;
+            source.loop = loop;
+            source.playOnAwake = false;
+            source.spatialBlend = 0f; // 2D sound
+            
+            _gameOverAudioSources[name] = source;
+            return source;
+        }
+        
+        /// <summary>
+        /// Stops a specific game over AudioSource
+        /// </summary>
+        private void StopGameOverAudioSource(string name)
+        {
+            if (_gameOverAudioSources.ContainsKey(name))
+            {
+                var source = _gameOverAudioSources[name];
+                if (source != null && source.isPlaying)
+                {
+                    source.Stop();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Cleanup all game over AudioSources
+        /// </summary>
+        private void CleanupGameOverAudioSources()
+        {
+            foreach (var kvp in _gameOverAudioSources)
+            {
+                if (kvp.Value != null)
+                {
+                    kvp.Value.Stop();
+                    Destroy(kvp.Value.gameObject);
+                }
+            }
+            _gameOverAudioSources.Clear();
         }
         
         #endregion
