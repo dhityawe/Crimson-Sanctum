@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewObstacleData", menuName = "CrimsonSanctum/ObstacleData")]
+[CreateAssetMenu(fileName = "NewObstacleData", menuName = "Crimson Sanctum/ObstacleData")]
 public class ObstacleData : ScriptableObject
 {
     public string obstacleName = "Unnamed Obstacle";

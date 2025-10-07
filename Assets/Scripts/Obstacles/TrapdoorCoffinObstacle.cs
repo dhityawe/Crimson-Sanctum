@@ -1,6 +1,8 @@
 using UnityEngine;
 using DG.Tweening;
 using GabrielBigardi.SpriteAnimator;
+using System.Collections.Generic;
+using CrimsonSanctum.Audio;
 
 public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 {
@@ -26,9 +28,8 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
     [SerializeField] private ParticleSystem warningParticles; // Optional particle system for warning
 
     [Header("Audio")]
-    public string creakSFX = "CoffinCreak";
-    public string openSFX = "CoffinOpen";
-    public string closeSFX = "CoffinSlam";
+    [SerializeField] private List<AudioClip> sfxList;
+    [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
 
     private Collider2D bodyColliderComponent;
     private int originalSortingOrder;
@@ -109,8 +110,13 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
     /// </summary>
     protected virtual void OnTriggerWarning()
     {
-        // ▶️ Play creak SFX (warning sound)
-        //! SoundManager.Instance?.Play(creakSFX);
+        // ▶️ Play creak SFX (warning sound) using persistent AudioSource
+        if (sfxList != null && sfxList.Count > 2 && sfxList[2] != null)
+        {
+            AudioSource warningSource = CreateObstacleAudioSource("Warning", sfxList[2], sfxVolume);
+            if (warningSource != null)
+                warningSource.Play();
+        }
         
         // ▶️ Add glow effect if enabled
         if (useWarningGlow && coffinLid != null)
@@ -181,7 +187,6 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
 
     void OnOpenComplete()
     {
-        Debug.Log("Coffin: Opened");
         // ▶️ Disable bodyCollider
         if (bodyColliderComponent != null)
             bodyColliderComponent.enabled = false;
@@ -189,8 +194,13 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
         // ▶️ Set sorting order to 6 (open state)
         coffinLid.sortingOrder = 6;
 
-        // ▶️ Play open SFX
-        //! SoundManager.Instance?.Play(openSFX);
+        // ▶️ Play open SFX (index 1) using persistent AudioSource
+        if (sfxList != null && sfxList.Count > 1 && sfxList[1] != null)
+        {
+            AudioSource openSource = CreateObstacleAudioSource("Open", sfxList[1], sfxVolume);
+            if (openSource != null)
+                openSource.Play();
+        }
 
         // ▶️ Auto-close after delay
         DOVirtual.DelayedCall(closeDelay, CloseCoffin);
@@ -203,10 +213,15 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
         // set back sorting order to original
         coffinLid.sortingOrder = originalSortingOrder;
 
-        // ▶️ Play close SFX
-        //! SoundManager.Instance?.Play(closeSFX);
+        // ▶️ Play close SFX (index 0) using persistent AudioSource
+        if (sfxList != null && sfxList.Count > 0 && sfxList[0] != null)
+        {
+            AudioSource closeSource = CreateObstacleAudioSource("Close", sfxList[0], sfxVolume);
+            if (closeSource != null)
+                closeSource.Play();
+        }
+        
         // if animation on complete play OnCloseComplete
-
         spriteAnimator.Play("Close").SetOnComplete(OnCloseComplete);
     }
 
@@ -240,9 +255,10 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
         }
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         DOTween.Kill(this);
+        base.OnDestroy();
     }
 }
 

@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Core.Managers;
 using GabrielBigardi.SpriteAnimator;
+using CrimsonSanctum.Audio;
+
 
 namespace Assets.Scripts.Player
 {
@@ -43,6 +46,14 @@ namespace Assets.Scripts.Player
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
+        [SerializeField] private SpriteAnimator _effectAnimator;
+
+        [Header("Audio List")]
+        [SerializeField] private List<AudioClip> _sfxList;
+        [SerializeField] [Tooltip("Time between footstep sound loops (creates rhythmic footsteps)")] 
+        private float _footstepInterval = 0.3f; // Time between footstep sounds
+        [SerializeField] [Range(0f, 1f)] [Tooltip("Volume for footstep and jump SFX")]
+        private float _sfxVolume = 0.8f;
 
         [HideInInspector] public float LastLinearVelocityX { get; set; }
 
@@ -55,6 +66,8 @@ namespace Assets.Scripts.Player
         private PlayerStateManager _stateManager;
         private PlayerCollisionHandler _collisionHandler;
         private PlayerHealth _playerHealth; // Cached reference to PlayerHealth component
+        private AfterImageEffect _afterImageEffect; // Cached reference to AfterImageEffect component
+        private PlayerDash _playerDash; // Cached reference to PlayerDash component
         
         // Knockback tracking
         private bool _isKnockbackActive = false;
@@ -68,6 +81,10 @@ namespace Assets.Scripts.Player
         // Stuck detection tracking
         private Vector2 _positionBeforeCooldown;
         private float _stuckCheckStartTime;
+        
+        // SFX tracking
+        private float _footstepTimer = 0f;
+        private Dictionary<string, AudioSource> _playerAudioSources = new Dictionary<string, AudioSource>();
 
         #region IPlayerAbility Implementation
         public bool IsActive { get; private set; }
@@ -104,6 +121,8 @@ namespace Assets.Scripts.Player
             _stateManager = GetComponent<PlayerStateManager>();
             _collisionHandler = GetComponent<PlayerCollisionHandler>();
             _playerHealth = GetComponent<PlayerHealth>();
+            _afterImageEffect = GetComponent<AfterImageEffect>();
+            _playerDash = GetComponent<PlayerDash>();
         }
 
         void Start()
@@ -137,6 +156,9 @@ namespace Assets.Scripts.Player
             
             // Unsubscribe from health events
             PlayerHealth.OnInvulnerabilityStart -= OnTakeDamage;
+            
+            // Cleanup persistent AudioSources
+            CleanupPlayerAudioSources();
         }
 
         void Update()
@@ -160,11 +182,83 @@ namespace Assets.Scripts.Player
         void FixedUpdate()
         {
             if (!enabled || !_canMove) return;
+            
             HandleMove();
             CheckBouncableCollision(); // Better for physics-related checks
         }
 
         public bool CanMove() => _canMove;
+
+        #region Audio Management
+        
+        /// <summary>
+        /// Creates a persistent AudioSource for player sounds
+        /// </summary>
+        private AudioSource CreatePlayerAudioSource(string name, AudioClip clip, float volume = 1f, bool loop = false)
+        {
+            if (clip == null) return null;
+            
+            // Check if AudioSource already exists
+            if (_playerAudioSources.ContainsKey(name))
+            {
+                var existingSource = _playerAudioSources[name];
+                if (existingSource != null)
+                {
+                    existingSource.clip = clip;
+                    existingSource.volume = volume * _sfxVolume;
+                    existingSource.loop = loop;
+                    return existingSource;
+                }
+            }
+            
+            // Create new AudioSource GameObject as child
+            GameObject audioObject = new GameObject($"PlayerAudio_{name}");
+            audioObject.transform.SetParent(transform);
+            audioObject.transform.localPosition = Vector3.zero;
+            
+            AudioSource source = audioObject.AddComponent<AudioSource>();
+            source.clip = clip;
+            source.volume = volume * _sfxVolume;
+            source.loop = loop;
+            source.playOnAwake = false;
+            source.spatialBlend = 0f; // 2D sound
+            
+            _playerAudioSources[name] = source;
+            return source;
+        }
+        
+        /// <summary>
+        /// Stops a specific player AudioSource
+        /// </summary>
+        private void StopPlayerAudioSource(string name)
+        {
+            if (_playerAudioSources.ContainsKey(name))
+            {
+                var source = _playerAudioSources[name];
+                if (source != null && source.isPlaying)
+                {
+                    source.Stop();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Cleanup all player AudioSources
+        /// </summary>
+        private void CleanupPlayerAudioSources()
+        {
+            foreach (var kvp in _playerAudioSources)
+            {
+                if (kvp.Value != null)
+                {
+                    kvp.Value.Stop();
+                    Destroy(kvp.Value.gameObject);
+                }
+            }
+            _playerAudioSources.Clear();
+        }
+        
+        #endregion
 
         #region New Collision Handling
         private void HandleCollision(Collision2D other)
@@ -203,7 +297,16 @@ namespace Assets.Scripts.Player
             if (_playerHealth != null)
             {
                 bool damageApplied = _playerHealth.TakeDamage(1);
-                // Knockback is handled by OnTakeDamage event callback
+                
+                // Play hit sound if damage was applied
+                if (damageApplied && _sfxList != null && _sfxList.Count > 2 && _sfxList[2] != null)
+                {
+                    AudioSource hitSource = CreatePlayerAudioSource("Hit", _sfxList[2], 1f, false);
+                    if (hitSource != null)
+                    {
+                        hitSource.Play();
+                    }
+                }
             }
         }
         
@@ -219,6 +322,17 @@ namespace Assets.Scripts.Player
         private void ApplyKnockback()
         {
             if (_rb == null) return;
+
+            _playerHealth.ApplyEffect();
+            
+            // Stop footstep sound during knockback
+            StopPlayerAudioSource("Footstep");
+            
+            // Start afterimage effect during knockback
+            if (_afterImageEffect != null)
+            {
+                _afterImageEffect.StartAfterimage();
+            }
             
             // Calculate knockback direction (opposite to facing direction)
             float knockbackDirection = _isFlipx ? 1f : -1f; // Push opposite to facing direction
@@ -244,23 +358,32 @@ namespace Assets.Scripts.Player
             _isKnockbackActive = false;
             _isRecoveringFromKnockback = true;
             _knockbackRecoveryTimer = _knockbackRecoveryTime;
+            
+            // Stop afterimage effect when knockback ends
+            if (_afterImageEffect != null)
+            {
+                _afterImageEffect.StopAfterimage();
+            }
         }
+        
         
         private void HandleCoinPickup()
         {
             OnPickupCoin?.Invoke();
             PlayerEvents.OnCoinPickup?.Invoke();
-        }        private void CheckBouncableCollision()
+        }
+
+        private void CheckBouncableCollision()
         {
             if (_horizontalRaycastPoint == null || _verticalRaycastPoint == null) return;
-            
+
             Vector2 currentPosition = transform.position;
             float currentTime = Time.fixedTime; // Use fixedTime for FixedUpdate
-            
+
             // Enhanced stuck detection using velocity
             bool isVelocityStuck = Mathf.Abs(_rb.linearVelocityX) < _stuckVelocityThreshold;
             bool hasBeenStuckLongEnough = currentTime - _stuckCheckStartTime >= _stuckCheckTime;
-            
+
             // Check if cooldown period has ended and player might be stuck
             if (currentTime - _lastBounceTime >= _bounceCooldown)
             {
@@ -268,7 +391,7 @@ namespace Assets.Scripts.Player
                 if (hasBeenStuckLongEnough && isVelocityStuck)
                 {
                     float distanceMoved = Vector2.Distance(currentPosition, _positionBeforeCooldown);
-                    
+
                     if (distanceMoved < _stuckThreshold)
                     {
                         PerformBounce(currentPosition, currentTime, true);
@@ -284,12 +407,12 @@ namespace Assets.Scripts.Player
                     return;
                 }
             }
-            
+
             // Smart raycasting - only check relevant directions
-            bool foundBouncable = _useSmartRaycasting ? 
-                CheckBouncableSmartRaycast(currentPosition) : 
+            bool foundBouncable = _useSmartRaycasting ?
+                CheckBouncableSmartRaycast(currentPosition) :
                 CheckBouncableAllDirections(currentPosition);
-            
+
             if (foundBouncable)
             {
                 PerformBounce(currentPosition, currentTime, false);
@@ -400,14 +523,24 @@ namespace Assets.Scripts.Player
         public bool IsFlipX() => _isFlipx;
 
         public bool IsGrounded()
-        {
+        {           
+            if (_groundCheck == null) return false;
+            
             return Physics2D.OverlapCapsule(_groundCheck.position, new Vector2(0.7f, 0.1f), CapsuleDirection2D.Horizontal, 0, _groundLayer);
         }
 
         public void HandleMove()
         {
+            // Handle footstep sound system FIRST (before knockback check)
+            // This ensures footsteps play during recovery phase
+            HandleFootstepSound();
+            
             // Don't allow movement control during active knockback
-            if (_isKnockbackActive) return;
+            if (_isKnockbackActive)
+            {
+                StopPlayerAudioSource("Footstep");
+                return;
+            }
             
             float direction = _isFlipx ? -1f : 1f;
             float targetX = direction * _moveSpeed;
@@ -417,7 +550,7 @@ namespace Assets.Scripts.Player
             {
                 // Calculate recovery progress (0 = just started, 1 = finished)
                 float recoveryProgress = 1f - (_knockbackRecoveryTimer / _knockbackRecoveryTime);
-                
+
                 // First half: decelerate from knockback velocity to ~0
                 // Second half: accelerate from ~0 to movement speed
                 float lerpSpeed;
@@ -431,7 +564,7 @@ namespace Assets.Scripts.Player
                     // Acceleration phase (0.5 to 1.0)
                     lerpSpeed = Mathf.Lerp(0.15f, 0.4f, (recoveryProgress - 0.5f) * 2f); // Faster acceleration
                 }
-                
+
                 float newX = Mathf.Lerp(_rb.linearVelocityX, targetX, lerpSpeed);
                 _rb.linearVelocity = new Vector2(newX, _rb.linearVelocityY);
             }
@@ -448,7 +581,49 @@ namespace Assets.Scripts.Player
                 // Debug.Log($"current state: {_stateManager.CurrentState}");
             }
         }
-
+        
+        /// <summary>
+        /// Handles footstep sound playback with rhythmic looping
+        /// </summary>
+        private void HandleFootstepSound()
+        {
+            // Validation checks
+            if (_sfxList == null || _sfxList.Count == 0 || _sfxList[0] == null) return;
+            
+            // Use raycast-based ground detection (same as jumping)
+            bool isGrounded = IsGroundedRaycast();
+            
+            // Check if dashing - don't play footsteps while dashing
+            // Check both PlayerState AND the actual _isDashing state from PlayerDash
+            bool isDashing = (_stateManager != null && _stateManager.CurrentState == PlayerState.Dashing) ||
+                           (_playerDash != null && _playerDash.IsDashing);
+            
+            // Player is grounded and NOT dashing - handle footstep rhythm
+            if (isGrounded && !isDashing)
+            {
+                _footstepTimer += Time.fixedDeltaTime;
+                
+                // Time to play next footstep cycle
+                if (_footstepTimer >= _footstepInterval)
+                {
+                    // Create/get persistent footstep AudioSource
+                    AudioSource footstepSource = CreatePlayerAudioSource("Footstep", _sfxList[0], 1f, false);
+                    if (footstepSource != null && !footstepSource.isPlaying)
+                    {
+                        footstepSource.Play();
+                    }
+                    
+                    _footstepTimer = 0f;
+                }
+            }
+            // Player is not grounded or is dashing - stop footsteps
+            else
+            {
+                StopPlayerAudioSource("Footstep");
+                _footstepTimer = 0f; // Reset for immediate play on landing
+            }
+        }
+        
         private void HandleJump()
         {
             if (GameInput.Instance.IsJumpPressed() && IsGroundedRaycast())
@@ -462,6 +637,16 @@ namespace Assets.Scripts.Player
                 LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
                 _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
+                
+                // Play jump SFX with persistent AudioSource
+                if (_sfxList != null && _sfxList.Count > 1 && _sfxList[1] != null)
+                {
+                    AudioSource jumpSource = CreatePlayerAudioSource("Jump", _sfxList[1], 1f, false);
+                    if (jumpSource != null)
+                    {
+                        jumpSource.Play();
+                    }
+                }
             }
         }
         

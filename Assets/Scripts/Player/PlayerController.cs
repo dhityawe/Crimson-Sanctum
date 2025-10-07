@@ -124,8 +124,6 @@ namespace Assets.Scripts.Player
                 _spriteAnimator.Play(animationName);
             else
                 _spriteAnimator.Play(animationName).SetOnComplete(() => _spriteAnimator.Play(onCompleteAnimation));
-
-            Debug.Log($"Playing animation: {_spriteAnimator.CurrentAnimation.Name}");
         }
 
         private void SetAbilityEnabled(IPlayerAbility ability, bool enabled)

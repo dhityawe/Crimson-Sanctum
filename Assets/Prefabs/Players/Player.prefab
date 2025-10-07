@@ -164,11 +164,11 @@ GameObject:
   - component: {fileID: 8257484927312601116}
   - component: {fileID: 7513183546649480927}
   - component: {fileID: 4550161695465418956}
+  - component: {fileID: 4512927471150591898}
   - component: {fileID: 91972278810843725}
   - component: {fileID: 5465875182821028195}
   - component: {fileID: 2630557457693147976}
   - component: {fileID: 904976584828801552}
-  - component: {fileID: 4512927471150591898}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -235,7 +235,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -974841411
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: -6447722072507503168, guid: 10f3cacccb0c4c547be76836eba20664, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -275,6 +275,43 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!70 &4512927471150591898
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6738638805431067453}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: -0.05}
+  m_Size: {x: 0.7, y: 0.9}
+  m_Direction: 0
 --- !u!114 &91972278810843725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,20 +332,25 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  _playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   _horizontalRaycastPoint: {fileID: 0}
   _verticalRaycastPoint: {fileID: 0}
   _horizontalRaycastDistance: 1
   _verticalRaycastDistance: 1
-  _bouncableLayer:
-    serializedVersion: 2
-    m_Bits: 0
   _showRaycastGizmos: 1
   _bounceCooldown: 0.5
   _stuckThreshold: 0.3
   _stuckCheckTime: 1
   _stuckVelocityThreshold: 0.1
   _useSmartRaycasting: 1
+  _knockbackForce: 5
+  _knockbackUpwardForce: 3
+  _knockbackDuration: 0.2
+  _knockbackRecoveryTime: 0.3
   _spriteAnimator: {fileID: 0}
+  _effectAnimator: {fileID: 0}
 --- !u!114 &5465875182821028195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,40 +433,3 @@ MonoBehaviour:
     - rid: 2278904136723857486
       type: {class: ShadowShape2DProvider_SpriteRenderer, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
       data: 
---- !u!70 &4512927471150591898
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6738638805431067453}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.05}
-  m_Size: {x: 0.7, y: 0.9}
-  m_Direction: 0

@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 980624778360454827}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -1.5, z: 0}
+  m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -129,7 +129,7 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: acb25ac7afd22974ba507487a1066501, type: 2}
   triggerType: 0
   triggerRadius: 2
-  triggerDelay: 0.8
+  triggerDelay: 0.1
   closeDelay: 2.5
   openEase: 13
   closeEase: 27
@@ -140,9 +140,10 @@ MonoBehaviour:
   warningGlowColor: {r: 1, g: 0, b: 0, a: 1}
   warningGlowIntensity: 1.5
   warningParticles: {fileID: 0}
-  creakSFX: CoffinCreak
-  openSFX: CoffinOpen
-  closeSFX: CoffinSlam
+  sfxList:
+  - {fileID: 8300000, guid: f2ddd9adf2cf8894e9bfeca1584e1299, type: 3}
+  - {fileID: 8300000, guid: f88097a941f55bf458ffc75796c4fd89, type: 3}
+  sfxVolume: 1
 --- !u!61 &5961854650408210759
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -277,8 +278,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -530033591
-  m_SortingLayer: 2
+  m_SortingLayerID: -1873283333
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 8047359977315704081, guid: 956239a185da6b74894d884901c85256, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

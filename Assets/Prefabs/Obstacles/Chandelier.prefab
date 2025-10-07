@@ -48,11 +48,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 8720b7f8039f67c4593cefcd12c4a844, type: 2}
+  spatialPreset: {fileID: 11400000, guid: 3ef8a630e81cfbc439c74a0e2e86d7d3, type: 2}
   behaviorType: 1
   swingAngle: 5
   swingSpeed: 0.1
   swingEase: 4
-  dropDelay: 0.1
+  dropDelay: 0
   raycastDistance: 4
   playerLayer:
     serializedVersion: 2

@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Assets.Scripts.Core.Managers;
 using UnityEngine;
 using GabrielBigardi.SpriteAnimator;
+using CrimsonSanctum.Audio;
 
 namespace Assets.Scripts.Player 
 {
@@ -12,6 +14,9 @@ namespace Assets.Scripts.Player
         [SerializeField] protected float _dashDuration = 0.2f;
         [SerializeField] protected float _dashSpeed = 20f;
         [SerializeField] protected float _cooldownTime;
+
+        [Header("Audio Settings")]
+        [SerializeField] private List<AudioClip> _sfxList;
 
         private PlayerMove _playerMove;
         private Rigidbody2D _rb;
@@ -23,9 +28,86 @@ namespace Assets.Scripts.Player
         private PlayerStateManager _stateManager;
         private PlayerHealth _playerHealth;
         private AfterImageEffect _afterImageEffect;
+        private Dictionary<string, AudioSource> _dashAudioSources = new Dictionary<string, AudioSource>();
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
+        
+        /// <summary>
+        /// Returns true if the player is currently performing a dash
+        /// </summary>
+        public bool IsDashing => _isDashing;
+
+        #region Audio Management
+        
+        /// <summary>
+        /// Creates a persistent AudioSource for dash sounds
+        /// </summary>
+        private AudioSource CreateDashAudioSource(string name, AudioClip clip, float volume = 1f, bool loop = false)
+        {
+            if (clip == null) return null;
+            
+            // Check if AudioSource already exists
+            if (_dashAudioSources.ContainsKey(name))
+            {
+                var existingSource = _dashAudioSources[name];
+                if (existingSource != null)
+                {
+                    existingSource.clip = clip;
+                    existingSource.volume = volume;
+                    existingSource.loop = loop;
+                    return existingSource;
+                }
+            }
+            
+            // Create new AudioSource GameObject as child
+            GameObject audioObject = new GameObject($"DashAudio_{name}");
+            audioObject.transform.SetParent(transform);
+            audioObject.transform.localPosition = Vector3.zero;
+            
+            AudioSource source = audioObject.AddComponent<AudioSource>();
+            source.clip = clip;
+            source.volume = volume;
+            source.loop = loop;
+            source.playOnAwake = false;
+            source.spatialBlend = 0f; // 2D sound
+            
+            _dashAudioSources[name] = source;
+            return source;
+        }
+        
+        /// <summary>
+        /// Stops a specific dash AudioSource
+        /// </summary>
+        private void StopDashAudioSource(string name)
+        {
+            if (_dashAudioSources.ContainsKey(name))
+            {
+                var source = _dashAudioSources[name];
+                if (source != null && source.isPlaying)
+                {
+                    source.Stop();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Cleanup all dash AudioSources
+        /// </summary>
+        private void CleanupDashAudioSources()
+        {
+            foreach (var kvp in _dashAudioSources)
+            {
+                if (kvp.Value != null)
+                {
+                    kvp.Value.Stop();
+                    Destroy(kvp.Value.gameObject);
+                }
+            }
+            _dashAudioSources.Clear();
+        }
+        
+        #endregion
 
         #region Events
         public event Action OnEndDash;
@@ -85,6 +167,9 @@ namespace Assets.Scripts.Player
         {
             // Unsubscribe from health events
             PlayerHealth.OnInvulnerabilityStart -= OnPlayerHit;
+            
+            // Cleanup persistent AudioSources
+            CleanupDashAudioSources();
         }
         
         /// <summary>
@@ -95,8 +180,16 @@ namespace Assets.Scripts.Player
             if (_isDashing)
             {
                 // Cancel dash WITHOUT resetting velocity - let knockback apply
-                _spriteAnimator.Play("Move"); // Reset animator to Move
+                // Only play Move animation if not climbing
+                if (_stateManager == null || _stateManager.CurrentState != PlayerState.Climbing)
+                {
+                    _spriteAnimator.Play("Move");
+                }
                 _isDashing = false;
+                
+                // Stop dash loop SFX
+                StopDashAudioSource("DashLoop");
+                
                 OnEndDash?.Invoke();
                 // Don't call CancelDash() because it resets velocity!
             }
@@ -136,6 +229,27 @@ namespace Assets.Scripts.Player
             _isDashing = true;
             _isCooldown = true;
             _spriteAnimator.Play("StartSkill").SetOnComplete(() => _spriteAnimator.Play("OnSkill"));
+            
+            // Play dash start SFX (index 0)
+            if (_sfxList != null && _sfxList.Count > 0 && _sfxList[0] != null)
+            {
+                AudioSource startSource = CreateDashAudioSource("DashStart", _sfxList[0], 0.5f, false);
+                if (startSource != null)
+                {
+                    startSource.Play();
+                }
+            }
+            
+            // Play dash loop SFX (index 1) - looping while dashing
+            if (_sfxList != null && _sfxList.Count > 1 && _sfxList[1] != null)
+            {
+                AudioSource loopSource = CreateDashAudioSource("DashLoop", _sfxList[1], 0.5f, true);
+                if (loopSource != null)
+                {
+                    loopSource.Play();
+                }
+            }
+            
             StartCoroutine(StartCooldownDash(_cooldownTime));
             _dashTimer = _dashDuration;
             _dashDirection = _playerMove.IsFlipX() ? Vector2.left : Vector2.right;
@@ -151,19 +265,41 @@ namespace Assets.Scripts.Player
         {
             if (_isDashing)
             {
-                _spriteAnimator.Play("Move"); // Reset animator to Move
+                // Only play Move animation if not climbing
+                if (_stateManager == null || _stateManager.CurrentState != PlayerState.Climbing)
+                {
+                    _spriteAnimator.Play("Move");
+                }
                 _isDashing = false;
                 _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
+                
+                // Stop dash loop SFX
+                StopDashAudioSource("DashLoop");
+                
                 OnEndDash?.Invoke();
             }
         }
 
         protected virtual void EndDash()
         {
-            _spriteAnimator.Play("EndSkill").SetOnComplete(() => _spriteAnimator.Play("Move"));
-            _isDashing = false;
-            _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
-            OnEndDash?.Invoke();
+            // Stop dash loop SFX
+            StopDashAudioSource("DashLoop");
+            
+            if (_stateManager != null && _stateManager.CurrentState == PlayerState.Climbing)
+            {
+                // Just stop dashing, let climb animation continue
+                _isDashing = false;
+                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
+                OnEndDash?.Invoke();
+            }
+            else
+            {
+                // Normal end dash sequence
+                _spriteAnimator.Play("EndSkill").SetOnComplete(() => _spriteAnimator.Play("Move"));
+                _isDashing = false;
+                _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
+                OnEndDash?.Invoke();
+            }
         }
 
         protected virtual IEnumerator StartCooldownDash(float cooldownTime)

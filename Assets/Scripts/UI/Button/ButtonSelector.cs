@@ -417,7 +417,7 @@ namespace CrimsonSanctum.UI
         {
             if (audioSource != null && clip != null)
             {
-                audioSource.PlayOneShot(clip);
+                audioSource.PlayOneShot(clip, 0.3f);
             }
         }
         
