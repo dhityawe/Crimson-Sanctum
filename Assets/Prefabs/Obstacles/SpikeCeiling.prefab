@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1423755725509277486}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -65,7 +65,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 213256f08360c5d418ad6748aa02b0fb, type: 3}
   - {fileID: 8300000, guid: 04d7fab918f94f14c900ef29fe436166, type: 3}
   - {fileID: 8300000, guid: d4fc2efa596322e4d9a2aafd2b453a9b, type: 3}
-  sfxVolume: 0.6
+  sfxVolume: 0.3
   spriteAnimator: {fileID: 629904861785689757}
   spriteRenderer: {fileID: 8217113514816577921}
   thisCollider: {fileID: 7220562315053778323}

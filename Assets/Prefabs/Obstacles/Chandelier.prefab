@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 8720b7f8039f67c4593cefcd12c4a844, type: 2}
-  spatialPreset: {fileID: 11400000, guid: 3ef8a630e81cfbc439c74a0e2e86d7d3, type: 2}
   behaviorType: 1
   swingAngle: 5
   swingSpeed: 0.1
@@ -69,7 +68,7 @@ MonoBehaviour:
   sfxList:
   - {fileID: 8300000, guid: 6669681c9b554b94fb455ec4f0a11d1f, type: 3}
   - {fileID: 8300000, guid: 9ab247d4626be144e8a8c966cc00df29, type: 3}
-  sfxVolume: 0.3
+  sfxVolume: 0.1
   spriteRenderer: {fileID: 8572900374584995086}
   rb: {fileID: 3835789339788915769}
 --- !u!50 &3835789339788915769

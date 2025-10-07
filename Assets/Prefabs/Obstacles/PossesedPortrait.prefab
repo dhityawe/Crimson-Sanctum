@@ -5418,7 +5418,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d355a856f25783046910c76bb9e468f8, type: 3}
   - {fileID: 8300000, guid: 61ccba849c1d8fa43852350251b10a91, type: 3}
   - {fileID: 8300000, guid: f2e8b54f7b3370e4989e51213fc08ed7, type: 3}
-  sfxVolume: 1
+  sfxVolume: 0.3
   chargePitchStart: 0.5
   chargePitchEnd: 2
   impactPitchStart: 0.5
