@@ -32,17 +32,40 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     [SerializeField] private Rigidbody2D rb;
     
     // Cached components and state
-    private Vector3 originalPosition;
+    private Vector3 originalLocalPosition;
     
     // State flags
     private bool hasDropped = false;
     private bool hasTriggered = false; // Prevent multiple triggers
+    
+    public override void ResetObstacle()
+    {
+        // Reset state
+        hasDropped = false;
+        hasTriggered = false;
+        
+        // Reset position
+        transform.localPosition = originalLocalPosition;
+        
+        // Reset animator and collider
+        spriteAnimator?.Play("Idle");
+        if (thisCollider != null)
+            thisCollider.enabled = true;
+        
+        // Reset Rigidbody2D if used
+        if (usePhysics && rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic; // Lock in place
+        }
+    }
 
     protected override void Initialize()
     {
         // Cache components and values at start
-        originalPosition = transform.position;
-        
+        originalLocalPosition = transform.localPosition;
+
         // Cache and validate components
         if (spriteAnimator == null)
             spriteAnimator = GetComponent<SpriteAnimator>();
@@ -50,7 +73,7 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             spriteRenderer = GetComponent<SpriteRenderer>();
         if (thisCollider == null)
             thisCollider = GetComponent<Collider2D>();
-        
+
         spriteAnimator?.Play("Idle");
 
         // Setup Rigidbody2D for physics-based movement

@@ -33,6 +33,11 @@ public abstract class ObstacleBase : MonoBehaviour
         }
     }
 
+    public virtual void ResetObstacle()
+    {
+        // Default reset does nothing, override in subclasses as needed
+    }
+
     // 🧭 ABSTRACT METHODS — Each obstacle MUST implement these
     protected abstract void Initialize();
     protected abstract void OnPlayerHit();
