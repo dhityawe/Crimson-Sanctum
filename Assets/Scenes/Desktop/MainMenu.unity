@@ -1499,8 +1499,8 @@ MonoBehaviour:
   animateArrow: 1
   arrowBounceDistance: 5
   arrowBounceDuration: 0.5
-  navigateSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  navigateSound: {fileID: 8300000, guid: 1d45aa5368614f541a6affbabbea9361, type: 3}
+  selectSound: {fileID: 8300000, guid: d97ead83604484b48b2551457d4c2824, type: 3}
 --- !u!114 &554937496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5367,7 +5367,7 @@ MonoBehaviour:
     bgmTracks:
     - trackName: BGM_MainMenu
       audioClip: {fileID: 8300000, guid: de979ecc5ef20b34a97ae85341ac7f71, type: 3}
-      volume: 0.4
+      volume: 0.6
       loop: 1
       fadeInSeconds: 2
       fadeOutSeconds: 2

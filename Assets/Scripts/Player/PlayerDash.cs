@@ -3,6 +3,8 @@ using System.Collections;
 using Assets.Scripts.Core.Managers;
 using UnityEngine;
 using GabrielBigardi.SpriteAnimator;
+using System.Collections.Generic;
+using CrimsonSanctum.Audio;
 
 namespace Assets.Scripts.Player 
 {
@@ -23,6 +25,7 @@ namespace Assets.Scripts.Player
         private PlayerStateManager _stateManager;
         private PlayerHealth _playerHealth;
         private AfterImageEffect _afterImageEffect;
+        private int _dashLoopSFXID = -1;
 
         [Header("Animator")]
         [SerializeField] private SpriteAnimator _spriteAnimator;
@@ -101,6 +104,14 @@ namespace Assets.Scripts.Player
                     _spriteAnimator.Play("Move");
                 }
                 _isDashing = false;
+                
+                // Stop dash loop SFX
+                if (_dashLoopSFXID != -1)
+                {
+                    AudioManager.Instance?.StopSFX(_dashLoopSFXID);
+                    _dashLoopSFXID = -1;
+                }
+                
                 OnEndDash?.Invoke();
                 // Don't call CancelDash() because it resets velocity!
             }
@@ -140,6 +151,11 @@ namespace Assets.Scripts.Player
             _isDashing = true;
             _isCooldown = true;
             _spriteAnimator.Play("StartSkill").SetOnComplete(() => _spriteAnimator.Play("OnSkill"));
+            
+            // Play dash SFX
+            AudioManager.Instance?.PlaySFX("OnDash_Start", 0.5f);
+            _dashLoopSFXID = AudioManager.Instance?.PlaySFX("OnDash", 0.5f) ?? -1;
+            
             StartCoroutine(StartCooldownDash(_cooldownTime));
             _dashTimer = _dashDuration;
             _dashDirection = _playerMove.IsFlipX() ? Vector2.left : Vector2.right;
@@ -162,6 +178,14 @@ namespace Assets.Scripts.Player
                 }
                 _isDashing = false;
                 _rb.linearVelocity = new Vector2(_lastLinearVelocityX, 0);
+                
+                // Stop dash loop SFX
+                if (_dashLoopSFXID != -1)
+                {
+                    AudioManager.Instance?.StopSFX(_dashLoopSFXID);
+                    _dashLoopSFXID = -1;
+                }
+                
                 OnEndDash?.Invoke();
             }
         }
@@ -169,6 +193,13 @@ namespace Assets.Scripts.Player
         protected virtual void EndDash()
         {
             // Only play EndSkill and transition to Move if not climbing
+            // Stop dash loop SFX
+            if (_dashLoopSFXID != -1)
+            {
+                AudioManager.Instance?.StopSFX(_dashLoopSFXID);
+                _dashLoopSFXID = -1;
+            }
+            
             if (_stateManager != null && _stateManager.CurrentState == PlayerState.Climbing)
             {
                 // Just stop dashing, let climb animation continue

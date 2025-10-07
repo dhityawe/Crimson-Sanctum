@@ -58,11 +58,17 @@ TagManager:
   - name: Properties/Ladder
     uniqueID: 1221934609
     locked: 0
+  - name: Obstacle/Back
+    uniqueID: 3623090975
+    locked: 0
   - name: Enemy
     uniqueID: 1558642345
     locked: 0
   - name: Player
     uniqueID: 3320125885
+    locked: 0
+  - name: Obstacle/Front
+    uniqueID: 2421683963
     locked: 0
   - name: Ground
     uniqueID: 2682549347

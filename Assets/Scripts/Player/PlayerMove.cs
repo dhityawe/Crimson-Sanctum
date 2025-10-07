@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using Assets.Scripts.Core.Managers;
 using GabrielBigardi.SpriteAnimator;
+using CrimsonSanctum.Audio;
+using System.Collections.Generic;
 
 
 namespace Assets.Scripts.Player
@@ -46,6 +48,13 @@ namespace Assets.Scripts.Player
         [SerializeField] private SpriteAnimator _spriteAnimator;
         [SerializeField] private SpriteAnimator _effectAnimator;
 
+        [Header("Audio List")]
+        [SerializeField] private List<AudioClip> _sfxList;
+        [SerializeField] [Tooltip("Time between footstep sound loops (creates rhythmic footsteps)")] 
+        private float _footstepInterval = 0.3f; // Time between footstep sounds
+        [SerializeField] [Range(0f, 1f)] [Tooltip("Volume for footstep and jump SFX")]
+        private float _sfxVolume = 0.8f;
+
         [HideInInspector] public float LastLinearVelocityX { get; set; }
 
         #region Actions
@@ -58,6 +67,7 @@ namespace Assets.Scripts.Player
         private PlayerCollisionHandler _collisionHandler;
         private PlayerHealth _playerHealth; // Cached reference to PlayerHealth component
         private AfterImageEffect _afterImageEffect; // Cached reference to AfterImageEffect component
+        private PlayerDash _playerDash; // Cached reference to PlayerDash component
         
         // Knockback tracking
         private bool _isKnockbackActive = false;
@@ -71,6 +81,11 @@ namespace Assets.Scripts.Player
         // Stuck detection tracking
         private Vector2 _positionBeforeCooldown;
         private float _stuckCheckStartTime;
+        
+        // SFX tracking
+        private int _currentMoveSFXId = -1;
+        private int _currentJumpSFXId = -1;
+        private float _footstepTimer = 0f;
 
         #region IPlayerAbility Implementation
         public bool IsActive { get; private set; }
@@ -108,6 +123,7 @@ namespace Assets.Scripts.Player
             _collisionHandler = GetComponent<PlayerCollisionHandler>();
             _playerHealth = GetComponent<PlayerHealth>();
             _afterImageEffect = GetComponent<AfterImageEffect>();
+            _playerDash = GetComponent<PlayerDash>();
         }
 
         void Start()
@@ -141,6 +157,15 @@ namespace Assets.Scripts.Player
             
             // Unsubscribe from health events
             PlayerHealth.OnInvulnerabilityStart -= OnTakeDamage;
+            
+            // Stop any playing SFX
+            StopFootstepSound();
+            
+            if (_currentJumpSFXId != -1)
+            {
+                AudioManager.Instance?.SFX?.StopSFX(_currentJumpSFXId);
+                _currentJumpSFXId = -1;
+            }
         }
 
         void Update()
@@ -164,6 +189,7 @@ namespace Assets.Scripts.Player
         void FixedUpdate()
         {
             if (!enabled || !_canMove) return;
+            
             HandleMove();
             CheckBouncableCollision(); // Better for physics-related checks
         }
@@ -207,7 +233,12 @@ namespace Assets.Scripts.Player
             if (_playerHealth != null)
             {
                 bool damageApplied = _playerHealth.TakeDamage(1);
-                // Knockback is handled by OnTakeDamage event callback
+                
+                // Play hit sound if damage was applied
+                if (damageApplied && _sfxList != null && _sfxList.Count > 2 && _sfxList[2] != null)
+                {
+                    AudioManager.Instance?.SFX?.PlaySFX(_sfxList[2], _sfxVolume, Vector3.zero, false);
+                }
             }
         }
         
@@ -225,6 +256,9 @@ namespace Assets.Scripts.Player
             if (_rb == null) return;
 
             _playerHealth.ApplyEffect();
+            
+            // Stop footstep sound during knockback
+            StopFootstepSound();
             
             // Start afterimage effect during knockback
             if (_afterImageEffect != null)
@@ -421,24 +455,33 @@ namespace Assets.Scripts.Player
         public bool IsFlipX() => _isFlipx;
 
         public bool IsGrounded()
-        {
+        {           
+            if (_groundCheck == null) return false;
+            
             return Physics2D.OverlapCapsule(_groundCheck.position, new Vector2(0.7f, 0.1f), CapsuleDirection2D.Horizontal, 0, _groundLayer);
         }
 
         public void HandleMove()
         {
             // Don't allow movement control during active knockback
-            if (_isKnockbackActive) return;
+            if (_isKnockbackActive)
+            {
+                StopFootstepSound();
+                return;
+            }
             
             float direction = _isFlipx ? -1f : 1f;
             float targetX = direction * _moveSpeed;
+            
+            // Handle footstep sound system
+            HandleFootstepSound();
             
             // Smooth transition after knockback ends
             if (_isRecoveringFromKnockback)
             {
                 // Calculate recovery progress (0 = just started, 1 = finished)
                 float recoveryProgress = 1f - (_knockbackRecoveryTimer / _knockbackRecoveryTime);
-                
+
                 // First half: decelerate from knockback velocity to ~0
                 // Second half: accelerate from ~0 to movement speed
                 float lerpSpeed;
@@ -452,7 +495,7 @@ namespace Assets.Scripts.Player
                     // Acceleration phase (0.5 to 1.0)
                     lerpSpeed = Mathf.Lerp(0.15f, 0.4f, (recoveryProgress - 0.5f) * 2f); // Faster acceleration
                 }
-                
+
                 float newX = Mathf.Lerp(_rb.linearVelocityX, targetX, lerpSpeed);
                 _rb.linearVelocity = new Vector2(newX, _rb.linearVelocityY);
             }
@@ -469,6 +512,57 @@ namespace Assets.Scripts.Player
                 // Debug.Log($"current state: {_stateManager.CurrentState}");
             }
         }
+        
+        /// <summary>
+        /// Handles footstep sound playback with rhythmic looping
+        /// </summary>
+        private void HandleFootstepSound()
+        {
+            // Validation checks
+            if (_sfxList == null || _sfxList.Count == 0 || _sfxList[0] == null) return;
+            if (AudioManager.Instance == null || AudioManager.Instance.SFX == null) return;
+            
+            // Use raycast-based ground detection (same as jumping)
+            bool isGrounded = IsGroundedRaycast();
+            
+            // Check if dashing - don't play footsteps while dashing
+            bool isDashing = _playerDash != null && _playerDash.IsActive && _stateManager != null && _stateManager.CurrentState == PlayerState.Dashing;
+            
+            // Player is grounded and NOT dashing - handle footstep rhythm
+            if (isGrounded && !isDashing)
+            {
+                _footstepTimer += Time.fixedDeltaTime;
+                
+                // Time to play next footstep cycle
+                if (_footstepTimer >= _footstepInterval)
+                {
+                    // Play one-shot footstep sound (NOT looped to prevent doubling)
+                    _currentMoveSFXId = AudioManager.Instance.SFX.PlaySFX(
+                        _sfxList[0], 
+                        _sfxVolume, 
+                        Vector3.zero, 
+                        false  // Loop = false to prevent double sound
+                    );
+                    
+                    _footstepTimer = 0f;
+                }
+            }
+            // Player is not grounded or is dashing - stop footsteps
+            else
+            {
+                _footstepTimer = 0f; // Reset for immediate play on landing
+            }
+        }
+        
+        /// <summary>
+        /// Stops the currently playing footstep sound
+        /// </summary>
+        private void StopFootstepSound()
+        {
+            // Since we're using one-shot sounds now, we don't need to stop them
+            // Just reset the state
+            _currentMoveSFXId = -1;
+        }
 
         private void HandleJump()
         {
@@ -483,6 +577,19 @@ namespace Assets.Scripts.Player
                 LastLinearVelocityX = _rb.linearVelocityX;
                 GetComponent<PlayerDash>()?.CancelDash();
                 _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
+                
+                // Play jump SFX with configurable volume
+                if (_sfxList != null && _sfxList.Count > 1 && _sfxList[1] != null)
+                {
+                    // Stop current jump SFX if playing
+                    if (_currentJumpSFXId != -1)
+                    {
+                        AudioManager.Instance.SFX.StopSFX(_currentJumpSFXId);
+                    }
+                    
+                    // Play new jump SFX (not looped)
+                    _currentJumpSFXId = AudioManager.Instance.SFX.PlaySFX(_sfxList[1], _sfxVolume, Vector3.zero, false);
+                }
             }
         }
         

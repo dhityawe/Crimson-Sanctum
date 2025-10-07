@@ -32,7 +32,7 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     [SerializeField] private Rigidbody2D rb;
     
     // Cached components and state
-    private AudioManager audioManager;
+    private new AudioManager audioManager;
     private Vector3 originalPosition;
     
     // State flags

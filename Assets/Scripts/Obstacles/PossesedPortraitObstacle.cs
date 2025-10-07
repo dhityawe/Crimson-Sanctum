@@ -54,12 +54,9 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     // Cached values
     private Color originalLeftEyeLightColor;
     private Color originalRightEyeLightColor;
-    private AudioManager audioManager;
     
     // Active components
     private GameObject activeLaserCollider;
-    private AudioSource chargeSoundSource;
-    private AudioSource impactSoundSource;
     
     // Coroutine tracking
     private Coroutine fireCoroutine;
@@ -83,10 +80,11 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         ValidateSetup();
     }
     
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy(); // Calls base CleanupAudioSources()
         CleanupTweens();
-        CleanupAudioSources();
+        CleanupPortraitAudio(); // Custom cleanup for portrait-specific audio
     }
     
     #endregion
@@ -97,7 +95,6 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     
     private void CacheComponents()
     {
-        audioManager = AudioManager.Instance;
         FindPlayer();
     }
     
@@ -269,15 +266,20 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         if (!IsAudioClipValid(SFX_INDEX_CHARGE))
             yield break;
 
-        chargeSoundSource = CreateAudioSource("ChargeSoundSource", sfxList[SFX_INDEX_CHARGE], true, chargePitchStart);
-        chargeSoundSource.Play();
+        // Use base class persistent AudioSource system
+        AudioSource chargeSoundSource = CreateObstacleAudioSource("Charge", sfxList[SFX_INDEX_CHARGE], sfxVolume, loop: true);
+        if (chargeSoundSource != null)
+        {
+            chargeSoundSource.pitch = chargePitchStart;
+            chargeSoundSource.Play();
+        }
         
         yield return AnimatePitch(chargeSoundSource, chargePitchStart, chargePitchEnd, chargeDuration);
     }
 
     private void StopChargeSound()
     {
-        DestroyAudioSource(ref chargeSoundSource);
+        StopObstacleAudioSource("Charge");
     }
     
     private IEnumerator PlayImpactSoundWithPitch(float duration)
@@ -285,8 +287,13 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         if (!IsAudioClipValid(SFX_INDEX_IMPACT))
             yield break;
 
-        impactSoundSource = CreateAudioSource("ImpactSoundSource", sfxList[SFX_INDEX_IMPACT], true, impactPitchStart);
-        impactSoundSource.Play();
+        // Use base class persistent AudioSource system
+        AudioSource impactSoundSource = CreateObstacleAudioSource("Impact", sfxList[SFX_INDEX_IMPACT], sfxVolume, loop: true);
+        if (impactSoundSource != null)
+        {
+            impactSoundSource.pitch = impactPitchStart;
+            impactSoundSource.Play();
+        }
         
         float halfDuration = duration * 0.3f;
         
@@ -307,25 +314,12 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
             impactPitchCoroutine = null;
         }
         
-        DestroyAudioSource(ref impactSoundSource);
+        StopObstacleAudioSource("Impact");
     }
     
-    private AudioSource CreateAudioSource(string name, AudioClip clip, bool loop, float pitch)
-    {
-        GameObject audioObject = new GameObject(name);
-        audioObject.transform.SetParent(transform);
-        audioObject.transform.localPosition = Vector3.zero;
-        
-        AudioSource source = audioObject.AddComponent<AudioSource>();
-        source.clip = clip;
-        source.loop = loop;
-        source.volume = sfxVolume * (audioManager?.GetSFXVolume() ?? 1f);
-        source.pitch = pitch;
-        source.playOnAwake = false;
-        source.spatialBlend = 0f;
-        
-        return source;
-    }
+    #endregion
+    
+    #region Impact Effects
     
     private IEnumerator AnimatePitch(AudioSource source, float startPitch, float endPitch, float duration)
     {
@@ -371,15 +365,6 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         }
     }
     
-    private void DestroyAudioSource(ref AudioSource source)
-    {
-        if (source != null)
-        {
-            source.Stop();
-            Destroy(source.gameObject);
-            source = null;
-        }
-    }
     
     private bool IsAudioClipValid(int index)
     {
@@ -472,7 +457,10 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     {
         if (IsAudioClipValid(SFX_INDEX_FIRE))
         {
-            audioManager.PlaySFX(sfxList[SFX_INDEX_FIRE]);
+            // Use base class persistent AudioSource system
+            AudioSource fireSource = CreateObstacleAudioSource("Fire", sfxList[SFX_INDEX_FIRE], sfxVolume);
+            if (fireSource != null)
+                fireSource.Play();
         }
     }
     
@@ -729,8 +717,9 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         DOTween.Kill(this);
     }
     
-    private void CleanupAudioSources()
+    private void CleanupPortraitAudio()
     {
+        // Stop any active sounds - base class will handle AudioSource cleanup
         StopChargeSound();
         StopImpactSound();
     }

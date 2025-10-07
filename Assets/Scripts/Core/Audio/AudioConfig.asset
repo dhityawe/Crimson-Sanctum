@@ -20,7 +20,7 @@ MonoBehaviour:
   crossFadeOnSceneChange: 1
   crossFadeOnTrackChange: 0
   alwaysFadeInFromZero: 1
-  fadeInOnLoopRestart: 1
+  fadeInOnLoopRestart: 0
   defaultFadeInDuration: 1.5
   enableStartDelay: 1
   startDelayDuration: 2

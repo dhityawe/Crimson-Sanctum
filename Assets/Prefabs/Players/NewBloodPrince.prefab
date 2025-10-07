@@ -107,7 +107,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -974841411
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 99
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -147,8 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1826f40ff9e212847b2a47a663dac9cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _autoDestroyOnComplete: 1
-  _autoDestroyDelay: 2
 --- !u!1 &5941561934342843679
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,6 +284,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2550659789004114872}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _footstepInterval
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _groundCheckRadius
       value: 0.2
       objectReference: {fileID: 0}
@@ -306,6 +308,10 @@ PrefabInstance:
       value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _sfxList.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _knockbackUpwardForce
       value: 3
       objectReference: {fileID: 0}
@@ -317,6 +323,18 @@ PrefabInstance:
       propertyPath: _bouncableLayer.m_Bits
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: '_sfxList.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a19cb4fc35dc11646a63dbacdb552d8c, type: 3}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: '_sfxList.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 8af692696d237de4b89a1cdd786f0acb, type: 3}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: '_sfxList.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 9071eb47eca091b4cbde6e271cdf21d6, type: 3}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _horizontalRaycastPoint
       value: 
