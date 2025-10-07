@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 5495903033016328998}
   m_Layer: 7
   m_Name: BodyPhysics
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -423,6 +423,18 @@ PrefabInstance:
       propertyPath: _spriteAnimator
       value: 
       objectReference: {fileID: 2550659789004114872}
+    - target: {fileID: 2630557457693147976, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _sfxList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2630557457693147976, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: '_sfxList.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 337f3b7a7d03cbf4a80c3180f6013ac4, type: 3}
+    - target: {fileID: 2630557457693147976, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: '_sfxList.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: e4486acbf8c51d341a10834c6b3357d6, type: 3}
     - target: {fileID: 4512927471150591898, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: m_IsTrigger
       value: 1

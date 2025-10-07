@@ -310,6 +310,18 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             if (collision.gameObject.CompareTag("Player"))
             {
                 OnPlayerHit();
+                
+                // Immediately disable Player/DeathZone collision
+                int playerLayer = LayerMask.NameToLayer("Player");
+                int deathZoneLayer = LayerMask.NameToLayer("DeathZone");
+                Physics2D.IgnoreLayerCollision(playerLayer, deathZoneLayer, true);
+                
+                // Re-enable after 2.5 seconds
+                DOVirtual.DelayedCall(2.5f, () =>
+                {
+                    Physics2D.IgnoreLayerCollision(playerLayer, deathZoneLayer, false);
+                });
+                
                 IgnorePlayerCollision(collision.gameObject); // Exclude player collision so chandelier passes through
             }
             

@@ -52,7 +52,7 @@ MonoBehaviour:
   swingAngle: 5
   swingSpeed: 0.1
   swingEase: 4
-  dropDelay: 0.1
+  dropDelay: 0
   raycastDistance: 4
   playerLayer:
     serializedVersion: 2

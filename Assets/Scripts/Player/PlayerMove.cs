@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Core.Managers;
 using GabrielBigardi.SpriteAnimator;
 using CrimsonSanctum.Audio;
-using System.Collections.Generic;
 
 
 namespace Assets.Scripts.Player
@@ -83,9 +83,8 @@ namespace Assets.Scripts.Player
         private float _stuckCheckStartTime;
         
         // SFX tracking
-        private int _currentMoveSFXId = -1;
-        private int _currentJumpSFXId = -1;
         private float _footstepTimer = 0f;
+        private Dictionary<string, AudioSource> _playerAudioSources = new Dictionary<string, AudioSource>();
 
         #region IPlayerAbility Implementation
         public bool IsActive { get; private set; }
@@ -158,14 +157,8 @@ namespace Assets.Scripts.Player
             // Unsubscribe from health events
             PlayerHealth.OnInvulnerabilityStart -= OnTakeDamage;
             
-            // Stop any playing SFX
-            StopFootstepSound();
-            
-            if (_currentJumpSFXId != -1)
-            {
-                AudioManager.Instance?.SFX?.StopSFX(_currentJumpSFXId);
-                _currentJumpSFXId = -1;
-            }
+            // Cleanup persistent AudioSources
+            CleanupPlayerAudioSources();
         }
 
         void Update()
@@ -195,6 +188,77 @@ namespace Assets.Scripts.Player
         }
 
         public bool CanMove() => _canMove;
+
+        #region Audio Management
+        
+        /// <summary>
+        /// Creates a persistent AudioSource for player sounds
+        /// </summary>
+        private AudioSource CreatePlayerAudioSource(string name, AudioClip clip, float volume = 1f, bool loop = false)
+        {
+            if (clip == null) return null;
+            
+            // Check if AudioSource already exists
+            if (_playerAudioSources.ContainsKey(name))
+            {
+                var existingSource = _playerAudioSources[name];
+                if (existingSource != null)
+                {
+                    existingSource.clip = clip;
+                    existingSource.volume = volume * _sfxVolume;
+                    existingSource.loop = loop;
+                    return existingSource;
+                }
+            }
+            
+            // Create new AudioSource GameObject as child
+            GameObject audioObject = new GameObject($"PlayerAudio_{name}");
+            audioObject.transform.SetParent(transform);
+            audioObject.transform.localPosition = Vector3.zero;
+            
+            AudioSource source = audioObject.AddComponent<AudioSource>();
+            source.clip = clip;
+            source.volume = volume * _sfxVolume;
+            source.loop = loop;
+            source.playOnAwake = false;
+            source.spatialBlend = 0f; // 2D sound
+            
+            _playerAudioSources[name] = source;
+            return source;
+        }
+        
+        /// <summary>
+        /// Stops a specific player AudioSource
+        /// </summary>
+        private void StopPlayerAudioSource(string name)
+        {
+            if (_playerAudioSources.ContainsKey(name))
+            {
+                var source = _playerAudioSources[name];
+                if (source != null && source.isPlaying)
+                {
+                    source.Stop();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Cleanup all player AudioSources
+        /// </summary>
+        private void CleanupPlayerAudioSources()
+        {
+            foreach (var kvp in _playerAudioSources)
+            {
+                if (kvp.Value != null)
+                {
+                    kvp.Value.Stop();
+                    Destroy(kvp.Value.gameObject);
+                }
+            }
+            _playerAudioSources.Clear();
+        }
+        
+        #endregion
 
         #region New Collision Handling
         private void HandleCollision(Collision2D other)
@@ -237,7 +301,11 @@ namespace Assets.Scripts.Player
                 // Play hit sound if damage was applied
                 if (damageApplied && _sfxList != null && _sfxList.Count > 2 && _sfxList[2] != null)
                 {
-                    AudioManager.Instance?.SFX?.PlaySFX(_sfxList[2], _sfxVolume, Vector3.zero, false);
+                    AudioSource hitSource = CreatePlayerAudioSource("Hit", _sfxList[2], 1f, false);
+                    if (hitSource != null)
+                    {
+                        hitSource.Play();
+                    }
                 }
             }
         }
@@ -258,7 +326,7 @@ namespace Assets.Scripts.Player
             _playerHealth.ApplyEffect();
             
             // Stop footstep sound during knockback
-            StopFootstepSound();
+            StopPlayerAudioSource("Footstep");
             
             // Start afterimage effect during knockback
             if (_afterImageEffect != null)
@@ -466,7 +534,7 @@ namespace Assets.Scripts.Player
             // Don't allow movement control during active knockback
             if (_isKnockbackActive)
             {
-                StopFootstepSound();
+                StopPlayerAudioSource("Footstep");
                 return;
             }
             
@@ -520,13 +588,14 @@ namespace Assets.Scripts.Player
         {
             // Validation checks
             if (_sfxList == null || _sfxList.Count == 0 || _sfxList[0] == null) return;
-            if (AudioManager.Instance == null || AudioManager.Instance.SFX == null) return;
             
             // Use raycast-based ground detection (same as jumping)
             bool isGrounded = IsGroundedRaycast();
             
             // Check if dashing - don't play footsteps while dashing
-            bool isDashing = _playerDash != null && _playerDash.IsActive && _stateManager != null && _stateManager.CurrentState == PlayerState.Dashing;
+            bool isDashing = _playerDash != null && _stateManager != null && 
+                           (_stateManager.CurrentState == PlayerState.Dashing || 
+                            (_playerDash.IsActive && _stateManager.CurrentState == PlayerState.Moving));
             
             // Player is grounded and NOT dashing - handle footstep rhythm
             if (isGrounded && !isDashing)
@@ -536,13 +605,12 @@ namespace Assets.Scripts.Player
                 // Time to play next footstep cycle
                 if (_footstepTimer >= _footstepInterval)
                 {
-                    // Play one-shot footstep sound (NOT looped to prevent doubling)
-                    _currentMoveSFXId = AudioManager.Instance.SFX.PlaySFX(
-                        _sfxList[0], 
-                        _sfxVolume, 
-                        Vector3.zero, 
-                        false  // Loop = false to prevent double sound
-                    );
+                    // Create/get persistent footstep AudioSource
+                    AudioSource footstepSource = CreatePlayerAudioSource("Footstep", _sfxList[0], 1f, false);
+                    if (footstepSource != null && !footstepSource.isPlaying)
+                    {
+                        footstepSource.Play();
+                    }
                     
                     _footstepTimer = 0f;
                 }
@@ -550,20 +618,11 @@ namespace Assets.Scripts.Player
             // Player is not grounded or is dashing - stop footsteps
             else
             {
+                StopPlayerAudioSource("Footstep");
                 _footstepTimer = 0f; // Reset for immediate play on landing
             }
         }
         
-        /// <summary>
-        /// Stops the currently playing footstep sound
-        /// </summary>
-        private void StopFootstepSound()
-        {
-            // Since we're using one-shot sounds now, we don't need to stop them
-            // Just reset the state
-            _currentMoveSFXId = -1;
-        }
-
         private void HandleJump()
         {
             if (GameInput.Instance.IsJumpPressed() && IsGroundedRaycast())
@@ -578,17 +637,14 @@ namespace Assets.Scripts.Player
                 GetComponent<PlayerDash>()?.CancelDash();
                 _rb.linearVelocity = new Vector2(_rb.linearVelocityX, _jumpForce);
                 
-                // Play jump SFX with configurable volume
+                // Play jump SFX with persistent AudioSource
                 if (_sfxList != null && _sfxList.Count > 1 && _sfxList[1] != null)
                 {
-                    // Stop current jump SFX if playing
-                    if (_currentJumpSFXId != -1)
+                    AudioSource jumpSource = CreatePlayerAudioSource("Jump", _sfxList[1], 1f, false);
+                    if (jumpSource != null)
                     {
-                        AudioManager.Instance.SFX.StopSFX(_currentJumpSFXId);
+                        jumpSource.Play();
                     }
-                    
-                    // Play new jump SFX (not looped)
-                    _currentJumpSFXId = AudioManager.Instance.SFX.PlaySFX(_sfxList[1], _sfxVolume, Vector3.zero, false);
                 }
             }
         }

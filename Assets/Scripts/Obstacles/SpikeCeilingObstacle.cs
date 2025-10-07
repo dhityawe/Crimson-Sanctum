@@ -32,7 +32,6 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     [SerializeField] private Rigidbody2D rb;
     
     // Cached components and state
-    private new AudioManager audioManager;
     private Vector3 originalPosition;
     
     // State flags
@@ -43,7 +42,6 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     {
         // Cache components and values at start
         originalPosition = transform.position;
-        audioManager = AudioManager.Instance;
         
         // Cache and validate components
         if (spriteAnimator == null)
@@ -113,7 +111,14 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     {
         if (hasDropped) return;
         spriteAnimator.Play("OnDrop");
-        audioManager.PlaySFX(listSFX[0], sfxVolume);
+        
+        // Play drop SFX using persistent AudioSource
+        if (listSFX != null && listSFX.Count > 0 && listSFX[0] != null)
+        {
+            AudioSource dropSource = CreateObstacleAudioSource("Drop", listSFX[0], sfxVolume);
+            if (dropSource != null)
+                dropSource.Play();
+        }
         
         hasDropped = true;
 
@@ -150,6 +155,18 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             if (collision.gameObject.CompareTag("Player"))
             {
                 OnPlayerHit();
+                
+                // Immediately disable Player/DeathZone collision
+                int playerLayer = LayerMask.NameToLayer("Player");
+                int deathZoneLayer = LayerMask.NameToLayer("DeathZone");
+                Physics2D.IgnoreLayerCollision(playerLayer, deathZoneLayer, true);
+                
+                // Re-enable after 2.5 seconds
+                DOVirtual.DelayedCall(2.5f, () =>
+                {
+                    Physics2D.IgnoreLayerCollision(playerLayer, deathZoneLayer, false);
+                });
+                
                 IgnorePlayerCollision(collision.gameObject); // Exclude player collision so spike passes through
             }
         }
@@ -170,10 +187,12 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         
         spriteAnimator.Play("OnHit");
 
-        // Play metallic CLANG
-        if (audioManager != null && listSFX != null && listSFX.Count > 1 && listSFX[1] != null)
+        // Play metallic CLANG using persistent AudioSource
+        if (listSFX != null && listSFX.Count > 1 && listSFX[1] != null)
         {
-            audioManager.PlaySFX(listSFX[1], sfxVolume);
+            AudioSource clangSource = CreateObstacleAudioSource("Clang", listSFX[1], sfxVolume);
+            if (clangSource != null)
+                clangSource.Play();
         }
     }
 
@@ -189,9 +208,12 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             PlayHitEffect();
             spriteAnimator.Play("OnHit");
             
-            if (audioManager != null && listSFX != null && listSFX.Count > 2 && listSFX[2] != null)
+            // Play hit SFX using persistent AudioSource
+            if (listSFX != null && listSFX.Count > 2 && listSFX[2] != null)
             {
-                audioManager.PlaySFX(listSFX[2], sfxVolume);
+                AudioSource hitSource = CreateObstacleAudioSource("Hit", listSFX[2], sfxVolume);
+                if (hitSource != null)
+                    hitSource.Play();
             }
         }
     }
