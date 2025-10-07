@@ -102,11 +102,15 @@ public class PlayingState : BaseState<GameManager>
     {
         // Find the cinemachine camera in the scene
         CinemachineCamera cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
-        
+
         if (cinemachineCamera != null)
         {
             // Set the player as the tracking target
             cinemachineCamera.Follow = player.transform;
+            cinemachineCamera.ForceCameraPosition(
+                cinemachineCamera.transform.position,
+                cinemachineCamera.transform.rotation
+            );
         }
         else
         {
@@ -142,7 +146,7 @@ public class PlayingState : BaseState<GameManager>
         // Initialize the player system
         InitializePlayerSystem(character);
     }
-    
+
     /// <summary>
     /// Initialize the new player system components
     /// </summary>
@@ -150,7 +154,7 @@ public class PlayingState : BaseState<GameManager>
     {
         // Ensure all required components exist
         EnsureRequiredComponents(character);
-        
+
         // Initialize player state - Change from Preview to Idle for gameplay
         if (character.TryGetComponent<PlayerStateManager>(out var stateManager))
         {
@@ -165,7 +169,15 @@ public class PlayingState : BaseState<GameManager>
                 stateManager.ChangeState(PlayerState.Idle);
             }
         }
-        
+
+
+        // jalanin ke cinemachine follow set position damping y to 2
+
+        CinemachineFollow followCam = Object.FindFirstObjectByType<CinemachineFollow>();
+        if (followCam != null)
+        {
+            followCam.TrackerSettings.PositionDamping = new Vector3(1, 2, 1);
+        }
     }
 
     /// <summary>
