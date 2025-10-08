@@ -44,9 +44,10 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
         hasDropped = false;
         hasTriggered = false;
         
+        if (originalLocalPosition != Vector3.zero)
         // Reset position
         transform.localPosition = originalLocalPosition;
-        
+
         // Reset animator and collider
         spriteAnimator?.Play("Idle");
         if (thisCollider != null)
@@ -63,9 +64,6 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
 
     protected override void Initialize()
     {
-        // Cache components and values at start
-        originalLocalPosition = transform.localPosition;
-
         // Cache and validate components
         if (spriteAnimator == null)
             spriteAnimator = GetComponent<SpriteAnimator>();
@@ -94,6 +92,9 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
             rb.angularDamping = 10f; // Prevent spinning
             rb.freezeRotation = true; // Keep it upright
         }
+
+        // Cache the original local position after all setup is complete
+        originalLocalPosition = transform.localPosition;
 
         // Keep Update active to check for player proximity via raycast
         enabled = true;

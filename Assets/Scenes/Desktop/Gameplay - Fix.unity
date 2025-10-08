@@ -2831,11 +2831,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floorPrefabs:
-  - {fileID: 6965795259561148326, guid: 01c621b94baeb004ba08092dee55985c, type: 3}
-  - {fileID: 8281123297009596770, guid: 82f99ca98da0ea84896b84bfccdca457, type: 3}
   - {fileID: 326924347123890296, guid: d3c6f2569cafe7b44bc6c19c15afde92, type: 3}
-  - {fileID: 8700735596180871984, guid: 699c87cd8aea9674ca6ca9cb11478357, type: 3}
-  - {fileID: 6965795259561148326, guid: 6a4ace3626a48cd45ab502de726c3ba6, type: 3}
   _firstFloor: {fileID: 326924348261218700}
   floorHeight: 6
 --- !u!4 &2141110688
