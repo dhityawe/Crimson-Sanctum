@@ -141,7 +141,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: enter to start game
+  m_text: press space to start game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bc0cc8d028fd53148b3c1e0a93ca90c3, type: 2}
   m_sharedMaterial: {fileID: 6281729063294735854, guid: bc0cc8d028fd53148b3c1e0a93ca90c3, type: 2}

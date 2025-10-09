@@ -15,10 +15,6 @@ public class CharacterSelectState : BaseState<GameManager>
             CharacterData firstCharacter = owner.GetCharacterData(0);
             if (firstCharacter != null)
             {
-                Debug.Log($"Character: {firstCharacter.Name}");
-                Debug.Log($"Description: {firstCharacter.Description}");
-                Debug.Log("Use Left/Right Arrow to select character, Press ENTER to start playing!");
-
                 // Create preview of first character
                 CreateCharacterPreview(owner, firstCharacter);
             }
@@ -41,10 +37,9 @@ public class CharacterSelectState : BaseState<GameManager>
         {
             SelectNextCharacter(owner);
         }
-        else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        else if (Input.GetKeyDown(KeyCode.Space))
         {
             // Confirm selection and move to playing state
-            Debug.Log("Starting game with selected character!");
             owner.ChangeToPlayingState(currentCharacterIndex);
         }
     }

@@ -585,7 +585,7 @@ namespace Assets.Settings
                 {
                     ""name"": """",
                     ""id"": ""4be6fad3-8455-4adf-a581-b3d36974b133"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
