@@ -478,8 +478,8 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
             
             // Draw a label
             string state = hasDropped ? "DROPPED" : (isWarning ? "WARNING" : "WAITING");
-            UnityEditor.Handles.Label(raycastOrigin + Vector3.up * 0.5f, 
-                $"Raycast: {raycastDistance}m\n{state}\n{(childCollider != null ? "From Child" : "From Main")}");
+            // UnityEditor.Handles.Label(raycastOrigin + Vector3.up * 0.5f, 
+            //     $"Raycast: {raycastDistance}m\n{state}\n{(childCollider != null ? "From Child" : "From Main")}");
         }
     }
 }

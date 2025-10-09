@@ -28,6 +28,7 @@ namespace Assets.Scripts.Generator
         {
             foreach (var obstacle in _obstacles)
             {
+                if (obstacle != null)
                 obstacle.ResetObstacle();
             }
         }
