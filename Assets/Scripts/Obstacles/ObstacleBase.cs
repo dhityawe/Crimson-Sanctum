@@ -7,20 +7,52 @@ public abstract class ObstacleBase : MonoBehaviour
 {
     // 🎨 Shared Config — Designer can assign in Inspector
     public ObstacleData data;
+    
+    // ⚠️ Warning Visual — Shared warning system for all obstacles
+    [Header("Warning Visual")]
+    [SerializeField] protected GameObject warningVisual; // Drag WarningVisual child GameObject here
+    [SerializeField] protected float warningVisualDuration = 1f; // How long to show warning
 
     // 🔊 Audio Management — Persistent AudioSources attached to obstacle
     protected Dictionary<string, AudioSource> activeAudioSources = new Dictionary<string, AudioSource>();
     protected AudioManager audioManager;
+    
+    // Coroutine tracking for warning visual
+    private Coroutine warningCoroutine;
 
     // 🧠 Lifecycle — Called automatically
     protected virtual void Start()
     {
         audioManager = AudioManager.Instance;
+        
+        // Auto-find WarningVisual if not assigned
+        if (warningVisual == null)
+        {
+            Transform warningTransform = transform.Find("WarningVisual");
+            if (warningTransform != null)
+            {
+                warningVisual = warningTransform.gameObject;
+            }
+        }
+        
+        // Ensure warning visual starts disabled
+        if (warningVisual != null)
+        {
+            warningVisual.SetActive(false);
+        }
+        
         Initialize(); // Force all obstacles to init
     }
     
     protected virtual void OnDestroy()
     {
+        // Stop warning coroutine if running
+        if (warningCoroutine != null)
+        {
+            StopCoroutine(warningCoroutine);
+            warningCoroutine = null;
+        }
+        
         CleanupAudioSources();
     }
 
@@ -61,6 +93,77 @@ public abstract class ObstacleBase : MonoBehaviour
             yield return new WaitForSeconds(duration);
             sr.color = original;
         }
+    }
+    
+    // ⚠️ WARNING VISUAL UTILITIES — Shared warning system
+    
+    /// <summary>
+    /// Shows the WarningVisual GameObject for the specified duration.
+    /// Call this when the obstacle is triggered/activated.
+    /// </summary>
+    protected void ShowWarningVisual()
+    {
+        ShowWarningVisual(warningVisualDuration);
+    }
+    
+    /// <summary>
+    /// Shows the WarningVisual GameObject for a custom duration.
+    /// </summary>
+    /// <param name="duration">How long to show the warning (in seconds)</param>
+    protected void ShowWarningVisual(float duration)
+    {
+        if (warningVisual == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] WarningVisual not assigned!");
+            return;
+        }
+        
+        // Stop any existing warning coroutine
+        if (warningCoroutine != null)
+        {
+            StopCoroutine(warningCoroutine);
+        }
+        
+        // Start new warning display
+        warningCoroutine = StartCoroutine(ShowWarningCoroutine(duration));
+    }
+    
+    /// <summary>
+    /// Immediately hides the WarningVisual GameObject.
+    /// </summary>
+    protected void HideWarningVisual()
+    {
+        if (warningCoroutine != null)
+        {
+            StopCoroutine(warningCoroutine);
+            warningCoroutine = null;
+        }
+        
+        if (warningVisual != null)
+        {
+            warningVisual.SetActive(false);
+        }
+    }
+    
+    /// <summary>
+    /// Checks if the WarningVisual is currently active.
+    /// </summary>
+    protected bool IsWarningVisualActive()
+    {
+        return warningVisual != null && warningVisual.activeSelf;
+    }
+    
+    private IEnumerator ShowWarningCoroutine(float duration)
+    {
+        // Show warning
+        warningVisual.SetActive(true);
+        
+        // Wait for duration
+        yield return new WaitForSeconds(duration);
+        
+        // Hide warning
+        warningVisual.SetActive(false);
+        warningCoroutine = null;
     }
     
     // 🔊 AUDIO UTILITIES — Persistent AudioSource management for obstacles

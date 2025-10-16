@@ -238,6 +238,9 @@ public class ChandelierObstacle : ObstacleBase, IMovable, IActivatable
     /// </summary>
     protected virtual void OnDropWarning()
     {
+        // ⚠️ Show warning visual
+        ShowWarningVisual(dropDelay);
+        
         // ▶️ Start warning particles if assigned
         if (useDropWarning && warningParticles != null)
         {

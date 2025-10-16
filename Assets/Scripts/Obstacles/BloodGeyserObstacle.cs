@@ -122,6 +122,9 @@ public class BloodGeyserObstacle : ObstacleBase, IActivatable
     #region Trigger and Eruption Phases
     protected virtual void OnTriggerWarning()
     {
+        // ⚠️ Show warning visual
+        ShowWarningVisual(triggerDelay + warningDuration);
+        
         spriteAnimator.Play("OnStart");
         
         // ▶️ Play initial gurgle SFX (trigger sound) - one-shot sound

@@ -110,6 +110,9 @@ public class TrapdoorCoffinObstacle : ObstacleBase, IActivatable
     /// </summary>
     protected virtual void OnTriggerWarning()
     {
+        // ⚠️ Show warning visual
+        ShowWarningVisual(triggerDelay);
+        
         // ▶️ Play creak SFX (warning sound) using persistent AudioSource
         if (sfxList != null && sfxList.Count > 2 && sfxList[2] != null)
         {

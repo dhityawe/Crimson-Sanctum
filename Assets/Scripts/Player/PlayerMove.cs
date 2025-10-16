@@ -33,7 +33,8 @@ namespace Assets.Scripts.Player
         [SerializeField] private bool _showRaycastGizmos = true;
         [SerializeField] private float _bounceCooldown = 0.5f; // Cooldown time between bounces
         [SerializeField] private float _stuckThreshold = 0.3f; // Distance threshold to consider player stuck
-        [SerializeField]private float _stuckCheckTime = 1.0f; // Time to wait before checking if stuck
+        [SerializeField] private float _stuckCheckTime = 1.0f; // Time to wait before checking if stuck (legacy)
+        [SerializeField] private float _quickStuckTime = 0.15f; // Quick stuck detection time (for post-climb scenarios)
         [SerializeField] private float _stuckVelocityThreshold = 0.1f; // Velocity threshold for stuck detection
         [SerializeField] private bool _useSmartRaycasting = true; // Only raycast in relevant directions
         
@@ -81,6 +82,8 @@ namespace Assets.Scripts.Player
         // Stuck detection tracking
         private Vector2 _positionBeforeCooldown;
         private float _stuckCheckStartTime;
+        private Vector2 _lastFramePosition;
+        private float _consecutiveStuckFrames = 0f;
         
         // SFX tracking
         private float _footstepTimer = 0f;
@@ -130,6 +133,7 @@ namespace Assets.Scripts.Player
             _canMove = true;
             _charSprite.flipX = _isFlipx;
             IsActive = true;
+            _lastFramePosition = transform.position;
             
             // Subscribe to collision events
             if (_collisionHandler != null)
@@ -143,6 +147,9 @@ namespace Assets.Scripts.Player
             {
                 PlayerHealth.OnInvulnerabilityStart += OnTakeDamage;
             }
+            
+            // Subscribe to climb events to reset stuck detection
+            PlayerEvents.OnClimbEnd += ResetStuckDetection;
         }
 
         void OnDestroy()
@@ -156,6 +163,9 @@ namespace Assets.Scripts.Player
             
             // Unsubscribe from health events
             PlayerHealth.OnInvulnerabilityStart -= OnTakeDamage;
+            
+            // Unsubscribe from climb events
+            PlayerEvents.OnClimbEnd -= ResetStuckDetection;
             
             // Cleanup persistent AudioSources
             CleanupPlayerAudioSources();
@@ -380,42 +390,85 @@ namespace Assets.Scripts.Player
             Vector2 currentPosition = transform.position;
             float currentTime = Time.fixedTime; // Use fixedTime for FixedUpdate
 
-            // Enhanced stuck detection using velocity
-            bool isVelocityStuck = Mathf.Abs(_rb.linearVelocityX) < _stuckVelocityThreshold;
-            bool hasBeenStuckLongEnough = currentTime - _stuckCheckStartTime >= _stuckCheckTime;
-
-            // Check if cooldown period has ended and player might be stuck
-            if (currentTime - _lastBounceTime >= _bounceCooldown)
+            // Calculate actual position change per frame (more reliable than velocity)
+            float distanceMovedThisFrame = Vector2.Distance(currentPosition, _lastFramePosition);
+            _lastFramePosition = currentPosition;
+            
+            // Enhanced stuck detection: check if player is barely moving
+            bool isActuallyStuck = distanceMovedThisFrame < 0.01f; // Less than 1cm movement
+            
+            // Increment stuck counter if player is stuck
+            if (isActuallyStuck && Mathf.Abs(_rb.linearVelocityX) > _stuckVelocityThreshold)
             {
-                // Enhanced stuck detection: velocity + position + time
-                if (hasBeenStuckLongEnough && isVelocityStuck)
-                {
-                    float distanceMoved = Vector2.Distance(currentPosition, _positionBeforeCooldown);
-
-                    if (distanceMoved < _stuckThreshold)
-                    {
-                        PerformBounce(currentPosition, currentTime, true);
-                        return;
-                    }
-                }
+                _consecutiveStuckFrames += Time.fixedDeltaTime;
             }
             else
             {
-                // Still in cooldown, check distance-based prevention
-                if (Vector2.Distance(currentPosition, _lastBouncePosition) < _horizontalRaycastDistance * 0.8f)
-                {
-                    return;
-                }
+                _consecutiveStuckFrames = 0f;
             }
 
-            // Smart raycasting - only check relevant directions
+            // ========== PRIORITY 1: RAYCAST DETECTION (Most Responsive) ==========
+            // Check raycasts FIRST for immediate collision detection
             bool foundBouncable = _useSmartRaycasting ?
                 CheckBouncableSmartRaycast(currentPosition) :
                 CheckBouncableAllDirections(currentPosition);
 
+            // If raycast detects bouncable, check cooldown
             if (foundBouncable)
             {
-                PerformBounce(currentPosition, currentTime, false);
+                // Check cooldown and distance-based prevention
+                if (currentTime - _lastBounceTime >= _bounceCooldown)
+                {
+                    PerformBounce(currentPosition, currentTime, false);
+                    _consecutiveStuckFrames = 0f;
+                    return;
+                }
+                else
+                {
+                    // Still in cooldown, check if we've moved far enough for another bounce
+                    if (Vector2.Distance(currentPosition, _lastBouncePosition) < _horizontalRaycastDistance * 0.8f)
+                    {
+                        return;
+                    }
+                    // Moved far enough, allow bounce despite cooldown
+                    PerformBounce(currentPosition, currentTime, false);
+                    _consecutiveStuckFrames = 0f;
+                    return;
+                }
+            }
+            
+            // ========== PRIORITY 2: STUCK DETECTION (Fallback) ==========
+            // Only use stuck detection if raycast didn't find anything
+            // This prevents getting stuck when raycasts fail
+            
+            if (currentTime - _lastBounceTime < _bounceCooldown)
+            {
+                // Still in main cooldown, don't check stuck detection
+                return;
+            }
+            
+            // Quick stuck detection - if player hasn't moved for several frames despite having velocity
+            if (_consecutiveStuckFrames >= _quickStuckTime)
+            {
+                PerformBounce(currentPosition, currentTime, true);
+                _consecutiveStuckFrames = 0f;
+                return;
+            }
+            
+            // Legacy velocity-based stuck detection
+            bool isVelocityStuck = Mathf.Abs(_rb.linearVelocityX) < _stuckVelocityThreshold;
+            bool hasBeenStuckLongEnough = currentTime - _stuckCheckStartTime >= _stuckCheckTime;
+            
+            if (hasBeenStuckLongEnough && isVelocityStuck)
+            {
+                float distanceMoved = Vector2.Distance(currentPosition, _positionBeforeCooldown);
+
+                if (distanceMoved < _stuckThreshold)
+                {
+                    PerformBounce(currentPosition, currentTime, true);
+                    _consecutiveStuckFrames = 0f;
+                    return;
+                }
             }
         }
         
@@ -497,8 +550,21 @@ namespace Assets.Scripts.Player
             _lastBouncePosition = currentPosition;
             _positionBeforeCooldown = currentPosition;
             _stuckCheckStartTime = currentTime;
+            _consecutiveStuckFrames = 0f; // Reset stuck counter
             
             string bounceType = isStuckBounce ? "Stuck" : "Normal";
+        }
+        
+        /// <summary>
+        /// Resets stuck detection tracking. Called after climbing or other position changes.
+        /// </summary>
+        private void ResetStuckDetection()
+        {
+            _consecutiveStuckFrames = 0f;
+            _lastFramePosition = transform.position;
+            _positionBeforeCooldown = transform.position;
+            _stuckCheckStartTime = Time.fixedTime;
+            // Don't reset _lastBounceTime to prevent immediate re-bounce
         }
         #endregion
 

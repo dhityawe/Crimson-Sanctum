@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77fafcc6bd2ee94ebe9ac341b986e7a, type: 3}
+  m_Name: Warning
+  m_EditorClassIdentifier: 
+  SpriteAnimations:
+  - Name: Warning
+    FPS: 16
+    Frames:
+    - {fileID: 7300834860042216883, guid: 3347d5eae31a7fa418b1963fa0bb2465, type: 3}
+    - {fileID: 2659323015791999917, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 4108341917008571096, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 7726458357165108145, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 6788413942298784377, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: -8215699741465298731, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: -8215699741465298731, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 6788413942298784377, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 7726458357165108145, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 4108341917008571096, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 2659323015791999917, guid: f2bfa319c53557d44a4faa578bd2d536, type: 3}
+    - {fileID: 7300834860042216883, guid: 3347d5eae31a7fa418b1963fa0bb2465, type: 3}
+    SpriteAnimationType: 0

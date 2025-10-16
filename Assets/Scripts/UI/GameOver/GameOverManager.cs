@@ -65,6 +65,10 @@ namespace CrimsonSanctum.UI
         // Audio Management
         private Dictionary<string, AudioSource> _gameOverAudioSources = new Dictionary<string, AudioSource>();
         
+        // Store original UI scales
+        private Vector3 originalTitleScale;
+        private Vector3 originalPromptScale;
+        
         #endregion
         
         #region Singleton
@@ -99,6 +103,13 @@ namespace CrimsonSanctum.UI
                 maskedOverlay.SetMaskRadius(characterMaskRadius);
                 maskedOverlay.SetMaskSoftness(characterMaskSoftness);
             }
+            
+            // Store original scales
+            if (gameOverTitle != null)
+                originalTitleScale = gameOverTitle.transform.localScale;
+            
+            if (restartPrompt != null)
+                originalPromptScale = restartPrompt.transform.localScale;
             
             InitializeCameraReferences();
         }
@@ -202,10 +213,16 @@ namespace CrimsonSanctum.UI
                 maskedOverlay.SetAlpha(0f);
             
             if (gameOverTitle != null)
+            {
                 gameOverTitle.alpha = 0f;
+                gameOverTitle.transform.localScale = originalTitleScale * 0.8f;
+            }
             
             if (restartPrompt != null)
+            {
                 restartPrompt.SetActive(false);
+                restartPrompt.transform.localScale = originalPromptScale;
+            }
         }
         
         void CreateGameOverSequence()
@@ -230,15 +247,12 @@ namespace CrimsonSanctum.UI
             // Show title with scale animation
             if (gameOverTitle != null)
             {
-                Vector3 originalScale = gameOverTitle.transform.localScale;
-                gameOverTitle.transform.localScale = originalScale * 0.8f;
-                
                 gameOverSequence.Insert(titleAppearDelay,
                     gameOverTitle.DOFade(1f, titleFadeDuration).SetEase(Ease.OutQuart)
                 );
                 
                 gameOverSequence.Insert(titleAppearDelay,
-                    gameOverTitle.transform.DOScale(originalScale, titleFadeDuration).SetEase(Ease.OutBack)
+                    gameOverTitle.transform.DOScale(originalTitleScale, titleFadeDuration).SetEase(Ease.OutBack)
                 );
             }
             

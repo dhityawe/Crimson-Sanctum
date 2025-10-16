@@ -280,6 +280,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6048018434007084647}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _quickStuckTime
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _spriteAnimator
       value: 
       objectReference: {fileID: 2550659789004114872}
@@ -296,6 +300,10 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _showRaycastGizmos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _groundLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
@@ -310,6 +318,14 @@ PrefabInstance:
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _sfxList.Array.size
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _useSmartRaycasting
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _debugStuckDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _knockbackUpwardForce
@@ -339,6 +355,10 @@ PrefabInstance:
       propertyPath: _horizontalRaycastPoint
       value: 
       objectReference: {fileID: 6029570501838359960}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: _stuckVelocityThreshold
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _verticalRaycastDistance
       value: 0.2

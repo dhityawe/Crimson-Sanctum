@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a77fafcc6bd2ee94ebe9ac341b986e7a, type: 3}
-  m_Name: PossesedPortrait
+  m_Name: FeedbackPanel
   m_EditorClassIdentifier: 
   SpriteAnimations:
-  - Name: Blink
-    FPS: 8
+  - Name: Clear
+    FPS: 1
     Frames:
-    - {fileID: -1205863460, guid: 9a390f04a27389a47bea6d48956f7404, type: 3}
-    - {fileID: -1474224021176862780, guid: 9a390f04a27389a47bea6d48956f7404, type: 3}
-    - {fileID: -1506043732, guid: 9a390f04a27389a47bea6d48956f7404, type: 3}
-    - {fileID: -601304415, guid: 9a390f04a27389a47bea6d48956f7404, type: 3}
+    - {fileID: 7300834860042216883, guid: 3347d5eae31a7fa418b1963fa0bb2465, type: 3}
+    SpriteAnimationType: 1
+  - Name: Hurt
+    FPS: 1
+    Frames:
+    - {fileID: -3173341314249649737, guid: 1cd75a7950d5d4a498de19a19fb28b82, type: 3}
     SpriteAnimationType: 1
