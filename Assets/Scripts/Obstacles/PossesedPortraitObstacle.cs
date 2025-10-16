@@ -9,6 +9,8 @@ using GabrielBigardi.SpriteAnimator;
 public class PossessedPortraitObstacle : ObstacleBase, IActivatable
 {
     [Header("Detection & Firing")]
+    [SerializeField] private Transform detectionCenter; // Center point for detection square
+    [SerializeField] private Vector2 detectionSize = new Vector2(10f, 8f); // Size of detection square
     [SerializeField] private float fireInterval = 3f; // Time between shots (if player in range)
     [SerializeField] private float chargeDuration = 0.8f; // Time to charge before firing
     [SerializeField] private float laserTravelTime = 0.2f; // Time for laser to travel to target
@@ -40,8 +42,10 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     [SerializeField][Range(0.5f, 0.95f)] private float eyeBlinkTriggerPercent = 0.8f; // When to trigger blink (80% of charge)
     [SerializeField][Range(0.3f, 0.9f)] private float impactFadeOutStartPercent = 0.7f; // When to start volume fade (70% of fall phase)
     
-    [Header("Components")]
-    [SerializeField] private Collider2D detectionZone; // Drag your trigger collider here
+    [Header("Detection Visualization")]
+    [SerializeField] private bool showDetectionGizmo = true;
+    [SerializeField] private Color detectionGizmoColor = new Color(1f, 1f, 0f, 0.3f); // Yellow semi-transparent
+    [SerializeField] private Color activeDetectionColor = new Color(1f, 0f, 0f, 0.5f); // Red semi-transparent
 
     // State tracking
     private Transform playerTransform;
@@ -78,6 +82,9 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         InitializeLaserVisuals();
         CacheOriginalColors();
         ValidateSetup();
+        
+        // Start detection check coroutine
+        StartCoroutine(DetectionCheckLoop());
     }
     
     protected override void OnDestroy()
@@ -125,10 +132,84 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     
     private void ValidateSetup()
     {
-        if (detectionZone != null)
-            detectionZone.isTrigger = true;
-        else
-            Debug.LogError("PossessedPortrait: Detection Zone not assigned!");
+        if (detectionCenter == null)
+        {
+            Debug.LogWarning("PossessedPortrait: Detection Center not assigned! Using portrait position.");
+            // Create a default detection center at portrait position
+            GameObject centerObj = new GameObject("DetectionCenter");
+            centerObj.transform.SetParent(transform);
+            centerObj.transform.localPosition = Vector3.zero;
+            detectionCenter = centerObj.transform;
+        }
+    }
+    
+    #endregion
+
+    #region Detection Loop
+    
+    /// <summary>
+    /// Continuously checks if player is within the detection square
+    /// </summary>
+    private IEnumerator DetectionCheckLoop()
+    {
+        const float checkInterval = 0.2f; // Check 5 times per second
+        
+        while (true)
+        {
+            yield return new WaitForSeconds(checkInterval);
+            
+            if (playerTransform == null)
+            {
+                FindPlayer();
+                continue;
+            }
+            
+            bool wasInZone = playerInZone;
+            playerInZone = IsPlayerInDetectionZone();
+            
+            // Player just entered zone
+            if (playerInZone && !wasInZone)
+            {
+                OnPlayerEnterZone();
+            }
+            // Player just left zone
+            else if (!playerInZone && wasInZone)
+            {
+                OnPlayerExitZone();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Checks if player is within the detection square bounds
+    /// </summary>
+    private bool IsPlayerInDetectionZone()
+    {
+        if (playerTransform == null || detectionCenter == null)
+            return false;
+        
+        Vector2 centerPos = detectionCenter.position;
+        Vector2 playerPos = playerTransform.position;
+        
+        // Calculate the bounds of the detection square
+        float halfWidth = detectionSize.x * 0.5f;
+        float halfHeight = detectionSize.y * 0.5f;
+        
+        // Check if player is within bounds
+        bool withinX = Mathf.Abs(playerPos.x - centerPos.x) <= halfWidth;
+        bool withinY = Mathf.Abs(playerPos.y - centerPos.y) <= halfHeight;
+        
+        return withinX && withinY;
+    }
+    
+    private void OnPlayerEnterZone()
+    {
+        StartFiring();
+    }
+    
+    private void OnPlayerExitZone()
+    {
+        StopFiring();
     }
     
     #endregion
@@ -148,26 +229,6 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
         }
         
         Debug.LogWarning($"PossessedPortrait: No player found on layer mask {playerLayer.value}");
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (IsInLayerMask(other.gameObject, playerLayer))
-        {
-            playerTransform = other.transform;
-            playerCollider = other;
-            playerInZone = true;
-            StartFiring();
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (IsInLayerMask(other.gameObject, playerLayer))
-        {
-            playerInZone = false;
-            StopFiring();
-        }
     }
     
     #endregion
@@ -224,6 +285,9 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     {
         isCharging = true;
         canFire = false;
+        
+        // ⚠️ Show warning visual during charge
+        ShowWarningVisual(chargeDuration);
 
         AnimateEyeLightsToRed();
 
@@ -681,13 +745,11 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
     #region IActivatable Implementation
     public void Activate()
     {
-        if (detectionZone != null && playerTransform != null && playerCollider != null)
+        // Check if player is currently in detection zone
+        if (playerTransform != null && IsPlayerInDetectionZone())
         {
-            if (detectionZone.IsTouching(playerCollider))
-            {
-                playerInZone = true;
-                StartFiring();
-            }
+            playerInZone = true;
+            StartFiring();
         }
     }
 
@@ -742,32 +804,25 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
 
     private void OnDrawGizmosSelected()
     {
-        // Visualize detection zone
-        if (detectionZone != null)
-        {
-            Gizmos.color = playerInZone ? Color.red : Color.yellow;
-            
-            if (detectionZone is BoxCollider2D boxCollider)
-            {
-                Gizmos.matrix = Matrix4x4.TRS(
-                    detectionZone.transform.position,
-                    detectionZone.transform.rotation,
-                    detectionZone.transform.lossyScale
-                );
-                Gizmos.DrawWireCube(boxCollider.offset, boxCollider.size);
-            }
-            else if (detectionZone is CircleCollider2D circleCollider)
-            {
-                Gizmos.matrix = Matrix4x4.TRS(
-                    detectionZone.transform.position,
-                    detectionZone.transform.rotation,
-                    detectionZone.transform.lossyScale
-                );
-                Gizmos.DrawWireSphere(circleCollider.offset, circleCollider.radius);
-            }
-            
-            Gizmos.matrix = Matrix4x4.identity;
-        }
+        if (!showDetectionGizmo) return;
+        
+        // Get detection center position
+        Vector3 centerPos = detectionCenter != null ? detectionCenter.position : transform.position;
+        
+        // Draw detection square
+        Color gizmoColor = playerInZone ? activeDetectionColor : detectionGizmoColor;
+        Gizmos.color = gizmoColor;
+        
+        // Draw filled rectangle
+        DrawGizmoSquare(centerPos, detectionSize);
+        
+        // Draw border
+        Gizmos.color = new Color(gizmoColor.r, gizmoColor.g, gizmoColor.b, 1f);
+        DrawGizmoSquareBorder(centerPos, detectionSize);
+        
+        // Draw center point
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(centerPos, 0.2f);
         
         // Draw aiming line during charge
         if (isCharging && targetPosition != Vector3.zero)
@@ -785,6 +840,44 @@ public class PossessedPortraitObstacle : ObstacleBase, IActivatable
             Gizmos.color = Color.green;
             Gizmos.DrawLine(startPos, playerTransform.position);
         }
+    }
+    
+    /// <summary>
+    /// Draws a filled square gizmo
+    /// </summary>
+    private void DrawGizmoSquare(Vector3 center, Vector2 size)
+    {
+        Vector3[] vertices = new Vector3[4];
+        float halfWidth = size.x * 0.5f;
+        float halfHeight = size.y * 0.5f;
+        
+        vertices[0] = center + new Vector3(-halfWidth, -halfHeight, 0);
+        vertices[1] = center + new Vector3(halfWidth, -halfHeight, 0);
+        vertices[2] = center + new Vector3(halfWidth, halfHeight, 0);
+        vertices[3] = center + new Vector3(-halfWidth, halfHeight, 0);
+        
+        // Draw two triangles to fill the square
+        Gizmos.DrawLine(vertices[0], vertices[2]);
+        Gizmos.DrawLine(vertices[1], vertices[3]);
+    }
+    
+    /// <summary>
+    /// Draws the border of a square gizmo
+    /// </summary>
+    private void DrawGizmoSquareBorder(Vector3 center, Vector2 size)
+    {
+        float halfWidth = size.x * 0.5f;
+        float halfHeight = size.y * 0.5f;
+        
+        Vector3 topLeft = center + new Vector3(-halfWidth, halfHeight, 0);
+        Vector3 topRight = center + new Vector3(halfWidth, halfHeight, 0);
+        Vector3 bottomLeft = center + new Vector3(-halfWidth, -halfHeight, 0);
+        Vector3 bottomRight = center + new Vector3(halfWidth, -halfHeight, 0);
+        
+        Gizmos.DrawLine(topLeft, topRight);
+        Gizmos.DrawLine(topRight, bottomRight);
+        Gizmos.DrawLine(bottomRight, bottomLeft);
+        Gizmos.DrawLine(bottomLeft, topLeft);
     }
     
     #endregion

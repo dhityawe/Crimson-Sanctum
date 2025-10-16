@@ -33,6 +33,7 @@ namespace Assets.Scripts.Player
         #region Actions
         public static event Action OnDeath;
         public static event Action<int> OnHealthChanged; // Event for UI updates
+        public static event Action TakingDamage;
         public static event Action OnInvulnerabilityStart;
         public static event Action OnInvulnerabilityEnd;
         #endregion
@@ -93,6 +94,7 @@ namespace Assets.Scripts.Player
 
             // Apply damage
             currentHealth -= damage;
+            TakingDamage?.Invoke();
             if (debugInvulnerability)
                 Debug.Log($"[PlayerHealth] Took {damage} damage. Health: {currentHealth}/{maxHealth}");
 

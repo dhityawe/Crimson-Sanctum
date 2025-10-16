@@ -134,6 +134,10 @@ public class SpikeCeilingObstacle : ObstacleBase, IActivatable
     public void TriggerDrop()
     {
         if (hasDropped) return;
+        
+        // ⚠️ Show warning visual
+        ShowWarningVisual(warningDuration);
+        
         spriteAnimator.Play("OnDrop");
         
         // Play drop SFX using persistent AudioSource
