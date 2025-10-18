@@ -2,22 +2,25 @@ using UnityEngine;
 using Assets.Scripts.Systems;
 using Assets.Scripts.Player;
 using Unity.Cinemachine;
+using System.Collections;
+using Assets.Scripts.Core.Managers;
 
 public class PlayingState : BaseState<GameManager>
 {
     private bool isSubscribedToPlayerDeath = false;
     private bool isSubscribedToNewPlayerEvents = false;
+    private Coroutine _tutorialCoroutine;
     
     public void EnterState(GameManager owner)
     {
         // Get selected character data
         CharacterData selectedCharacter = owner.GetCharacterData(owner.SelectedCharacterIndex);
-        
+
         if (selectedCharacter != null)
         {
             // Check if character is already spawned (from preview)
             GameObject spawnedPlayer = owner.CurrentPlayer;
-            
+
             if (spawnedPlayer == null)
             {
                 // Spawn character if not already spawned
@@ -28,13 +31,13 @@ public class PlayingState : BaseState<GameManager>
                 // Re-enable player scripts if character already exists
                 EnablePlayerScripts(spawnedPlayer);
             }
-            
+
             if (spawnedPlayer != null)
             {
-                
+
                 // Assign cinemachine camera to follow the player
                 AssignCameraToPlayer(spawnedPlayer);
-                
+
                 // Subscribe to player death events (both old and new systems for compatibility)
                 PlayerHealth.OnDeath += OnPlayerDeath;
                 PlayerEvents.OnPlayerDeath += OnPlayerDeathNew;
@@ -45,8 +48,11 @@ public class PlayingState : BaseState<GameManager>
             {
             }
         }
-        else
+        
+        if(!PlayerPrefs.HasKey("Tutorial"))
         {
+            
+            _tutorialCoroutine = owner.StartCoroutine(StartTutorial(owner));
         }
     }
     
@@ -70,6 +76,19 @@ public class PlayingState : BaseState<GameManager>
             PlayerEvents.OnPlayerDeath -= OnPlayerDeathNew;
             isSubscribedToNewPlayerEvents = false;
         }
+    }
+
+    private IEnumerator StartTutorial(GameManager game)
+    {
+        yield return new WaitForSeconds(5f);
+        Time.timeScale = 0;
+        Debug.Log("Time is freeze, please press space or tap screen first to continue");
+        while (!GameInput.Instance.IsJumpPressed())
+        {
+            yield return null;
+        }
+        Time.timeScale = 1;
+        Debug.Log("Great!");
     }
     
     private void OnPlayerDeath()
