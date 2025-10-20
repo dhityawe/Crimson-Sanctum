@@ -19,11 +19,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text _enterGameText;
     [SerializeField] private Image[] _arrowImages = new Image[2];
 
+    [Header("UI Tutorial")]
+    [SerializeField] private TMP_Text _tutorialJumpText;
+
     // Current selected character index
     public int SelectedCharacterIndex { get; private set; } = 0;
 
     // Current spawned player instance
     public GameObject CurrentPlayer { get; private set; }
+    public TMP_Text TutorialJumpText { get => _tutorialJumpText; }
 
     // Public access to spawn point for character preview
     public Transform SpawnPoint => spawnPoint;
