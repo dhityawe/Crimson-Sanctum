@@ -317,7 +317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _sfxList.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _useSmartRaycasting
@@ -351,6 +351,10 @@ PrefabInstance:
       propertyPath: '_sfxList.Array.data[2]'
       value: 
       objectReference: {fileID: 8300000, guid: 9071eb47eca091b4cbde6e271cdf21d6, type: 3}
+    - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
+      propertyPath: '_sfxList.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8300000, guid: c5ae17f085169e249b9e546f7f523e0a, type: 3}
     - target: {fileID: 91972278810843725, guid: 1822c4ab373f14e238093353cda03a0a, type: 3}
       propertyPath: _horizontalRaycastPoint
       value: 

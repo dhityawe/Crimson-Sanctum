@@ -280,9 +280,9 @@ namespace Assets.Scripts.Player
                 // Just attempt damage - PlayerHealth handles invulnerability
                 HandleDamage();
             }
-            else if (other.gameObject.CompareTag("Pickable"))
+            else if (other.gameObject.CompareTag("Coins"))
             {
-                HandleCoinPickup();
+                HandleCoinPickup(other.gameObject);
             }
         }
 
@@ -295,9 +295,9 @@ namespace Assets.Scripts.Player
                 // Just attempt damage - PlayerHealth handles invulnerability
                 HandleDamage();
             }
-            else if (other.gameObject.CompareTag("Pickable"))
+            else if (other.gameObject.CompareTag("Coins"))
             {
-                HandleCoinPickup();
+                HandleCoinPickup(other.gameObject);
             }
         }
 
@@ -377,8 +377,32 @@ namespace Assets.Scripts.Player
         }
         
         
-        private void HandleCoinPickup()
+        private void HandleCoinPickup(GameObject coinObject)
         {
+            // Quick validation and immediate deactivation
+            if (coinObject == null || !coinObject.activeSelf) return;
+            
+            // Immediately deactivate to prevent multiple pickups
+            coinObject.SetActive(false);
+            
+            // Play sound using persistent AudioSource (avoids AudioListener spam)
+            if (_sfxList != null && _sfxList.Count > 3 && _sfxList[3] != null)
+            {
+                AudioSource coinSource = CreatePlayerAudioSource("Coin", _sfxList[3], 1f, false);
+                if (coinSource != null && !coinSource.isPlaying)
+                {
+                    coinSource.Play();
+                }
+            }
+            
+            // Invoke events immediately (no need to defer)
+            OnPickupCoin?.Invoke();
+            PlayerEvents.OnCoinPickup?.Invoke();
+        }
+        
+        private System.Collections.IEnumerator DeferredCoinEvents()
+        {
+            yield return null; // Wait one frame
             OnPickupCoin?.Invoke();
             PlayerEvents.OnCoinPickup?.Invoke();
         }

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77fafcc6bd2ee94ebe9ac341b986e7a, type: 3}
+  m_Name: Coin
+  m_EditorClassIdentifier: 
+  SpriteAnimations:
+  - Name: Idle
+    FPS: 8
+    Frames:
+    - {fileID: 268479637224453473, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: -5185303532118807008, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 5596076509634570044, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 1735420077290961207, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 1636616165716369072, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 91121689604889439, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: -3165578003791318182, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 3878559859915588545, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 5630973183827814346, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: -108402240781527037, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    - {fileID: 89303294371390147, guid: 440a0e1deabd15845a353a6838f0dbc7, type: 3}
+    SpriteAnimationType: 0

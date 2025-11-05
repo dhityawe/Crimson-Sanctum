@@ -11,6 +11,7 @@ namespace Assets.Scripts.Generator
         [Tooltip("GameObject Ladder")]
         [SerializeField] private Transform _ladderObject;
         [SerializeField] private List<ObstacleBase> _obstacles = new List<ObstacleBase>();
+        [SerializeField] private List<GameObject> _coins = new List<GameObject>();
         // Start is called once before the first execution of Update after the MonoBehaviour is created
 
         void Start()
@@ -30,6 +31,20 @@ namespace Assets.Scripts.Generator
             {
                 if (obstacle != null)
                 obstacle.ResetObstacle();
+            }
+            
+            // Also reset coins when resetting obstacles
+            ResetCoins();
+        }
+        
+        public void ResetCoins()
+        {
+            foreach (var coin in _coins)
+            {
+                if (coin != null)
+                {
+                    coin.SetActive(true);
+                }
             }
         }
 

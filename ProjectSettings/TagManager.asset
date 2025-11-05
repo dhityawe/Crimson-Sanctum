@@ -9,6 +9,7 @@ TagManager:
   - Bouncable
   - Ladder
   - Ground
+  - Coins
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Ground
   - Player
   - DeathZone
-  - 
+  - Coins
   - 
   - 
   - 
@@ -69,6 +70,9 @@ TagManager:
     locked: 0
   - name: Obstacle/Front
     uniqueID: 2421683963
+    locked: 0
+  - name: Coins
+    uniqueID: 2464225061
     locked: 0
   - name: Ground
     uniqueID: 2682549347

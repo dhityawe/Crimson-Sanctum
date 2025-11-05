@@ -8,9 +8,13 @@ namespace Assets.Scripts.Core.Managers
         public int Score { get; private set; }
         public int DisplayScore { get; private set; }
         public static ScoreManager Instance;
+        
         public event Action<int> OnScoreChanged;
         public event Action<int> OnNextStage;
         public event Action<int> OnRecycleStage;
+        
+        [SerializeField] private PlayerData playerData;
+        
         void Awake()
         {
             Instance = this;
@@ -51,15 +55,27 @@ namespace Assets.Scripts.Core.Managers
 
         public void SaveScore()
         {
+            // Save to PlayerPrefs (legacy support)
             bool hasKey = PlayerPrefs.HasKey("Score");
             if (hasKey)
             {
-                if (Score > PlayerPrefs.GetInt("Score"))
+                if (DisplayScore > PlayerPrefs.GetInt("Score"))
                 {
                     PlayerPrefs.SetInt("Score", DisplayScore);
                 }
             }
-            else PlayerPrefs.SetInt("Score", DisplayScore);
+            else 
+            {
+                PlayerPrefs.SetInt("Score", DisplayScore);
+            }
+            
+            // Save to PlayerData ScriptableObject
+            if (playerData != null)
+            {
+                playerData.UpdateHighestScore(DisplayScore);
+                playerData.IncrementRuns();
+                playerData.SaveToPersistentStorage();
+            }
         }
         #endregion
     }
