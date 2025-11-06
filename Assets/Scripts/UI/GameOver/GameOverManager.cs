@@ -137,18 +137,18 @@ namespace CrimsonSanctum.UI
             
             cinemachineCamera = Object.FindFirstObjectByType<CinemachineCamera>();
         }
-        
+
         #endregion
-        
+
         #region Public Methods
-        
+
         public void TriggerGameOver(Transform playerTransform = null)
         {
             if (isActive) return;
-            
+
             isActive = true;
             this.playerTransform = playerTransform;
-            
+
             if (this.playerTransform == null)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -158,9 +158,10 @@ namespace CrimsonSanctum.UI
 
             StartGameOverSequence();
             PlayerDataManager.Instance.AddScore(playerData.highestScore);
-            // PlayerDataManager.Instance.AddCoin();
+            PlayerDataManager.Instance.AddCoin(playerData.currentCoins);
+            PlayerDataManager.Instance.SaveToServer();
         }
-        
+
         public void HideGameOver()
         {
             if (!isActive) return;
