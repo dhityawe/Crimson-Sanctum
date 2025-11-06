@@ -4,6 +4,8 @@ using DG.Tweening;
 using TMPro;
 using Unity.Cinemachine;
 using System.Collections.Generic;
+using Assets.Scripts.Player.API;
+using Assets.Scripts.Core.Managers;
 
 namespace CrimsonSanctum.UI
 {
@@ -33,6 +35,7 @@ namespace CrimsonSanctum.UI
         [Header("Character Masking")]
         [SerializeField] private float characterMaskRadius = 120f;
         [SerializeField] private float characterMaskSoftness = 80f;
+        public PlayerData playerData;
         
         [Header("Camera Zoom Effect")]
         [SerializeField] private bool enableCameraZoom = true;
@@ -152,8 +155,10 @@ namespace CrimsonSanctum.UI
                 if (player != null)
                     this.playerTransform = player.transform;
             }
-            
+
             StartGameOverSequence();
+            PlayerDataManager.Instance.AddScore(playerData.highestScore);
+            // PlayerDataManager.Instance.AddCoin();
         }
         
         public void HideGameOver()

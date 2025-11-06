@@ -1,0 +1,164 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     PLAYER API SDK - FILE STRUCTURE                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Assets/Scripts/Player/API/
+│
+├─── 📄 Core Files (Required)
+│    ├── PlayerApiDTOs.cs ..................... Data Transfer Objects
+│    ├── PlayerApiClient.cs ................... HTTP Client for API calls
+│    ├── PlayerApiConfig.cs ................... Configuration ScriptableObject
+│    ├── PlayerDataManager.cs ................. Main Manager (Singleton)
+│    └── PlayerDataExtensions.cs .............. Helper extensions & utilities
+│
+├─── 📘 Documentation
+│    ├── README.md ............................ Full documentation
+│    ├── SETUP_GUIDE.md ....................... Quick setup (5 minutes)
+│    ├── CHEATSHEET.md ........................ Quick reference
+│    └── FILE_STRUCTURE.txt ................... This file
+│
+└─── 📁 Examples/
+     ├── PlayerApiExample.cs .................. Full example with UI
+     └── SimpleGameIntegration.cs ............. Copy-paste examples
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 MAIN COMPONENTS OVERVIEW
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PlayerDataManager (Singleton)                                               │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│ • Main interface untuk semua operasi                                        │
+│ • Manage local storage (PlayerPrefs) dan remote storage (API)               │
+│ • Auto-save functionality                                                    │
+│ • DontDestroyOnLoad - persists across scenes                                │
+│                                                                              │
+│ Usage: PlayerDataManager.Instance.Method()                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PlayerApiClient                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│ • Handle HTTP requests ke REST API                                          │
+│ • POST /api/player/new      - Create new player                             │
+│ • POST /api/player/load     - Load player by nickname                       │
+│ • POST /api/player/save     - Save player data                              │
+│ • GET  /api/player/leaderboard?top=N - Get leaderboard                      │
+│                                                                              │
+│ Note: Anda tidak perlu menggunakan class ini langsung, use Manager instead  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PlayerApiConfig (ScriptableObject)                                          │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│ • Configuration asset                                                        │
+│ • Base URL - URL REST API server                                            │
+│ • Auto Save Interval - Interval auto-save (seconds)                         │
+│ • Max Retries - Jumlah retry jika API call gagal                            │
+│ • Retry Delay - Delay antar retry                                           │
+│                                                                              │
+│ Create: Assets > Create > Crimson Sanctum > Player API Config               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PlayerDataExtensions                                                        │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│ • Extension methods untuk convenience                                        │
+│ • PlayerPrefsHelper - Auto-login utilities                                   │
+│ • PlayerDataEvents - Event system (optional)                                 │
+│                                                                              │
+│ Usage: using Assets.Scripts.Player.API;                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📚 DATA FLOW
+
+┌──────────────┐       ┌──────────────────┐       ┌─────────────┐
+│  Your Game   │ ────► │ PlayerData       │ ────► │  PlayerPrefs│
+│  Script      │       │ Manager          │       │  (Local)    │
+└──────────────┘       └──────────────────┘       └─────────────┘
+                              │
+                              │ HTTP Requests
+                              ▼
+                       ┌──────────────┐
+                       │ PlayerApi    │
+                       │ Client       │
+                       └──────────────┘
+                              │
+                              │ UnityWebRequest
+                              ▼
+                       ┌──────────────┐
+                       │ REST API     │
+                       │ Server       │
+                       │ (.NET)       │
+                       └──────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 QUICK START CHECKLIST
+
+Setup (Unity Editor):
+☐ Create PlayerApiConfig asset
+☐ Set Base URL in config
+☐ Create GameObject "PlayerDataManager"
+☐ Attach PlayerDataManager.cs component
+☐ Assign config to component
+
+Usage (In your scripts):
+☐ Login player: PlayerDataManager.Instance.LoginOrCreatePlayer()
+☐ Update data: AddScore(), AddCoin(), etc.
+☐ Save: SaveToLocalAndServer()
+☐ Display: Access via properties (Score, Coin, etc.)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📖 DOCUMENTATION GUIDE
+
+Start Here:
+1. SETUP_GUIDE.md .......... Quick 5-minute setup
+2. CHEATSHEET.md ........... Quick reference for common tasks
+
+Deep Dive:
+3. README.md ............... Full documentation
+4. Examples/ ............... Code examples
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎮 COMMON USAGE PATTERNS
+
+Login:
+    PlayerDataManager.Instance.LoginOrCreatePlayer(nickname, onSuccess, onError)
+
+Update Score:
+    PlayerDataManager.Instance.AddScore(100)
+
+Update Coin:
+    PlayerDataManager.Instance.AddCoin(50)
+
+Save:
+    PlayerDataManager.Instance.SaveToLocalAndServer(onSuccess, onError)
+
+Leaderboard:
+    PlayerDataManager.Instance.GetLeaderboard(10, onSuccess, onError)
+
+Check Login:
+    if (PlayerDataManager.Instance.IsLoggedIn) { ... }
+
+═══════════════════════════════════════════════════════════════════════════════
+
+💡 TIPS
+
+• PlayerDataManager is a Singleton - access via Instance
+• Auto-save is enabled by default (configurable)
+• All API calls are async (use callbacks)
+• Data is cached locally in PlayerPrefs
+• Manager persists across scenes (DontDestroyOnLoad)
+• Enable debug logs during development
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Version: 1.0.0
+Last Updated: November 6, 2025
+Unity Version: 2019.4+
+
